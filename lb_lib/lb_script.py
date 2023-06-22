@@ -116,7 +116,7 @@ class LbScript():
         return rc[idx + pos - 1]
 
     def hello_world(self):
-        print("This is my first pip package!")
+        print("I am LbScript!")
 
     def getWorkspace(self):
         # get the workspace folder
