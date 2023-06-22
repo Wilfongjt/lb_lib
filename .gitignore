@@ -240,4 +240,4 @@ fabric.properties
 # mac
 .DS_Store
 #
-std_lib.egg-info/
+lb_lib.egg-info/
