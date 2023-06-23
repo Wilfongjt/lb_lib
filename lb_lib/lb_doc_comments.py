@@ -2,18 +2,18 @@ import os
 from pprint import pprint
 
 class LbDocComments(list):
-    ## Given a folder and filename, Open and read the comment line in the file.
+    ## Given a folder and filename, Open and read the double hashed (ie "## ") comment lines in the file.
     def hello_world(self):
         print("I am LbDocComments!")
-    def __init__(self, folder=os.getcwd(), filename='lb_doc_comments'):
+    def __init__(self, folder=os.getcwd(), filename='lb_doc_comments.py'):
 
         self.folder = folder
         self.filename = filename
 
     def open(self):
-        ## Open and Load a given file on request.
-        # print('folder', self.folder)
-        # print('filename', self.filename)
+        ## Open and Load the file double hashed comments on request.
+        #print('folder', self.folder)
+        #print('filename', self.filename)
         with open('{}/{}'.format(self.folder, self.filename)) as f:
 
             lines = f.read()
@@ -22,55 +22,59 @@ class LbDocComments(list):
             for ln in lines:
                 ln = ln.strip()
                 if ln.startswith('class'):
-                    ##* process line when line starts with "class"
+                    ##* load line when line starts with "class", convert "class" to "## class"
                     self.append('## {}'.format(ln.replace(':','')))
                 else:
                     if ln.startswith('##'):
-                        ##* process line when line is double comment... eg "##"
+                        ##* load line when line is double comment... eg "##"
                         self.append(ln)
+        return self
     #
-    ## Convert comments to markdown on request
+    # Convert comments to markdown on request
     #
     def toMarkdown(self):
+        ## Convert comments to markdown on request
         markdown = []
         for ln in self:
-            if '1.' in ln:
-                ##* markdown is bold when "1. " is found
-
-                ln = ln.replace('1. ','1. __')
-                ln = '{}__'.format(ln)
+            ##* comment is ignored when comment starts with a single hash, eg "# "
+            if ln.startswith('1. '):
+                ##* ordered item is bold when comment starts with "1. "
+                ln = '1. __{}__'.format(ln[2:].strip())
 
             if ' on request' in ln:
-                ##* markdown is bold when "on request" is found
+                ##* method name is bold when comment contains "on request"
                 if markdown[len(markdown)-1].startswith('*'):
                     markdown.append(' ')
-                markdown.append('__{}__ '.format(ln[2:]))
-                #markdown.append('__{}__ '.format(ln[2:].strip()))
-                #markdown.append('__{}__ '.format(ln.replace('##','').strip()))
+                markdown.append('__{}__ '.format(ln[2:].strip()))
                 markdown.append(' ')
             elif ' when ' in ln:
-                ##* markdown is list item when "when" is found
-                markdown.append('{}'.format(ln[2:]))
-                #                markdown.append('{}'.format(ln.replace('##','')))
+                ##* unordered list item is bulleted when comment contains "when"
+                ##* unordered list item is bulleted when comment starts with "##*"
+
+                markdown.append('{}'.format(ln[2:].strip()))
 
             elif ln.startswith('## class'):
-                ##* markdown is H1 when "# class" is found
-                markdown.append('# {}'.format(ln[2:]))
-                # markdown.append('# {}'.format(ln.replace('##','')))
+                ##* class name is H1 when comment starts with "## class"
+                markdown.append('# {}'.format(ln[2:].strip()))
                 markdown.append(' ')
             else:
-                ##* markdown is normal when line is # unknown
-                markdown.append('{}'.format(ln.replace('##','')))
-                #markdown.append('{}'.format(ln.replace('##','').strip()))
-
+                ##* markdown is normal when comment starts with "## "
+                #markdown.append('{}'.format(ln.replace('##','')))
+                markdown.append('{}'.format(ln[2:].strip()))
                 markdown.append(' ')
+                ##* markdown is H1 when comment starts with "### "
+                ##* markdown is H2 when comment starts with "#### "
+                ##* markdown is H3 when comment starts with "##### "
+
         return '\n'.join(markdown)
 
 def main():
     actual = LbDocComments(os.getcwd(), 'lb_doc_comments.py')
     # pprint(actual)
     assert (actual == [])
-    #print(actual.toMarkdown())
+    assert (actual.open() != [])
+
+    print(actual.toMarkdown())
 
 if __name__ == "__main__":
     # execute as script
