@@ -38,7 +38,7 @@ class LbDocComments(list):
         for ln in self:
             ##* comment is ignored when comment starts with a single hash, eg "# "
             if ln.startswith('1. '):
-                ##* ordered item is bold when comment starts with "1. "
+                ##* ordered item is bold when comment starts with "1. ", eg. "1. Something" --> "1. __Something__"
                 ln = '1. __{}__'.format(ln[2:].strip())
 
             if ' on request' in ln:
