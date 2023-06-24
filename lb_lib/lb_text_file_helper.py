@@ -34,11 +34,14 @@ class LbTextFileHelper():
             filename = delfilename
         if delfolder:
             folder = delfolder
-        if delfolder == self.folder and delfilename == self.filename:
-            raise Exception('Cannot delete source', delfolder, delfilename)
-        # delete when exists
-        if self.exists():
+        if folder == self.folder and filename == self.filename:
+            raise Exception('Cannot delete source', folder, filename)
+        ## delete when file exists
+        exists = os.path.isfile('{}/{}'.format(folder, filename))
+        if exists:
             os.remove("{}/{}".format(folder, filename))
+        #if self.exists():
+        #    os.remove("{}/{}".format(delfolder, delfilename))
         return self
 
     def copyTo(self, dstfolder, dstfilename, nocopy=False):
