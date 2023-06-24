@@ -34,9 +34,10 @@ class LbTextFileHelper():
             filename = delfilename
         if delfolder:
             folder = delfolder
-
+        if delfolder == self.folder and delfilename == self.filename:
+            raise Exception('Cannot delete source', delfolder, delfilename)
         # delete when exists
-        if self.exists(folder, filename):
+        if self.exists():
             os.remove("{}/{}".format(folder, filename))
         return self
 
