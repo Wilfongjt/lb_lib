@@ -1,43 +1,55 @@
+import re
 import typing
 from typing import TypeVar
 
 Self = TypeVar("Self", bound="Recorder")
 
 class LbRecorder():
+    ## Ad Hoc Record of method calls
     def __init__(self) -> None:
-        self.msg = ' '
-        self.msgcnt = 1
+        self.step_list = []
+        #self.msg = ' '
+        #self.msgcnt = 1
 
     def hello_world(self):
         print("I am LbRecorder!")
-
+        return self
     def getClassName(self) -> str:
+        ##__Get Class Name on request__
+        ##* returns current class name
         return self.__class__.__name__
-
-    def addStep(self, msg, arrow='->') -> Self:
+    def addStep(self, msg, arrow='->'):
         msg = msg.replace(arrow, '').strip()
-        if self.msgcnt == 1:
-            r = '{} {}'.format(arrow, msg)
-        else:
-            r = '{} {} ({})'.format(arrow, msg, self.msgcnt)
-        # if not self.msg.strip().endswith(msg.strip()):
-        if not self.msg.strip().endswith(r):
-            self.msg += ' {} {}'.format(arrow, msg.strip())
-            self.msgcnt = 1
-        else:
-            self.msgcnt += 1
-            w = '{} {} ({})'.format(arrow, msg, self.msgcnt)
-            # print('   ',self.msg)
-            # print('***** replace "{}" with "{}"'.format(r, w))
-            self.msg = self.msg.replace(r, w)
-            # print('   ',self.msg)
+        self.step_list.append(msg)
+        #print('addStep ', self.step_list)
         return self
 
-    def getSteps(self) -> str:
-        return '    {}'.format(self.msg)
+    def getSteps(self):
+        ##__Format Steps on request, eg "one -> two (2)__"
+        steps = []
+        last_step = None
+        cnt = 1
+        for s in self.step_list:
+            if len(steps) == 0:
+                ##* append first step
+                steps.append(s)
+            else:
 
-    def showSteps(self, terminalMsg: str = None) -> str:
+                if steps[-1].startswith(s):
+                    ##* show count on step message when message repeats
+                    cnt += 1
+                    steps[-1] = '{} ({})'.format(s, cnt)
+                else:
+                    ##* add step message
+                    cnt = 1
+                    steps.append('{}'.format(s))
+        ##* seperate step messages with "->"
+        return ' -> '.join(steps)
+
+    def preview(self, terminalMsg: str = None) -> str:
+        ##__Show Steps on request__
         if terminalMsg:
+            ##* Show preview of Steps
             print('    {}: {} {}'.format(self.getSteps(), terminalMsg, self.getClassName()) )
         else:
             print('    {}: {}'.format(self.getSteps(), self.getClassName()))
@@ -48,28 +60,51 @@ class LbRecorder():
 
 
 def main():
+    import os
+    from pprint import pprint
+    from lb_lib.lb_doc_comments import LbDocComments
 
     actual = LbRecorder()
-    #print('Recorder actual ', type(actual))
-    assert(actual)
-    assert(type(actual) is LbRecorder)
-    assert(actual.msg == ' ')
-    assert(actual.msgcnt == 1)
+    assert (actual)
+    assert (type(actual) is LbRecorder)
+    assert (actual.getSteps() == '')
 
-    actual = LbRecorder().addStep('SayHey')
+    assert (actual.addStep('one'))
+    assert (actual.getSteps() == 'one')
+
+    #print('A',actual.getSteps())
+
+    assert (actual.addStep('two').addStep('two'))
+    assert (actual.getSteps() == 'one -> two (2)')
+    #print('B',actual.getSteps())
+
+    assert (actual.addStep('three').addStep('three').addStep('three'))
+    assert (actual.getSteps() == 'one -> two (2) -> three (3)')
+    #print('C', actual.getSteps())
+
+    #assert(actual.msg == ' ')
+    #assert(actual.msgcnt == 1)
+
+    #actual = LbRecorder().addStep('SayHey')
+    #pprint(actual)
     #print('Recorder actual "{}"'.format(actual.getSteps()))
 
-    assert(actual)
-    assert(type(actual) is LbRecorder)
-    assert(actual.msg == '  -> SayHey')
-    assert(actual.msgcnt == 1)
-    assert(actual.getSteps() == '      -> SayHey' )
-    actual.addStep('again')
+    #assert(actual)
+    #assert(type(actual) is LbRecorder)
+    #assert(actual.msg == '  -> SayHey')
+    #assert(actual.msgcnt == 1)
+    #print(actual.getSteps())
+    #assert(actual.getSteps() == '      -> SayHey' )
+    #actual.addStep('again')
     #print('Recorder actual ', actual.getSteps())
-    assert(actual.getSteps() == '      -> SayHey -> again' )
-    actual.addStep('again')
+    #assert(actual.getSteps() == '      -> SayHey -> again' )
+    #actual.addStep('again')
     #print('Recorder actual ', actual.getSteps())
-    actual.showSteps('somefilename')
+    #actual.showSteps('somefilename')
+
+    # write documentation in markdown file
+    LbDocComments().setFolder(os.getcwd()).setFilename(str(__file__).split('/')[-1]).open().save()
+
 
 if __name__ == "__main__":
     # execute only if run as a script
