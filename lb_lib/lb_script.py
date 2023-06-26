@@ -219,6 +219,8 @@ class LbScript():
         return True
 
 def main():
+    from lb_lib.lb_doc_comments import LbDocComments
+
     actual = LbScript()
     assert (actual)
     assert ( actual.getDevelopment() == 'Development')
@@ -229,6 +231,8 @@ def main():
 
     assert ( actual.hasBranch('main') )
     #assert ( hasBranch('00_init') )
+    # write documentation in markdown file
+    LbDocComments().setFolder(os.getcwd()).setFilename(str(__file__).split('/')[-1]).open().save()
 
 if __name__ == "__main__":
     # execute as script

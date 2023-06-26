@@ -1,86 +1,85 @@
 import os
 from pprint import pprint
-
-class LbDocComments(list):
-    ## Given a folder and filename, Open and read the double hashed (ie "## ") comment lines in the file.
+from lb_lib.lb_text_file import LbTextFile
+class LbDocComments(LbTextFile):
+    ## Read and convert "##" comments to Markdown
+    ## Given a folder and filename, Open, read, and convert the double hashed (ie "## ") comment lines to Markdown.
+    ##* save to README.md
+    def __init__(self):
+        super().__init__()
     def hello_world(self):
         print("I am LbDocComments!")
-    def __init__(self, folder=os.getcwd(), filename='lb_doc_comments.py'):
+        return self
 
-        self.folder = folder
-        self.filename = filename
+    def load(self, line_list):
+        ## __Load line list on request__
+        self.addStep('load')
+        for ln in line_list:
 
-    def open(self):
-        ## Open and Load the file's double hashed comments on request.
-        #print('folder', self.folder)
-        #print('filename', self.filename)
-        with open('{}/{}'.format(self.folder, self.filename)) as f:
+            ln = ln.strip(' ')
+            if ln.startswith('class'):
+                ##* load markdown line when line starts with "class", convert "class" to "## class"
+                #self.append('## {}'.format(ln.replace(':','')))
+                self.append(self.markdown(ln))
+            else:
+                if ln.startswith('##'):
+                    ##* load markdown line when line is double comment... eg "##"
+                    self.append(self.markdown(ln))
 
-            lines = f.read()
-            lines = lines.split('\n')
-
-            for ln in lines:
-                ln = ln.strip(' ')
-                if ln.startswith('class'):
-                    ##* load line when line starts with "class", convert "class" to "## class"
-                    self.append('## {}'.format(ln.replace(':','')))
-                    #print('a ln', ln)
-
-                else:
-                    if ln.startswith('##'):
-                        ##* load line when line is double comment... eg "##"
-                        self.append(ln)
-                        #print('b ln', ln)
-
-                #print('open out', ln)
         return self
     #
     # Convert comments to markdown on request
     #
-    def toMarkdown(self):
-        ## Convert comments to markdown on request
-        markdown = []
-        for ln in self:
-            #print('ln',ln)
-            ##* comment is ignored when comment starts with a single hash, eg "# "
-            if ln.startswith('1. '):
+    def markdown(self, ln):
+        ## __Convert a single comment to Markdown on request__
+        ##* comment is ignored when comment starts with a single hash, eg "# "
 
-                ##* ordered item is bold when comment starts with "1. ", eg. "1. Something" --> "1. __Something__"
-                ln = '1. __{}__'.format(ln[2:].strip(' '))
+        #    markdown = 'x{}'.format(ln[2:])
+        if ln.startswith('class'):
+            ##* markdown is H1 when line starts with "class"
+            markdown = '# {}'.format(ln)
+        else:
+            ##* markdown is normal when comment starts with "## "
+            markdown = '{}'.format(ln[2:])
 
-            if ' on request' in ln:
-                ##* method name is bold when comment contains " on request"
-                if markdown[len(markdown)-1].startswith('*'):
-                    markdown.append(' ')
-                markdown.append('__{}__ '.format(ln[2:].strip(' ')))
-                markdown.append(' ')
-            elif ' when ' in ln:
-                ##* unordered list item is bulleted when comment contains "when"
-                markdown.append('{}'.format(ln[2:]))
-            elif '## class' in ln:
-                #elif ln.startswith('## class'):
-                ##* class name is H1 when comment starts with "## class"
-                markdown.append('# {}'.format(ln[2:].strip()))
-                markdown.append(' ')
-            else:
-                ##* markdown is normal when comment starts with "## "
-                #markdown.append('{}'.format(ln.replace('##','')))
-                markdown.append('{}'.format(ln[2:]))
-                markdown.append(' ')
-                ##* markdown is unordered when comment starts with "##*"
-                ##* markdown is H1 when comment starts with "### "
-                ##* markdown is H2 when comment starts with "#### "
-                ##* markdown is H3 when comment starts with "##### "
+        ##* markdown is unordered when comment starts with "##*"
+        ##* markdown is H1 when comment starts with "### "
+        ##* markdown is H2 when comment starts with "#### "
+        ##* markdown is H3 when comment starts with "##### "
 
-        return '\n'.join(markdown)
+        return markdown
 
+        return markdown
+
+    def save(self):
+        ## __Save markdown on request__
+        ##* change name
+        self.saveAs(self.getFolder(),'README.{}.md'.format(self.getFilename()))
+        return self
 def main():
-    actual = LbDocComments(os.getcwd(), 'lb_doc_comments.py')
+    from lb_lib.lb_text_file import LbTextFile
+    folder = os.getcwd()
+    filename = str(__file__).split('/')[-1]
+    actual = LbDocComments() #.setFolder(os.getcwd()).setFilename(filename)
     # pprint(actual)
     assert (actual == [])
-    assert (actual.open() != [])
+    assert (actual.setFolder(folder) == [])
+    assert (actual.setFilename(filename) == [])
+    #print('folder', folder)
+    #print('file', filename)
+    print('class "{}"'.format(actual.markdown('class LbDocComments(LbTextFile)')))
+    assert (actual.markdown('class LbDocComments(LbTextFile)')=='# class LbDocComments(LbTextFile)')
+    assert (actual.markdown('##* hi ')=='* hi ')
+    assert (actual.markdown('### hi ')=='# hi ')
+    assert (actual.markdown('##__hi on request__')=='__hi on request__')
 
-    print(actual.toMarkdown())
+    assert (actual.open() != [])
+    #pprint(actual)
+    #tfile = LbTextFile().setFolder(os.getcwd()).setFilename(filename).open()
+
+    #assert (actual.load(tfile))
+    assert (actual.save() != [])
+    actual.preview()
 
 if __name__ == "__main__":
     # execute as script

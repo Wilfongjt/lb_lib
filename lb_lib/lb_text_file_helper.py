@@ -66,6 +66,7 @@ class LbTextFileHelper():
 
 
 def main():
+    from lb_lib.lb_doc_comments import LbDocComments
     #from _functions import createFolder
     filename = 'lb_text_file_helper.py'
     srcfolder = os.getcwd()
@@ -83,6 +84,8 @@ def main():
     #assert( LbTextFileHelper( dstfolder, filename).exists() )
     #assert( LbTextFileHelper( dstfolder, filename).deleteWhenFound() )
     #assert( not LbTextFileHelper( dstfolder, filename).exists() )
+    # write documentation in markdown file
+    LbDocComments().setFolder(os.getcwd()).setFilename(str(__file__).split('/')[-1]).open().save()
 
 if __name__ == "__main__":
     # execute as script
