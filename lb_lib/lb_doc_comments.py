@@ -2,11 +2,30 @@ import os
 from pprint import pprint
 from lb_lib.lb_text_file import LbTextFile
 class LbDocComments(LbTextFile):
-    ## Read and convert "##" comments to Markdown
+    ## Open, Read, and convert "##" comments to Markdown
     ## Given a folder and filename, Open, read, and convert the double hashed (ie "## ") comment lines to Markdown.
-    ##* save to README.md
+
     def __init__(self):
         super().__init__()
+        ##* Define words to decorate in decoration list
+        self.decoration_list = ['change',
+                         'checkout',
+                         'clone',
+                         'confirm',
+                         'convert',
+                         'copy'
+                         'create',
+                         'decorate',
+                         'define',
+                         'generate',
+                         'impute',
+                         'load',
+                                'open',
+                                'read',
+                                'save',
+                                'stop',
+                                'when'
+                                ]
     def hello_world(self):
         print("I am LbDocComments!")
         return self
@@ -18,12 +37,13 @@ class LbDocComments(LbTextFile):
 
             ln = ln.strip(' ')
             if ln.startswith('class'):
-                ##* load markdown line when line starts with "class", convert "class" to "## class"
+                ##* load line when line starts with "class"
+                ##* convert "class" to "## class" when line starts with "class"
                 #self.append('## {}'.format(ln.replace(':','')))
                 self.append(self.markdown(ln))
             else:
                 if ln.startswith('##'):
-                    ##* load markdown line when line is double comment... eg "##"
+                    ##* load comment when line starts with "##"
                     self.append(self.markdown(ln))
 
         return self
@@ -47,15 +67,30 @@ class LbDocComments(LbTextFile):
         ##* markdown is H2 when comment starts with "#### "
         ##* markdown is H3 when comment starts with "##### "
 
-        return markdown
+        markdown = self.decorate(markdown)
 
         return markdown
+
+    def decorate(self, line):
+        ##__Decorate line on request__
+        nline = []
+        line = line.replace(',',' ,')
+        line = str(line).split(' ')
+        for word in line:
+            if word.lower() in self.decoration_list:
+                ##* decorate word with bold when word is found in decoration list
+                nline.append('__{}__'.format(word.title()))
+            else:
+                nline.append(word)
+        return ' '.join(nline).replace(' ,',',')
 
     def save(self):
         ## __Save markdown on request__
-        ##* change name
+        ##* impute file name, eg "lb_doc_comments.py" to "README.lb_doc_comments.py.md"
         self.saveAs(self.getFolder(),'README.{}.md'.format(self.getFilename()))
         return self
+
+
 def main():
     from lb_lib.lb_text_file import LbTextFile
     folder = os.getcwd()
