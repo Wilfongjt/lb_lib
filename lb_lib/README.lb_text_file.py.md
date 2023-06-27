@@ -1,6 +1,6 @@
 # class LbTextFile(list, LbRecorder):
 
- Open and Save text file
+ __Open__ and __Save__ text file
 
 __Get filename on request__
 
@@ -20,11 +20,11 @@ __Set Filename on request__
 
  __Confirm text file exists on request__
 
-* text file exists when folder and text file are found
+* text file exists __When__ folder and text file are found
 
-* fail when folder is not found
+* fail __When__ folder is not found
 
-* fail when folder/file is not found
+* fail __When__ folder/file is not found
 
  __Load list of text on request__
 
@@ -32,43 +32,43 @@ __Set Filename on request__
 
  __Open text file on request__
 
-* fail when folder is not found
+* fail __When__ folder is not found
 
-* fail when folder/file is not found
+* fail __When__ folder/file is not found
 
 * returns self
 
 __Test folder's existence on request__
 
-* folder does not exist when folder not defined
+* folder does not exist __When__ folder not defined
 
-* folder does not exist when folder is not found
+* folder does not exist __When__ folder is not found
 
 * returns bool
 
 __Test file's existance on request__
 
-* file does not exist when file not defined
+* file does not exist __When__ file not defined
 
-* file does not exist when file is not found
+* file does not exist __When__ file is not found
 
 * returns bool
 
  __Save text file on request__
 
-* overwrite file when save
+* overwrite file __When__ save
 
 * returns self
 
  __Save text file with different name on request__
 
-* overwrite file when file exists
+* overwrite file __When__ file exists
 
 * returns self
 
  __Delete file on request__
 
-* delete when file exists
+* delete __When__ file exists
 
 * returns self
 

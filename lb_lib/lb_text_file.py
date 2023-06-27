@@ -63,13 +63,13 @@ class LbTextFile(list, LbRecorder):
         ##* fail when folder is not found
         if not self.folder_exists():
             self.addStep('not-folder')
-            raise Exception('Folder not found')
+            raise Exception('Folder not found {}'.format(self.getFolder()))
             return self
 
         ##* fail when folder/file is not found
         if not self.file_exists():
             self.addStep('not-file')
-            raise Exception('File not found')
+            raise Exception('File not found {}'.format(self.getFilename()))
             return self
 
         with open('{}/{}'.format(self.getFolder(),self.getFilename())) as file:
