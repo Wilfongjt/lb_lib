@@ -19,13 +19,15 @@ class LbDocComments(LbTextFile):
                          'define',
                          'generate',
                          'impute',
+                         'install',
                          'load',
-                                'open',
-                                'read',
-                                'save',
-                                'stop',
-                                'when'
-                                ]
+                         'navigate',
+                         'open',
+                         'read',
+                         'save',
+                         'stop',
+                         'when'
+                         ]
     def hello_world(self):
         print("I am LbDocComments!")
         return self
