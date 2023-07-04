@@ -3,9 +3,9 @@ import shutil
 # from _functions import file_exists
 
 class LbTextFileHelper():
-    def __init__(self, srcFolder=os.getcwd(), srcName=None):
-        self.folder = srcFolder
-        self.filename = srcName
+    def __init__(self, folder=os.getcwd(), filename=None):
+        self.folder = folder
+        self.filename = filename
 
     def hello_world(self):
         print("I am LbTextFileHelper!")
@@ -26,23 +26,6 @@ class LbTextFileHelper():
             return False
         return True
 
-    def deleteWhenFound(self, delfolder=None, delfilename=None):
-        ## delete file when file is found
-        folder = self.folder
-        filename = self.filename
-        if delfilename:
-            filename = delfilename
-        if delfolder:
-            folder = delfolder
-        if folder == self.folder and filename == self.filename:
-            raise Exception('Cannot delete source', folder, filename)
-        ## delete when file exists
-        exists = os.path.isfile('{}/{}'.format(folder, filename))
-        if exists:
-            os.remove("{}/{}".format(folder, filename))
-        #if self.exists():
-        #    os.remove("{}/{}".format(delfolder, delfilename))
-        return self
 
     def copyTo(self, dstfolder, dstfilename, nocopy=False):
         ## copy source file to another location, or name, or both
@@ -55,7 +38,6 @@ class LbTextFileHelper():
             print('copyTo ({}/{}) to ({}/{})'.format(self.folder, self.filename, dstfolder, dstfilename))
             return self
 
-        #if self.exists(self.folder, self.filename):
         if self.exists():
 
             ## remove destination file when destination file exists
@@ -64,28 +46,53 @@ class LbTextFileHelper():
                          '{}/{}'.format(dstfolder, dstfilename))
         return self
 
+    def deleteWhenFound(self, delfolder=None, delfilename=None, delmode=True):
+        ## delete file when file is found
+        folder = self.folder
+        filename = self.filename
+        if delfilename:
+            filename = delfilename
+
+        if delfolder:
+            folder = delfolder
+        ##* throw exception when trying to delete this file
+        if folder == self.folder and filename == self.filename:
+            raise Exception('Cannot delete source', folder, filename)
+        ## delete when file exists
+        exists = os.path.isfile('{}/{}'.format(folder, filename))
+        if exists:
+            if delmode:
+                os.remove("{}/{}".format(folder, filename))
+            else:
+                print('skip delete when delmode is False')
+
+        #if self.exists():
+        #    os.remove("{}/{}".format(delfolder, delfilename))
+        return self
+
 
 def main():
-    from lb_lib.lb_doc_comments import LbDocComments
+    print('lb_text_file_helper')
+    #from lb_lib.lb_doc_comments import LbDocComments
     #from _functions import createFolder
-    filename = 'lb_text_file_helper.py'
-    srcfolder = os.getcwd()
+    #filename = 'lb_text_file_helper.py'
+    #srcfolder = os.getcwd()
     #dstfolder = '{}/temp'.format(os.getcwd())
-    dstfolder = os.getcwd()
+    #dstfolder = os.getcwd()
     #createFolder(dstfolder)
-    print('cwd',os.getcwd())
-    actual = LbTextFileHelper( srcfolder, filename)
-    assert( actual )
-    assert( actual.exists() )
-    try:
-        actual.copyTo(dstfolder, filename, nocopy=True)
-    except:
-        print('exception')
+    #print('cwd',os.getcwd())
+    #actual = LbTextFileHelper( srcfolder, filename)
+    #assert( actual )
+    #assert( actual.exists() )
+    #try:
+    #    actual.copyTo(dstfolder, filename, nocopy=True)
+    #except:
+    #    print('exception')
     #assert( LbTextFileHelper( dstfolder, filename).exists() )
     #assert( LbTextFileHelper( dstfolder, filename).deleteWhenFound() )
     #assert( not LbTextFileHelper( dstfolder, filename).exists() )
     # write documentation in markdown file
-    LbDocComments().setFolder(os.getcwd()).setFilename(str(__file__).split('/')[-1]).open().save()
+    #LbDocComments().setFolder(os.getcwd()).setFilename(str(__file__).split('/')[-1]).open().save()
 
 if __name__ == "__main__":
     # execute as script

@@ -1,3 +1,5 @@
+
+import unittest
 import re
 import typing
 from typing import TypeVar
@@ -57,55 +59,12 @@ class LbRecorder():
         self.msg = ' '
 
         return self
-
-
 def main():
-    import os
-    from pprint import pprint
-    from lb_lib.lb_doc_comments import LbDocComments
-
-    actual = LbRecorder()
-    assert (actual)
-    assert (type(actual) is LbRecorder)
-    assert (actual.getSteps() == '')
-
-    assert (actual.addStep('one'))
-    assert (actual.getSteps() == 'one')
-
-    #print('A',actual.getSteps())
-
-    assert (actual.addStep('two').addStep('two'))
-    assert (actual.getSteps() == 'one -> two (2)')
-    #print('B',actual.getSteps())
-
-    assert (actual.addStep('three').addStep('three').addStep('three'))
-    assert (actual.getSteps() == 'one -> two (2) -> three (3)')
-    #print('C', actual.getSteps())
-
-    #assert(actual.msg == ' ')
-    #assert(actual.msgcnt == 1)
-
-    #actual = LbRecorder().addStep('SayHey')
-    #pprint(actual)
-    #print('Recorder actual "{}"'.format(actual.getSteps()))
-
-    #assert(actual)
-    #assert(type(actual) is LbRecorder)
-    #assert(actual.msg == '  -> SayHey')
-    #assert(actual.msgcnt == 1)
-    #print(actual.getSteps())
-    #assert(actual.getSteps() == '      -> SayHey' )
-    #actual.addStep('again')
-    #print('Recorder actual ', actual.getSteps())
-    #assert(actual.getSteps() == '      -> SayHey -> again' )
-    #actual.addStep('again')
-    #print('Recorder actual ', actual.getSteps())
-    #actual.showSteps('somefilename')
-
-    # write documentation in markdown file
-    LbDocComments().setFolder(os.getcwd()).setFilename(str(__file__).split('/')[-1]).open().save()
-
+    # dev
+    print('lb_recorder')
 
 if __name__ == "__main__":
+    from tests.lb_recorder_test import LbRecorder
     # execute only if run as a script
     main()
+    unittest.main()

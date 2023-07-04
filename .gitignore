@@ -120,6 +120,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
+*.env
 .env
 .venv
 env/
@@ -241,3 +242,5 @@ fabric.properties
 .DS_Store
 #
 lb_lib.egg-info/
+
+temp/
