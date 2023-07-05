@@ -7,6 +7,8 @@ from lb_lib.lb_exceptions import BadFileNameException, BadFolderNameException
 
 
 class LbUtil():
+    def hello_world(self):
+        print("I am LbUtil!")
     def get_file_extension(self, filename):
         lst = filename.split('.')[1:]
         ext = '.'.join(lst)
