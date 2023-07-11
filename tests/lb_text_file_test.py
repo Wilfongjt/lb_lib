@@ -20,12 +20,10 @@ from lb_lib.lb_util import LbUtil
 class LbTextFileTest(unittest.TestCase):
     def setUp(self):
         self.actual = LbTextFile()
-        self.temp_folder = '/'.join(str(__file__).split('/')[0:-1])
-        self.temp_folder = '{}/temp'.format(self.temp_folder)
         self.temp_filename = '{}.env'.format(str(__file__).split('/')[-1])
         # create a temp folder
-        #self.deleteTempFolder()
-        #self.createTempFolder()
+        self.temp_folder = '/'.join(str(__file__).split('/')[0:-1])
+        self.temp_folder = '{}/temp'.format(self.temp_folder)
         LbUtil().create_folder(self.temp_folder)
     def tearDown(self):
         #print('tearDown')
@@ -47,21 +45,6 @@ class LbTextFileTest(unittest.TestCase):
         result = self.actual.getFolder()
         self.assertEqual(result,folder)
 
-        def test_getFilename(self):
-            filename = '/'.join(str(__file__).split('/')[-1])
-
-            # fail when folder is None
-
-            result = self.actual.getFilename()
-            self.assertEqual(result, None)
-            self.assertFalse(result)
-
-            # success when folder is defined
-
-            self.actual.setFilename(filename)
-            result = self.actual.getFilename()
-            self.assertEqual(result, filename)
-
     def test_getFilename(self):
         filename = '/'.join(str(__file__).split('/')[-1])
 
@@ -77,56 +60,50 @@ class LbTextFileTest(unittest.TestCase):
         result = self.actual.getFilename()
         self.assertEqual(result, filename)
 
+    def test_getLineList(self):
+        self.actual.setFolder('/'.join(str(__file__).split('/')[0:-1]))
+        self.actual.setFilename(str(__file__).split('/')[-1])
+        result = self.actual.getLineList()
+        self.assertTrue(len(result) > 0)
+
     def test_folder_exists(self):
         folder = '/'.join(str(__file__).split('/')[0:-1])
         filename = str(__file__).split('/')[-1]
         notfolder = '/notanexistingfolder'
         notfile = 'aaaa.txt'
-        # exists false, when folder is default and file is default
 
-        result = self.actual.exists()
+        # false when folder is None
+
+        result = self.actual.folder_exists()
         self.assertFalse(result)
 
-        # fail when folder is not default and folder not exists and file is default
+        # false when folder in not None
 
         self.actual.setFolder(notfolder)
-        result = self.actual.exists()
+        result = self.actual.folder_exists()
         self.assertFalse(result)
 
-        # fail when folder is not default and folder not exists and file is default
+        # true when folder is found
 
         self.actual.setFolder(folder)
-        result = self.actual.exists()
-        self.assertFalse(result)
-
-        # exists false, when folder is not default and folder not exists and file is not default and file not exist
-
-        self.actual.setFolder(folder)
-        self.actual.setFilename(notfile)
-        result = self.actual.exists()
-        self.assertFalse(result)
-
-        # exists false, when folder is not default and folder exists and file is not default and file exits
-
-        self.actual.setFolder(folder)
-        self.actual.setFilename(filename)
-        result = self.actual.exists()
+        result = self.actual.folder_exists()
         self.assertTrue(result)
+
 
     def test_file_exists(self):
         folder = '/'.join(str(__file__).split('/')[0:-1])
         filename = str(__file__).split('/')[-1]
         notfile = 'aaaa.txt'
 
-        # fail when filename is None
+        # file does not exist when filename is None
         result = self.actual.file_exists()
         self.assertFalse(result)
 
-        # fail when filename doesnt exist
+        # file does not exist when filename is not None
         self.actual.setFilename(notfile)
         result = self.actual.file_exists()
 
-        # true when file exists
+        # file exists when folder and filename is not None and file is found
         self.actual.setFolder(folder)
         self.actual.setFilename(filename)
         result = self.actual.file_exists()
@@ -136,40 +113,49 @@ class LbTextFileTest(unittest.TestCase):
         # empty by default
         result = self.actual.exists()
         self.assertFalse(result)
+
         # folder exists but file does not
         self.actual.setFolder(self.temp_folder)
         result = self.actual.exists()
         self.assertFalse(result)
-        # folder exists and file exists
-        self.actual.setFolder(self.temp_folder)
-        self.actual.setFilename(self.temp_filename)
 
+        # folder exists and file exists
+        self.actual.setFolder('/'.join(str(__file__).split('/')[0:-1]))
+        self.actual.setFilename(str(__file__).split('/')[-1])
         result = self.actual.exists()
         self.assertTrue(result)
+
+
     def test_load(self):
         # empty by defualt
         self.assertEqual(self.actual, [])
-        # load goes into list
+        # put lines into object list
         result = self.actual.load(['a','b'])
         self.assertEqual(result, ['a', 'b'])
+        # returns LbTextFile
+        self.assertTrue(type(result) is LbTextFile)
 
     def test_validate(self):
-
-        # fail when folder is None
+        result = None
+        # not valid when folder is None
         with self.assertRaises(BadFolderNameException):
-            self.actual.validate()
+            result = self.actual.validate()
 
-        # fail when folder doesnt exist
+        # not valid when folder doesnt exist
         self.actual.setFolder('/asdfasdfasdf')
         with self.assertRaises(FolderNotFoundException):
-            self.actual.validate()
+            result = self.actual.validate()
 
-        # fail when file doesnt exist
+        # not valid when file doesnt exist
         self.actual.setFolder(self.temp_folder)
         with self.assertRaises(BadFileNameException):
-            self.actual.validate()
+            result = self.actual.validate()
 
-        # self.actual.setFolder()
+        # returns LbTextFile
+        self.actual.setFolder('/'.join(str(__file__).split('/')[0:-1]))
+        self.actual.setFilename(str(__file__).split('/')[-1])
+        result = self.actual.validate()
+        self.assertTrue(type(result) is LbTextFile)
 
     def test_open(self):
         # false when folder is default
@@ -178,12 +164,12 @@ class LbTextFileTest(unittest.TestCase):
         filename = str(__file__).split('/')[-1]
         folder = '/'.join(str(__file__).split('/')[0:-1])
         result = ''
-        with self.assertRaises(FolderNotFoundException):
+        with self.assertRaises(BadFolderNameException):
             result = self.actual.open()
 
         # false when file is default
         self.actual.setFolder(folder)
-        with self.assertRaises(FileNotFoundException):
+        with self.assertRaises(BadFileNameException):
             result = self.actual.open()
 
         # folder and file found
@@ -192,23 +178,43 @@ class LbTextFileTest(unittest.TestCase):
         result = self.actual.open()
         self.assertNotEqual(result, [])
 
+        # returns LbTextFile
+        self.assertTrue(type(result) is LbTextFile)
+
     def test_save(self):
+
         # fail when invalid folder name (None)
         with self.assertRaises(BadFolderNameException):
             self.actual.save()
+
         # fail when folder doesnt exist
         self.actual.setFolder('/abcedf')
         with self.assertRaises(FolderNotFoundException):
             self.actual.save()
+
         # fail when folder is ok but file name is bad
         self.actual.setFolder(self.temp_folder)
         with self.assertRaises(BadFileNameException):
             self.actual.save()
-        # success when folder exists and filename is valid
-        self.actual.setFolder(self.temp_folder)
-        self.actual.setFilename(self.temp_filename)
-        result = self.actual.save()
-        self.assertEqual(result, [])
+
+        # create file when doesnt exist
+        self.actual.setFolder(self.temp_folder)     # set good folder
+        self.actual.setFilename(self.temp_filename) # set good filename
+        self.assertFalse(self.actual.exists())      # prove file doesnt exist
+        result = self.actual.save()                 # save empty file
+        self.assertEqual(result, [])                # is empty
+
+        # overwrite file when file exists
+        self.actual.setFolder(self.temp_folder)     # set good folder
+        self.actual.setFilename(self.temp_filename) # set good existing file
+        result = self.actual.load(['a', 'b']).save()# load some data
+        self.assertEqual(result, ['a', 'b'])
+        result = LbTextFile().setFolder(self.temp_folder).setFilename(self.temp_filename).open()
+        self.assertEqual(result, ['a', 'b'])
+
+        # returns LbTextFile
+        self.assertTrue(type(result) is LbTextFile)
+
     def test_saveAs(self):
         # save a file
         self.actual.setFolder(self.temp_folder)
@@ -234,30 +240,41 @@ class LbTextFileTest(unittest.TestCase):
         self.actual.load(['one','two'])
         result = self.actual.saveAs(self.temp_folder, self.temp_filename)
         self.assertEqual(result, ['one', 'two'])
+
+        # returns LbTextFile
         self.assertTrue(type(result) is LbTextFile)
 
     def test_delete(self):
-
+        # create a file to delete
         result = self.actual\
             .setFolder(self.temp_folder)\
             .setFilename(self.temp_filename)\
             .load(['a','b'])\
             .save()
 
-        self.assertEqual(result, ['a', 'b'])
-        self.assertTrue(result.exists())
+        self.assertEqual(result, ['a', 'b'])    # data ok
+        self.assertTrue(result.exists())        # file was saved
         # delete when  exists
         result = self.actual.delete()
         # clear list
-        self.assertEqual(result, [])
-
-        self.assertFalse(result.exists())
+        self.assertEqual(result, [])        # list was cleard
+        self.assertFalse(result.exists())   # file was removed
+        # returns empty LbTextFile
+        self.assertTrue(type(result) is LbTextFile)
+        self.assertEqual(result, [])  # LbTextFile is empty
 
     def test_isEmpty(self):
-        self.assertTrue(self.actual.isEmpty())
+        # empty file when file doesnt exist
+        result = self.actual.isEmpty()
+        self.assertTrue(not self.actual.exists() and result)
 
-        self.actual.setFolder(self.temp_folder).setFilename(self.temp_filename)
+        # file is empty when has no lines
+        result = self.actual.isEmpty()
+        self.actual.setFolder(self.temp_folder).setFilename(self.temp_filename).save() # write empty file
+        self.assertTrue(self.actual.exists() and result)
 
+        # return LbTextFile
+        self.assertTrue(type(result) is bool)
 
 
 

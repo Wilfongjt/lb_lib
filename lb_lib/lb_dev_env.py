@@ -8,26 +8,29 @@ class LbDevEnv(LbTextFile):
     #def __init__(self, folder=os.getcwd(),filename='.env'):
     def __init__(self):
         super().__init__()
-        ##* by default: put .env in the calling function's folder
+        ##* by default: .env is file name
+        ##* by default: put .env file in the calling function's folder
         self.folder = os.getcwd()
         self.filename = '.env'
-        ##* Make environments easy to collect with prefixes ie, ['GH_','WS_']
+        ##* Make environments easy to collect with prefixes ie, ['GH_','WS_'] ... [] has test
         self.prefixList = ['GH_','WS_']
+    def get(self, name):
+        #### Get line from list on request
 
-    def upsert(self, values):
-        ##__Upsert environment values on request__
-
-        self.addStep('upsert')
-        ##* given a set of variable put them into environment
-        for p in values:
-            os.environ[p] = values[p]
-        return self
-
+        ##* return None when <name> is not found ... [x] has test
+        rc = None
+        for ln in self:
+            if ln.startswith(name):
+                ##* return ln when line starts with <name> is found ... [x] has test
+                rc = ln
+        return rc
     def getDefaults(self):
-        ##__Get .env defaults on request__
+        #### Get .env defaults on request
+        ##> Make a dictionary of name:TBD pairs
+
         self.addStep('defaults')
 
-        ##* define initial state for environment
+        ##* define initial state for environment ... [x] has test
         dflts = {
             'WS_ORGANIZATION': 'TBD',
             'WS_WORKSPACE': 'TBD',
@@ -35,154 +38,105 @@ class LbDevEnv(LbTextFile):
             'GH_PROJECT': 'TBD',
             'GH_BRANCH': 'TBD'
         }
+        ##* outputs: dictionary
         return dflts
-
     def getDefaultsAsList(self):
-        ## __Get Defaults as a List on request
+        #### Get Environment Defaults as a List on request
+        ##> Convert default dictionary to list, ie. {name:value,...} --> [name=value,...]
         defaults_list = []
         df = self.getDefaults()
-        ##* convert defaults dictionary to defaults list
+        ##* Convert defaults dictionary to defaults list  ... [] has test
         for i in df:
             defaults_list.append('{}={}'.format(i, df[i]))
+        ##* Output: list
         return defaults_list
-
-    def load(self, line_list):
-        #print('load 1', line_list)
-
-        ## __Load list of text on request__
-        self.addStep('load')
-        for ln in line_list:
-            #print('load 2')
-            ##* skip line when line starts with "#"
-            if not ln.startswith('#'): # may contain comments
-                #print('load 3')
-
-                ln = ln.split('=')
-                # put into environment
-                if len(ln) == 2:
-                    #print('load 4', ln)
-
-                    ##* Load .env variable when "<name>=<value>" pattern found in .env
-                    os.environ[ln[0]] = ln[1].strip('\n')
-                    self.append('{}={}'.format(ln[0],ln[1]))
-        ##* returns self
-        return self
-
-    def open(self):
-        ##__Open .env on request__
-        self.addStep('open')
-        ##* Initialize list/object when file not found
-        if not self.file_exists():
-            self.load(self.getDefaultsAsList())
-            print('A loaded', self)
-            return self
-        ##* Open when .env is found
-        with open('{}/{}'.format(self.folder,self.filename)) as file:
-            lines = file.readlines()
-            ##* Read .env and load into environment
-            self.load(lines)
-            print('B loaded', self)
-
-        ##* Remember to call Save() to commit to HD
-        return self
-
-    def collect(self):
-        ## __Collect environment variables on request__
+    def getEnvironment(self):
+        #### Collect environment variables on request
+        ##> Makes a dictionary of name:value pairs from environment specific to library
         self.addStep('collect')
-        ##* Provide default .env variable value when expected variable are not found in environment
+        ##1. Provide default env variables with default values
         cllct = self.getDefaults() # get defaults
-        ##* Collect env variables from environment
+        ##1. Merge env variable values from environment into defaults
         for e in os.environ: # overwrite defaults from environment
             for p in self.prefixList:
                 if e.startswith(p):
                     cllct[e] = os.environ[e]
-
+        ##1. Output dictionary of library specific Environment Variables ... [x] has test
         return cllct
+    def load(self, line_list):
+        #### Load list of text on request
+        ##> loads list of name=value pairs into environment
+        self.addStep('load')
+        ##* remove line's trailing EOL
+        line_list = [ln.replace('\n','') for ln in line_list]
+        for ln in line_list:
+            ##* skip line when line starts with "#" ... [x] has test
+            if not ln.startswith('#'): # may contain comments
+                ln = ln.split('=')
+                # put into environment
+                ##* skip line when not name=value pattern ... [x] has test
+                if len(ln) == 2:
+                    ##* set name value pair ... tested in test_set
+                    self.set(ln[0],ln[1])
 
-    '''        
-        if not self.exists():
-            ##* Create .env file when .env not found
-            if self.folder:
-                self.save()
-            else:
-                print('LbDevEnv.__init__', self.collect())
-
-        else:
-            if self.isEmpty():
-                ##* Recreate .env when .env file is empty
-                self.delete()
-                self.save()
-          
-    def delete(self):
-        ##__Delete file on request__
-        if self.exists():
-             ##* Delete .env when .env exists
-            self.addStep('delete')
-            os.remove("{}/{}".format(self.folder, self.filename))
+        ##* returns LbDevEnv ... has test
         return self
-
-    def isEmpty(self):
-        ##__Check for empty .env file on request__
-        ##* open and look for lines
+    def open(self):
+        #### Open .env on request
+        ##> Open and load an .env file.
+        self.addStep('open')
+        ##* Initialize list/object when file not found ... [] has test
+        if not self.file_exists():
+            self.load(self.getDefaultsAsList())
+            return self
+        ##* Open when .env is found
         with open('{}/{}'.format(self.folder,self.filename)) as file:
             lines = file.readlines()
-            lines = [ln.strip('\n') for ln in lines if ln != '\n']
+            ##* Read .env and load into environment ... [x] has test
+            self.load(lines)
 
-        if lines == []:
-            ##* .env is empty when when all lines in file are blank or EOL
-            self.addStep('empty')
-            return True
-
-        self.addStep('!empty')
-        return False
-
-    def show(self):
-        self.addStep('show')
-        print('DevEnv:')
-        print('* folder : ', self.folder)
-        print('* file   : ', self.filename)
-
-        print(self.getSteps())
+        ##* Remember to call Save() to commit to HD
+        ##* returns LbDevEnv ... [x] has test
         return self
+    def set(self, name, value):
+        #### Set a name=value pair on request
+        nv = '{}={}'.format(name,value)
+        found = False
+        i = 0
+        for ln in self:
+            ##* update name=value when "<name>=" in list ... [] has test
+            if ln.startswith(name):
+                self[i]=nv
+                found = True
+            i += 1
 
-    def exists(self):
-        ##__Confirm .env file exists on request__
-        ##* .env file exists when .env file is found
-        self.addStep('exists')
+        ##* append name=value when "<name>=" is NOT in list ... [x] has test
+        if not found:
+            self.append(nv)
 
-        return os.path.isfile('{}/{}'.format(self.folder, self.filename))
-    '''
+        ##* upsert os.environ ... [x] has test
+        os.environ[name] = value
 
-    '''
-    def save(self):
-        self.addStep('save')
-        ##__Save .env on request__
-        ##* Provide default .env file when .env NF
-        ##* Collect param-values from environment when .env is found
-        # Convert json to lines
-        # write lines to .env file
-        # return self
-
-        ##* Get fresh values from environment when found
-        env = self.collect()  # get current env-vars or defaults
-        # should have all the file values at this point
-
-        # convert json to lines
-        lines = []
-        for e in env:
-            ln = '{}={}'.format(e,env[e])
-            lines.append(ln)
-            #print('env ln', ln)
-
-        with open('{}/{}'.format(self.folder, self.filename), 'w') as f:
-            f.writelines(['{}\n'.format(ln) for ln in lines])
-
+        ##* output LbDevEnv ... [x] has test
         return self
-    '''
+    def upsert(self, values):
+        #### Upsert environment values on request
+        ##> loads a dictionary of name:value pairs into environment
+        self.addStep('upsert')
+        ##* given a dictionary of variables put them into environment ... [x] has test
+        for p in values:
+            #os.environ[p] = values[p]
+            self.set(p,values[p])
+        return self
 
 
 def main():
+    from lb_lib.lb_doc_comments import LbDocComments
     print('lb_dev_env')
+    folder = '/'.join(str(__file__).split('/')[0:-1])
+    filename = str(__file__).split('/')[-1]
+    LbDocComments().setFolder(folder).setFilename(filename).open().save()
+
 if __name__ == "__main__":
     # execute as script
     main()
