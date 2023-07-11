@@ -1,30 +1,44 @@
-# class LbDocFolders(LbTextFile):
+# class LbDocFolders(LbTextFile)
 
- Given a folder, generate a list of folders and files
+ Given a folder, __Generate__ a text graphic of folders and files
 
-__Set Title on request__
+## Get Line List
 
-* return self
+* __Ignore__ unnessessary folders __When__ found ... no test
 
-__Get Title on request__
+* add folders __When__ found ... [] has test
 
-* return title
+* add files __When__ found ... [] has test
 
- __Open folder on request__
+* return lines from a file
 
-* fail when source folder is not found
+## Set Title on request
 
-* skip unnessessary folders when found
+* return LbDocFolders ... no test
 
-* add folders when found
+## Get Title on request
 
-* add files when found
+* return title/str  ... no test
 
-* return self
+## Test if folder should be ignored on request
 
-__Test if folder should be ignored on request__
+* dont __Ignore__ __When__ not in __Ignore__ list ... [] test
 
-* ignore when folder in ignore list
+* __Ignore__ __When__ folder in __Ignore__ list ... [x] has test
 
-* return bool
+* return bool ... [x] has test
+
+## __Open__ folder on request
+
+* fail __When__ source folder is not found ... [x] has test
+
+* return LbDocFolders ... [] has test
+
+## Dont save
+
+__Validate folder attributes on request__
+
+* throw BadFolderNameException __When__ folder is None ... [x] has test
+
+* throw FolderNotFoundException __When__ folder doesnt exist ... [x] has test
 

@@ -1,40 +1,21 @@
-# class LbDocComments(LbTextFile):
-
- __Open__, __Read__, and __Convert__ "##" comments to Markdown
-
- Given a folder and filename, __Open__, __Read__, and __Convert__ the double hashed (ie "## ") comment lines to Markdown.
-
+# class LbDocComments(LbTextFile)
+ __Convert__ a python file to a __Markdown__ document
 * __Define__ words to __Decorate__ in decoration list
-
- __Load line list on request__
-
-* __Load__ line __When__ line starts with "class"
-
-* __Convert__ "class" to "## class" __When__ line starts with "class"
-
-* __Load__ comment __When__ line starts with "##"
-
- __Convert a single comment to Markdown on request__
-
-* comment is ignored __When__ comment starts with a single hash, eg "# "
-
-* markdown is H1 __When__ line starts with "class"
-
-* markdown is normal __When__ comment starts with "## "
-
-* markdown is unordered __When__ comment starts with "##*"
-
-* markdown is H1 __When__ comment starts with "### "
-
-* markdown is H2 __When__ comment starts with "#### "
-
-* markdown is H3 __When__ comment starts with "##### "
-
-__Decorate line on request__
-
-* __Decorate__ word with bold __When__ word is found in decoration list
-
- __Save markdown on request__
-
+## __Decorate__ line on request
+> Bold the key words
+* __Decorate__ word with bold __When__ word is found in decoration list ... [x] has test
+* __Output__ string/line ... [x] has test
+## __Load__ line list on request
+> __Collect__ the double hash lines and strip the comment hashes
+* __Load__ line __When__ line starts with "class" ... [x] has test
+* __Load__ comment line __When__ line starts with "##" ... [x] has test
+* __Ignore__ comment __When__ comment line starts with a single hash, eg "# " ... [x] has test
+* __Ignore__ uncommented line ... [x] has test
+* __Output__ LbDocComments ... [x]
+## __Convert__ a single comment to __Markdown__ on request
+> __Markdown__ is encoded after the double hash
+* __Make__ the class line bigger, eg "class Abc()" -> "# class Abc()"
+* strip the double hash "##" from line, eg. "##* hi" --> "* hi"
+## __Save__ __Markdown__ on request
+> __Change__ file name, dont overwrite the source file
 * __Impute__ file name, eg "lb_doc_comments.py" to "README.lb_doc_comments.py.md"
-

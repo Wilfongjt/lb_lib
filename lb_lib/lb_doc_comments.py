@@ -2,8 +2,7 @@ import os
 from pprint import pprint
 from lb_lib.lb_text_file import LbTextFile
 class LbDocComments(LbTextFile):
-    ## Open, Read, and convert "##" comments to Markdown
-    ## Given a folder and filename, Open, read, and convert the double hashed (ie "## ") comment lines to Markdown.
+    ## Convert a python file to a Markdown document
 
     def __init__(self):
         super().__init__()
@@ -15,16 +14,29 @@ class LbDocComments(LbTextFile):
                          'convert',
                          'copy'
                          'create',
+                         'collect',
                          'decorate',
                          'define',
+                         'delete',
                          'generate',
+                         'ignore',
                          'impute',
+                         'initialize',
+                         'input',
                          'install',
                          'load',
+                         'loads',
+                         'make',
+                         'makes',
+                         'markdown',
+                         'merge',
                          'navigate',
                          'open',
+                         'output',
+                         'provide',
                          'read',
                          'save',
+                         'skip',
                          'stop',
                          'when'
                          ]
@@ -32,62 +44,62 @@ class LbDocComments(LbTextFile):
         print("I am LbDocComments!")
         return self
 
+    def decorate(self, line):
+        #### Decorate line on request
+        ##> Bold the key words
+        nline = []
+        line = line.replace(',',' ,').replace(':', '')
+        line = str(line).split(' ')
+        for word in line:
+            if word.lower() in self.decoration_list:
+                ##* decorate word with bold when word is found in decoration list ... [x] has test
+                nline.append('__{}__'.format(word.title()))
+            else:
+                nline.append(word)
+        ##* output: string/line ... [x] has test
+        return ' '.join(nline).replace(' ,',',')
+
     def load(self, line_list):
-        ## __Load line list on request__
+        #### Load line list on request
+        ##> collect the double hash lines and strip the comment hashes
         self.addStep('load')
         for ln in line_list:
 
             ln = ln.strip(' ')
             if ln.startswith('class'):
-                ##* load line when line starts with "class"
-                ##* convert "class" to "## class" when line starts with "class"
-                #self.append('## {}'.format(ln.replace(':','')))
+                ##* load line when line starts with "class" ... [x] has test
                 self.append(self.markdown(ln))
-            else:
-                if ln.startswith('##'):
-                    ##* load comment when line starts with "##"
-                    self.append(self.markdown(ln))
 
+            elif ln.startswith('##'):
+                ##* load comment line when line starts with "##" ... [x] has test
+                self.append(self.markdown(ln))
+
+        ##* ignore comment when comment line starts with a single hash, eg "# " ... [x] has test
+        ##* ignore uncommented line ... [x] has test
+
+        ##* output: LbDocComments ... [x]
         return self
     #
     # Convert comments to markdown on request
     #
     def markdown(self, ln):
-        ## __Convert a single comment to Markdown on request__
-        ##* comment is ignored when comment starts with a single hash, eg "# "
-
-        #    markdown = 'x{}'.format(ln[2:])
+        #### Convert a single comment to Markdown on request
+        ##> markdown is encoded after the double hash
         if ln.startswith('class'):
-            ##* markdown is H1 when line starts with "class"
+            ##* make the class line bigger, eg "class Abc()" -> "# class Abc()"
             markdown = '# {}'.format(ln)
         else:
-            ##* markdown is normal when comment starts with "## "
+            ##* strip the double hash "##" from line, eg. "##* hi" --> "* hi"
             markdown = '{}'.format(ln[2:])
-
-        ##* markdown is unordered when comment starts with "##*"
-        ##* markdown is H1 when comment starts with "### "
-        ##* markdown is H2 when comment starts with "#### "
-        ##* markdown is H3 when comment starts with "##### "
 
         markdown = self.decorate(markdown)
 
         return markdown
 
-    def decorate(self, line):
-        ##__Decorate line on request__
-        nline = []
-        line = line.replace(',',' ,')
-        line = str(line).split(' ')
-        for word in line:
-            if word.lower() in self.decoration_list:
-                ##* decorate word with bold when word is found in decoration list
-                nline.append('__{}__'.format(word.title()))
-            else:
-                nline.append(word)
-        return ' '.join(nline).replace(' ,',',')
 
     def save(self):
-        ## __Save markdown on request__
+        #### Save markdown on request
+        ##> change file name, dont overwrite the source file
         ##* impute file name, eg "lb_doc_comments.py" to "README.lb_doc_comments.py.md"
         self.saveAs(self.getFolder(),'README.{}.md'.format(self.getFilename()))
         return self

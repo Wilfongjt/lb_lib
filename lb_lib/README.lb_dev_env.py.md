@@ -1,54 +1,86 @@
-# class LbDevEnv(LbRecorder):
+# class LbDevEnv(LbTextFile)
 
- Create and load an .env file
+ Create and __Load__ an .env file
 
-* by default: put .env in the calling function's folder
+* by default .env is file name
 
-* Create .env file when .env not found
+* by default put .env file in the calling function's folder
 
-* Recreate .env when .env file is empty
+* __Make__ environments easy to __Collect__ with prefixes ie, ['GH_','WS_'] ... [] has test
 
-__Delete file on request__
+## Get line from list on request
 
-* Delete .env when .env exists
+* return None __When__ <name> is not found ... [x] has test
 
-__Check for empty .env file on request__
+* return ln __When__ line starts with <name> is found ... [x] has test
 
-* open and look for lines
+## Get .env defaults on request
 
-* .env is empty when when all lines in file are blank or EOL
+> __Make__ a dictionary of nameTBD pairs
 
-__Upsert environment values on request__
+* __Define__ initial state for environment ... [x] has test
 
-* given a set of variable put them into environment
+* outputs dictionary
 
-__Get .env defaults on request__
+## Get Environment Defaults as a List on request
 
-* define initial state for environment
+> __Convert__ default dictionary to list, ie. {namevalue,...} --> [name=value,...]
 
-__Confirm .env file exists on request__
+* __Convert__ defaults dictionary to defaults list  ... [] has test
 
-* .env file exists when .env file is found
+* __Output__ list
 
-__Open .env on request__
+## __Collect__ environment variables on request
 
-* Open when .env is found
+> __Makes__ a dictionary of namevalue pairs from environment specific to library
 
-* Read .env and load into environment
+1. __Provide__ default env variables with default values
 
-* Load .env variable when "<name>=<value>" pattern found in .env
+1. __Merge__ env variable values from environment into defaults
 
-__Save .env on request__
+1. __Output__ dictionary of library specific Environment Variables ... [x] has test
 
-* Provide default .env file when .env NF
+## __Load__ list of text on request
 
-* Collect param-values from environment when .env is found
+> __Loads__ list of name=value pairs into environment
 
-* Get fresh values from environment when found
+* remove line's trailing EOL
 
- __Collect environment variables on request__
+* __Skip__ line __When__ line starts with "#" ... [x] has test
 
-* Provide default .env variable value when expected variable are not found in environment
+* __Skip__ line __When__ not name=value pattern ... [x] has test
 
-* Collect env variables from environment
+* set name value pair ... tested in test_set
+
+* returns LbDevEnv ... has test
+
+## __Open__ .env on request
+
+> __Open__ and __Load__ an .env file.
+
+* __Initialize__ list/object __When__ file not found ... [] has test
+
+* __Open__ __When__ .env is found
+
+* __Read__ .env and __Load__ into environment ... [x] has test
+
+* Remember to call Save() to commit to HD
+
+* returns LbDevEnv ... [x] has test
+
+## Set a name=value pair on request
+
+* update name=value __When__ "<name>=" in list ... [] has test
+
+* append name=value __When__ "<name>=" is NOT in list ... [x] has test
+
+* upsert os.environ ... [x] has test
+
+* __Output__ LbDevEnv ... [x] has test
+
+## Upsert environment values on request
+
+> __Loads__ a dictionary of namevalue pairs into environment
+
+* given a dictionary of variables put them into environment ... [x] has test
 

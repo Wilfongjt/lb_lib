@@ -22,7 +22,6 @@ class LbTextFile(list, LbRecorder):
         self.folder= name
         ##* returns self ... [x] has test
         return self
-
     def getFilename(self):
         ##__Get filename on request__
         ##* returns filename  ... [x] has test
@@ -33,48 +32,60 @@ class LbTextFile(list, LbRecorder):
         ##* return self ... [x] has test
         return self
 
+    def getLineList(self):
+        #### Get all lines in a text file
+        line_list = []
+        ##* open file and read text lines ... [x] has test
+        with open('{}/{}'.format(self.getFolder(),self.getFilename())) as file:
+            line_list = file.readlines()
+            line_list = [ln.replace('\n','') for ln in line_list]
+        ##* return lines from a file
+        return line_list
+
     def folder_exists(self):
         ##__Test folder's existance on request__
         if not self.getFolder():
-            ##* folder does not exist when folder not defined ... [x] has test
+            ##* folder does not exist when folder is None ... [x] has test
             return False
         if not os.path.isdir(self.getFolder()):
-            ##* folder does not exist when folder is not found ... [x] has test
+            ##* folder does not exist when folder is not None ... [x] has test
             return False
         ##* true when folder is found ... [x] has test
         return True
     def file_exists(self):
         ##__Test file's existance on request__
         if not self.getFilename():
-            ##* file does not exist when file not defined ... [x] has test
+            ##* file does not exist when filename is None ... [x] has test
             return False
         if not os.path.isfile('{}/{}'.format(self.getFolder(), self.getFilename())):
-            ##* file does not exist when file is not found ... [x] has test
+            ##* file does not exist when filename is not None ... [x] has test
             return False
-        ##* true when folder and file are found ... [x] has test
+        ##* file exists when folder and filename is not None and file is found ... [x] has test
         return True
     def exists(self):
         ## __Confirm text file exists on request__
-        ##* text file exists when folder and text file are found
 
-        ##* fail when folder is not found ... [x] has test
+        ##* not exist when folder is not found ... [x] has test
         if not self.folder_exists():
             self.addStep('not-folder')
             return False
 
-        ##* fail when folder/file is not found ... [x] has test
+        ##* not exist when folder/file is not found ... [x] has test
         if not self.file_exists():
             self.addStep('not-file')
             return False
 
+        ##* text file exists when folder and text file are found ... [x] has test
         return True
+
     def load(self, line_list):
         ## __Load list of text on request__
         self.addStep('load')
+        ##* put lines into object list
         for ln in line_list:
             self.addStep('load')
             self.append(ln)
-        ##* returns self ... [x] has test
+        ##* returns LbTextFile ... [x] has test
         return self
 
     def validate(self):
@@ -96,47 +107,40 @@ class LbTextFile(list, LbRecorder):
     def open(self):
         ## __Open text file on request__
         self.addStep('open')
-        ##* fail when folder does not exist ... [x] has test
-        if not self.folder_exists():
-            self.addStep('not-folder')
-            raise FolderNotFoundException('Folder not found {}'.format(self.getFolder()))
-
-        ##* fail when file does not exist ... [x] has test
-        if not self.file_exists():
-            self.addStep('not-file')
-            raise FileNotFoundException('File not found {}'.format(self.getFilename()))
-
-        with open('{}/{}'.format(self.getFolder(),self.getFilename())) as file:
-            lines = file.readlines()
-            ##* load lines from file when available
-            self.load(lines)
-
+        self.validate()
+        line_list = self.getLineList()
+        ##* load lines from file when available
+        self.load(line_list)
         ##* returns LbTextFile
         return self
 
     def save(self):
         self.addStep('save')
         ## __Save text file on request__
-        ##* validate attributes
-        ##* create new file when file doesnt exist ... [x] has test
-        ##* overwrite file when file exists ... [x] has test
+        ##> saves contents of list to a text file
+
+        ##* validate attributes ... tested with validate()
         self.validate()
-        with open('{}/{}'.format(self.folder, self.filename), 'w') as f:
+
+        ##* create file when file doesnt exist ... [x] has test
+        ##* overwrite file when file exists ... [x] has test
+        with open('{}/{}'.format(self.getFolder(), self.getFilename()), 'w') as f:
             f.writelines(['{}\n'.format(ln) for ln in self])
+
         ##* returns LbTextFile ... [x] has test
         return self
+
     def saveAs(self, folder, filename):
         ## __Save text file with different name on request__
 
         self.addStep('save-as')
         ##* return the new LbTextFile ... [x] has test
         return LbTextFile().setFolder(folder).setFilename(filename).load(self).save()
-
     def delete(self):
         ## __Delete file on request__
-        ##* delete when file exists ... [ ] has test
+        ##* delete when file exists ... [x] has test
         self.addStep('delete')
-        ##* clear list ... [] test
+        ##* clear list ... [x] has test
         self.clear()  # clear list
         if self.exists():
             ##* remove file for drive when file exists ... [] test
@@ -145,11 +149,13 @@ class LbTextFile(list, LbRecorder):
         return self
 
     def isEmpty(self):
+        ##__Check for empty file on request__
+        ##* empty file when file doesnt exist ... [x] has test
         if not self.exists():
             return True
-        ##__Check for empty file on request__
+
         if os.stat("{}/{}".format(self.getFolder(),self.getFilename())).st_size == 0:
-            ##* file is empty when all lines in file are blank or EOL ... [ ] has test
+            ##* file is empty when has no lines ... [ ] has test
             self.addStep('empty')
             return True
 
