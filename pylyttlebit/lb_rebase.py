@@ -281,7 +281,6 @@ class Rebase(LbStep):
         if not self.isValid():
             pprint(self.getStash())
             print('Terminate Rebase due to invalid settings!')
-
             exit(0)
 
         prompts = self.getStash(LbC().PROMPTS_KEY)
