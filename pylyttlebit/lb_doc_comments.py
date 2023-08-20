@@ -2,7 +2,7 @@ import os
 from pprint import pprint
 from pylyttlebit.lb_text_file import LbTextFile
 class LbDocComments(LbTextFile):
-    ## Convert a python file to a Markdown document
+    #### Convert a python file to a Markdown document
 
     def __init__(self):
         super().__init__()
@@ -23,6 +23,7 @@ class LbDocComments(LbTextFile):
                          'impute',
                          'initialize',
                          'input',
+                         'inputs',
                          'install',
                          'load',
                          'loads',
@@ -33,11 +34,14 @@ class LbDocComments(LbTextFile):
                          'navigate',
                          'open',
                          'output',
+                         'prompt',
                          'provide',
                          'read',
                          'save',
+                         'show',
                          'skip',
                          'stop',
+                         'validate',
                          'when'
                          ]
     def hello_world(self):
@@ -87,14 +91,14 @@ class LbDocComments(LbTextFile):
         ##> markdown is encoded after the double hash
         if ln.startswith('class'):
             ##* make the class line bigger, eg "class Abc()" -> "# class Abc()"
-            markdown = '# {}'.format(ln)
+            markdown = '{}\n'.format(ln.replace('class','\nsource'))
         else:
             ##* strip the double hash "##" from line, eg. "##* hi" --> "* hi"
             markdown = '{}'.format(ln[2:])
 
         markdown = self.decorate(markdown)
 
-        return markdown
+        return markdown + '\n'
 
 
     def save(self):

@@ -1,43 +1,94 @@
-# class LbDevEnv(LbTextFile)
- Create and __Load__ an ".env" file
+# Development Environment
+
+
+source LbDevEnv(LbTextFile)
+
+
+### Create and __Load__ an ".env" file
+
+* always __Load__ env values from file
+
+* always __Save__ from memory
+
 * ".env" is file name, by default
+
 * put ".env" file in the calling function's folder by default
-* __Make__ environments easy to __Collect__ with prefixes ie, ['GH_','WS_'] ... [] has test
-## Get line from list on request
+
+#### Clear environment variables on request
+
+> Remove script specific environment variables from memory
+
+* remove envirionment variables from memory
+
+* remove environment variables from list
+
+#### Create env file on request
+
+* __Skip__ create __When__ env file exists
+
+* create file __When__ file doesnt exist
+
+__Get line from list on request__
+
 * return None __When__ <name> is not found ... [x] has test
+
 * return ln __When__ line starts with <name> is found ... [x] has test
-## Get .env defaults on request
-> __Make__ a dictionary of nameTBD pairs
-* __Define__ initial state for environment ... [x] has test
-* outputs dictionary
-## Get Environment Defaults as a List on request
-> __Convert__ default dictionary to list, ie. {namevalue,...} --> [name=value,...]
-* __Convert__ defaults dictionary to defaults list  ... [] has test
-* __Output__ list
-## __Collect__ environment variables on request
-> __Makes__ a dictionary of namevalue pairs from environment specific to library
-1. __Provide__ default env variables with default values
-1. __Merge__ env variable values from environment into defaults
-1. __Output__ dictionary of library specific Environment Variables ... [x] has test
-## __Load__ list of text on request
-> __Loads__ list of name=value pairs into environment
+
+__Put variable into memory on reques__
+
+* __Convert__ defaults dictionary to defaults list  ...  [] has test
+
+__Load list of text on request__
+
+> __Loads__ .env's name and value pairs into memory
+
 * remove line's trailing EOL
-* __Skip__ line __When__ line starts with "#" ... [x] has test
-* __Skip__ line __When__ not name=value pattern ... [x] has test
-* set name value pair ... tested in test_set
+
+* Lines containing an equal sign are environment values
+
+* update existing values
+
+* any lines not containing an equal sign "=" are considered a comment
+
 * returns LbDevEnv ... has test
-## __Open__ .env on request
-> __Open__ and __Load__ an .env file.
-* __Initialize__ list/object __When__ file not found ... [] has test
-* __Open__ __When__ .env is found
-* __Read__ .env and __Load__ into environment ... [x] has test
+
+__Open .env on request__
+
+* __Save__ env file __When__ file not found and defaults are set
+
+* __Open__ .env from file __When__ .env is found
+
+* __Load__ environment variables from .env __When__ .env is found  ... [x] has test
+
 * Remember to call Save() to commit to HD
+
 * returns LbDevEnv ... [x] has test
-## Set a name=value pair on request
-* update name=value __When__ "<name>=" in list ... [] has test
-* append name=value __When__ "<name>=" is NOT in list ... [x] has test
-* upsert os.environ ... [x] has test
+
+__Set environment variable on request__
+
+* keep os.environ and list in sync
+
+* update environment variable __When__ variable in list
+
+* append variable __When__ not in list
+
+* update variable to os.environ __When__ found in os.environ
+
+* add variable in os.environ __When__ not found in os.environ
+
 * __Output__ LbDevEnv ... [x] has test
-## Upsert environment values on request
-> __Loads__ a dictionary of namevalue pairs into environment
-* given a dictionary of variables put them into environment ... [x] has test
+
+__Set environment variables from dictionary on request__
+
+* __Skip__ setting environment variables __When__ dictionary parameter is None
+
+* set environment variable __When__ found in dictionary parameter
+
+__Set environment variables from list of file lines on request__
+
+* convience method that encapsulates __Load__ method
+
+__Convert enviroment list to dictionary on request__
+
+* environment list and memory are always in-scync
+

@@ -1,4 +1,6 @@
 from lb_recorder import LbRecorder
+from lb_constants import LbC
+from pprint import pprint
 class LbStep(LbRecorder):
     def __init__(self):
         LbRecorder.__init__(self)
@@ -9,13 +11,19 @@ class LbStep(LbRecorder):
         self.stash = {} # consolidation of step data
         self.verbose = False
         self.test = False
+        self.parent = None
 
     def hello_world(self):
         print("I am LbStep!")
         return self
+    def setParent(self, parent):
+        self.parent = parent
+        return self
+    def getParent(self):
+        return self.parent
 
-    def setInvalid(self, key, msg):
-        self.addStep('invalid')
+    def depsetInvalid(self, key, msg):
+        #self.addStep('invalid')
         #print('key', key)
         #print('msg', msg)
         if 'invalid' not in self.stash:
@@ -23,7 +31,7 @@ class LbStep(LbRecorder):
         if key not in self.stash['invalid']:
             self.stash['invalid'][key]=[]
 
-        #print(self.stash)
+        #print(self.lb_stash)
 
         self.stash['invalid'][key].append(msg)
         return self
@@ -34,11 +42,17 @@ class LbStep(LbRecorder):
             self.stash['invalid'] = []
         self.stash['invalid'].append(key)
         return self
-    def getInvalid(self):
+    def depgetInvalid(self):
         #self.addStep('getInvalid')
         if 'invalid' not in self.stash:
             return ['No Exceptions']
         return self.stash['invalid']
+
+    #def isValid(self):
+        ####
+    #    if LbC().INVALID_KEY in self.getStash():
+    #        return False
+    #    return True
 
     def setFailure(self, msg):
         self.addStep('failure')
@@ -87,13 +101,16 @@ class LbStep(LbRecorder):
         return rc
 
     def getStash(self, key=None):
-        #self.addStep('stash')
+        #self.addStep('lb_stash')
         if key != None:
+            #pprint(self.lb_stash)
+            #print('key',key)
             return self.stash[key]
         return self.stash
+
     def setStash(self, stash, key=None):
-        self.addStep('stash')
-        #self.stash = stash
+        self.addStep('(lb_stash)')
+        #self.lb_stash = lb_stash
         if key != None:
             self.stash[key] = stash
         else:
@@ -146,11 +163,11 @@ class LbStep(LbRecorder):
 
     def process(self):
         #print('key',self.getKey(),'id',self.getId(), 'prev:',self.getPrev(),'self', self, 'next:',self.getNext())
-        self.addStep('process')
+        #self.addStep('process')
         return self
 
     def run(self):
-        self.addStep('run')
+        #self.addStep('run')
         self.process()
         if self.getNext():
             self.getNext().run()
@@ -178,9 +195,9 @@ def main():
     actual.setFailure('F1').setFailure('F2')
     assert (actual.getStash()['failed'] == ['F1', 'F2'])
 
-    actual.setInvalid('v1','bad1').setInvalid('v2','bad2')
-    print(actual.getStash()['invalid'])
-    assert (actual.getStash()['invalid'] == {'v1': ['bad1'], 'v2': ['bad2']})
+    #actual.setInvalid('v1','bad1').setInvalid('v2','bad2')
+    #print(actual.getStash()['invalid'])
+    #assert (actual.getStash()['invalid'] == {'v1': ['bad1'], 'v2': ['bad2']})
     #assert (actual.getStash()['invalid'] == ['v1', 'v2'])
 
     actual.run()

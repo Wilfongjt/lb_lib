@@ -19,23 +19,25 @@ class LbStepList(list, LbRecorder):
         return self
 
     def getStash(self, key=None):
-        #print('stash', self.stash)
+        #print('lb_stash', self.lb_stash)
         if key != None:
             return self.stash[key]
         return self.stash
 
     def setStash(self, stash, key=None):
-        #self.stash = stash
+        #self.lb_stash = lb_stash
         if key != None:
             self.stash[key] = stash
         else:
             self.stash = stash
         return self
-    #def setStash(self, stash):
-    #    self.stash = stash
+    #def setStash(self, lb_stash):
+    #    self.lb_stash = lb_stash
     #    return self
     def add(self, processStep):
+        #print('add', type(processStep))
         self.addStep(processStep.getClassName())
+        processStep.setParent(self)
         #### add step to process list
         self.append(processStep)
         return self
@@ -64,7 +66,7 @@ def main():
     actual.add(steps)       # add linked list of steps
     #print('actual', actual)
     actual.run()
-    actual.preview('lb_step_list')
+    #actual.preview('lb_step_list')
 
 
 def main_document():

@@ -1,4 +1,6 @@
 import os
+from pylyttlebit.lb_util import LbUtil
+from pylyttlebit.lb_constants import LbC
 
 class LbFolders():
     def hello_world(self):
@@ -50,6 +52,16 @@ class LbFolders():
         ##* return str
         return self.getFolder(4,'scripts')
 
+    def getTempFolder(self):
+        #### Get the temporary folder ~/Temp
+        return LbC().TEMP_FOLDER
+    def createTempFolder(self):
+        fldr = LbC().TEMP_FOLDER
+        if not LbUtil().folder_exists(fldr):
+            LbUtil().create_folder(fldr)
+
+        return self
+
 def main():
     from pylyttlebit.lb_doc_comments import LbDocComments
     print('lb_folders')
@@ -80,6 +92,8 @@ def main():
     assert (type(actual.getScriptsFolder()) is str)
     assert (actual.getScriptsFolder() != os.getcwd())
 
+    assert (actual.getTempFolder())
+    assert (LbUtil().folder_exists(actual.getTempFolder()))
 
 def main_document():
     from pylyttlebit.lb_doc_comments import LbDocComments

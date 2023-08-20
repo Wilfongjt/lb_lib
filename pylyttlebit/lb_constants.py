@@ -29,6 +29,8 @@ class LbConstants():
         self.REPO_URL_KEY = 'repo_url'
         ##* repo_url_template_key
         self.REPO_URL_TEMPLATE = 'https://github.com/{}/{}.git'
+        ##* PROCESS_KEY
+        self.PROCESS_KEY='process'
         ##* PROJECT_KEY
         self.PROJECT_KEY = 'project'
         ##* PROJECT_FOLDER_KEY

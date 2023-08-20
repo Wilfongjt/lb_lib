@@ -94,7 +94,7 @@ class LbUtil():
         return self
 
     def get_env_value(self, KEY_NAME, default='TBD'):
-        #### Get an Environment Value by name
+        #### Get an LbEnvironment Value by name
         ##* use name to find key in os.environ
 
         rc = default
@@ -232,8 +232,9 @@ def main():
     print('lb_util')
     folder = '/'.join(str(__file__).split('/')[0:-1])
     filename = str(__file__).split('/')[-1]
-    LbDocComments().setFolder(folder).setFilename(filename).open().save()
-
+    # LbDocComments().setFolder(folder).setFilename(filename).open().save()
+    print('file_exists', LbUtil().file_exists(folder, filename))
+    # print('file_exists', LbUtil().file_exists(folder, '0.env'))
 
 def main_document():
     from pylyttlebit.lb_doc_comments import LbDocComments

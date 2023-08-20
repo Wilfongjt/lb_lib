@@ -167,7 +167,7 @@ class LbTextFile(list, LbRecorder):
         ##* overwrite file when file exists ... [x] has test
         with open('{}/{}'.format(self.getFolder(), self.getFilename()), 'w') as f:
             f.writelines(['{}\n'.format(ln) for ln in self])
-
+            self.addStep('(file)')
         ##* returns LbTextFile ... [x] has test
         return self
 
@@ -177,6 +177,18 @@ class LbTextFile(list, LbRecorder):
         self.addStep('save-as')
         ##* return the new LbTextFile ... [x] has test
         return LbTextFile().setFolder(folder).setFilename(filename).load(self).save()
+
+    def show(self, terminalMsg=None):
+        ##__Show Steps on request__
+        if terminalMsg:
+            ##* Show preview of file
+            print('    {}: {} {}'.format(self, terminalMsg, self.getClassName()))
+            print('    ', self.getSteps())
+        else:
+            print('    {}: {}'.format(self, self.getClassName()))
+            print('    ', self.getSteps())
+        return self
+
     def delete(self):
         ## __Delete file on request__
         ##* delete when file exists ... [x] has test

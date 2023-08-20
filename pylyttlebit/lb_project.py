@@ -95,7 +95,7 @@ class LbProject(LbUtil):
 
     def getProjectFolder(self):
         rc = self.current_directory()
-        print('rc', rc)
+        #print('rc', rc)
         return rc
     def getProjectFromPath(self):
         #### Get the Project Name on request
