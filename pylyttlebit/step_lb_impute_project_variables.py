@@ -18,6 +18,9 @@ class LbImputeProjectVariables(LbStep):
         ##* Impute REPO_URL_KEY
 
         key = LbC().REPO_URL_KEY
+
+        ##* Impute REPO_URL
+
         val = LbC().REPO_URL_TEMPLATE.format(self.getStash().getPrompts(LbC().GH_USER_KEY),
                                              self.getStash().getPrompts(LbC().GH_PROJECT_KEY) )
         self.getStash().setProject(key, val)

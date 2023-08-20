@@ -210,6 +210,8 @@ class ValidateRepo(LbStep):
         repo_url = self.getStash().getProject()[LbC().REPO_URL_KEY]
         print('A repo_url', repo_url)
         if not LbProject().hasRemoteProject(repo_url):
+            print('B repo_url', repo_url)
+
             self.setInvalid(LbC().REPO_URL_KEY, 'not_found')
 
         return self
