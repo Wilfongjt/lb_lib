@@ -209,6 +209,8 @@ class ValidateRepo(LbStep):
 
         repo_url = self.getStash().getProject()[LbC().REPO_URL_KEY]
         print('A repo_url', repo_url)
+        print('A folder', os.getcwd())
+
         if not LbProject().hasRemoteProject(repo_url):
             print('B folder', os.getcwd())
             print('B repo_url', repo_url)
