@@ -308,7 +308,7 @@ class Rebase(LbStep):
         #git checkout ${MY_TRUNK}
         command = 'git checkout main'
         print('git checkout main ... ', command)
-        #os.system(command)
+        os.system(command)
         
         ##* Pull origin main
         # git pull origin ${MY_TRUNK}
