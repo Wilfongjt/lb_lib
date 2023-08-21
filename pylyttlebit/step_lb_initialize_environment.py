@@ -50,7 +50,8 @@ class LbInitializeEnvironment(LbStep):
             env = LbDevEnv(memorize=True).setFolder(self.getFolder()).setFilename(self.getFilename()).create(LbDefaults()).open()
         else:
             env = LbDevEnv(memorize=True).create(LbDefaults()).open()
-
+        print('env folder', env.getFolder())
+        print('env file  ', env.getFilename())
         self.getStash().setPrompts(env.toDictionary())
 
         ##* echo lb_stash when verbose is true

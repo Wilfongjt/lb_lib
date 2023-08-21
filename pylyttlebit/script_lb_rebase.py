@@ -215,7 +215,7 @@ class ValidateRepo(LbStep):
             print('B folder', os.getcwd())
             print('B repo_url', repo_url)
 
-            self.setInvalid(LbC().REPO_URL_KEY, 'not_found')
+            self.getStash().setInvalid(LbC().REPO_URL_KEY, 'not_found')
 
         return self
 
@@ -269,9 +269,10 @@ class Rebase(LbStep):
     def process(self):
         super().process()
         #### Rebase Project
-        print('Rebase')
+        print('')
+        print('process Rebase')
         #pprint(self.getStash())
-
+        print('source', self.getStash())
         ##* Stop when invalid
         if not self.getStash().isValid():
             pprint(self.getStash())
@@ -279,30 +280,68 @@ class Rebase(LbStep):
             exit(0)
 
         prompts = self.getStash(LbC().PROMPTS_KEY)
+
+        # cd ${MY_GIT_PROJECT}/
+        last_dir = os.getcwd() # save for switching back later
+        print('project', LbProject().getProjectFolder())
+        project_folder = LbProject().getProjectFolder()
+        os.chdir(LbProject().getProjectFolder())
+        # git checkout ${MY_BRANCH}
         ##*  Checkout branch
         command = 'git checkout {}'.format(prompts[LbC().GH_BRANCH_KEY])
+        print('git checkout ... ', command)
         os.system(command)
-        ##* Add files to git
+
+        ##* Add files to git  ...
+        # git add .
+        command = 'git add .'
+        print('git add .  ... ', command)
         os.system('git add .')
+
         ##* Commit with <MESSAGE>
+        # git commit -m "${COMMIT_MSG}"
         command = 'git commit -m {}'.format(prompts['GH_MESSAGE'])
+        print('Commit with <MESSAGE> ... ',command)
         os.system(command)
+        
         ##* Checkout main branch
-        os.system('git checkout main')
+        #git checkout ${MY_TRUNK}
+        command = 'git checkout main'
+        print('git checkout main ... ', command)
+        #os.system(command)
+        
         ##* Pull origin main
-        os.system('git pull origin main')
+        # git pull origin ${MY_TRUNK}
+        command = 'git pull origin main'
+        print('git pull origin ${MY_TRUNK} ... ',command)
+        #os.system(command)
+        
         ##* Checkout branch
+        # git checkout ${MY_BRANCH}
         command = 'git checkout {}'.format(prompts[LbC().GH_BRANCH_KEY])
-        os.system(command)
+        print('git checkout ${MY_BRANCH} ... ', command)
+        #os.system(command)
         # feedback
-        os.system('git branch')
+        # git branch
+        command = 'git branch'
+        print('git branch ... ', command)
+        #os.system(command)
+        
         ##* Rebase repo
+        # git rebase ${MY_BRANCH}
         command = 'git rebase {}'.format(prompts[LbC().GH_BRANCH_KEY])
-        os.system(command)
+        print('git rebase ${MY_BRANCH} ... ', command)
+        #os.system(command)
+
         ##* Push to origin
         if LbProject().prompt('PUSH?', 'N') not in ['N','n']:
             command = 'git push origin {}'.format(prompts[LbC().GH_BRANCH_KEY])
+
             os.system(command)
+
+        # reset folder
+        os.chdir(project_folder)
+
         return self
 
 class LbRebaseProcess(LbStepList):
