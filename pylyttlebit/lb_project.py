@@ -8,6 +8,27 @@ from pylyttlebit.lb_util import LbUtil
 
 class LbProject(LbUtil):
 
+    def getGHUser(self):
+        #### Determine a GitHub user name
+        ##* 1. find the ~/.gitconfig file and read "name = " value
+        ##* 1. default github user to TBD
+
+        rc = 'TBD'
+        user_folder=Path.home()
+
+        conf_dir = Path(user_folder) / ".gitconfig"
+        #print('config_dir', conf_dir)
+        with conf_dir.open("r") as f:
+            content = f.read().splitlines()
+
+        for line in content:
+            #print('line',line.split())
+            line = line.split()
+            if line[0] == 'name':
+                return line[-1]
+
+        return rc
+
     def getBranch(self):
         #### Get branch name on request
         ##* branch is found in .git repo eg (HEAD ref: refs/heads/00_init)
@@ -34,7 +55,6 @@ class LbProject(LbUtil):
 
         ##* returns str
         return ""
-
 
     def depgetCurrentBranch(self, project_folder):
         head_dir = Path(".") / ".git" / "HEAD"
@@ -213,18 +233,28 @@ def main():
     actual = LbProject()
     assert (actual)
 
-    print('getBranch', actual.getBranch())
-
     assert (actual.getDevelopmentFromPath() == 'Development')
     assert (actual.getOrganizationFromPath() == 'lyttlebit')
-    # print('getWorkspace', actual.getWorkspaceFromPath())
+
     assert (actual.getWorkspaceFromPath() == '00_std')
+
     assert (actual.getProjectFromPath() == 'lb_lib')
+
     assert ( actual.getProjectFolder())
     assert ( actual.hasBranch('main') )
     #assert ( hasBranch('00_init') )
     #assert (actual.hasRemoteProject())
-    print(actual.getBranch())
+
+    print('getDevelopmentFromPath()', actual.getDevelopmentFromPath())
+    print('getOrganizationFromPath()',actual.getOrganizationFromPath())
+    print('getWorkspace', actual.getWorkspaceFromPath())
+    print('getProjectFromPath()',actual.getProjectFromPath())
+    print('getProjectFolder()',actual.getProjectFolder())
+    print('hasBranch(main)',actual.hasBranch('main'))
+    print('getBranch',actual.getBranch())
+
+    print('GHUSER', actual.getGHUser())
+
     # write documentation in markdown file
     LbDocComments().setFolder(os.getcwd()).setFilename(str(__file__).split('/')[-1]).open().save()
 

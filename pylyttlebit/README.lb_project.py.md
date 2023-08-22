@@ -2,6 +2,12 @@
 source LbProject(LbUtil)
 
 
+## Determine a GitHub user name
+
+* 1. find the ~/.gitconfig file and __Read__ "name = " value
+
+* 1. default github user to TBD
+
 ## Get branch name on request
 
 * branch is found in .git repo eg (HEAD ref refs/heads/00_init)

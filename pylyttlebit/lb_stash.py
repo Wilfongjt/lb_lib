@@ -1,7 +1,13 @@
+import os
 from pprint import pprint
 from lb_constants import LbC
 from script_lb_defaults import LbDefaults
+from lb_project import LbProject
+
+
 class LbStash(dict):
+    #### Stash environment variables in memory
+
     # eg {project:{folder: 'TBD', repo_url: 'TBD' },
     #     process:[],
     #     prompts:{'GH_BRANCH': '00_init',
@@ -9,13 +15,20 @@ class LbStash(dict):
     #              'GH_USER': 'wilfongjt',
     #              'WS_ORGANIZATION': 'lyttlebit',
     #              'WS_WORKSPACE': '00_lyttlebit'}}
+    #
+
     def __init__(self):
+        ##* set stash values to TBD by default
+
         #self[LbC().INVALID_KEY]=[]
+        self[LbC().SOURCE_KEY]= {'folder': '/'.join(str(__file__).split('/')[0:-1])}
         self[LbC().PROJECT_KEY]={'folder': 'TBD',
                                  'repo_url': 'TBD'}
 
         self[LbC().PROMPTS_KEY]= LbDefaults()
         self[LbC().PROCESS_KEY]=[]
+
+
 
     def getInvalid(self):
         return self[LbC().INVALID_KEY]
@@ -37,10 +50,6 @@ class LbStash(dict):
     def setPrompts(self, prompts):
         self[LbC().PROMPTS_KEY]=prompts
         return self
-    #def setPrompts(self, key, value):
-    #    if key in self[LbC().PROJECT_KEY]:
-    #        self[LbC().PROJECT_KEY][key]=value
-    #    return self
 
     def getProject(self, key=None):
         if key:
@@ -61,6 +70,11 @@ class LbStash(dict):
     def setProcess(self, process_str):
         self[LbC().PROCESS_KEY].append(process_str)
         return self
+
+    def getSource(self, key=None):
+        if key:
+            return self[LbC().SOURCE_KEY][key]
+        return self[LbC().SOURCE_KEY]
 
     def validate(self, d=None):
 
@@ -90,27 +104,47 @@ class LbStash(dict):
         if LbC().INVALID_KEY in self and len(self[LbC().INVALID_KEY]) > 0:
             return False
 
-        #self.validate()
-        #if len(self[LbC().INVALID_KEY]):
-        #    print('B')
-        #    return False
-        #print('C')
         return True
-    '''
-     def isValid(self):
-        if not LbC().INVALID_KEY in self:
-            print('A')
-            return False
-        #self.validate()
-        if len(self[LbC().INVALID_KEY]):
-            print('B')
-            return False
-        print('C')
-        return True
-    '''
+
+    def setFromPath(self, path):
+        #### Set Stash from path on request
+        ##< Use when committing pylyttlebit project to git
+        #print('setFromPath', path)
+        #print(path.split('/'))
+        i = 0
+        dFound = False
+        path = path.split('/')
+        d = path.index(LbC().DEV_KEY)
+        for k in path:
+            if i >= d:
+                #if i-d == 0:
+                #    print(i - d, 'k development ', k)
+                if i-d == 1:
+                    ##* set WS_ORGANIZATION from path eg '~/Development/\<organization>'
+                    self[LbC().PROMPTS_KEY][LbC().WS_ORGANIZATION_KEY]=k
+                elif i-d == 2:
+                    ##* set WS_WORKSPACE from path eg '~/Development/\<organization>/\<workspace>'
+                    self[LbC().PROMPTS_KEY][LbC().WS_WORKSPACE_KEY]=k
+                elif i - d == 3:
+                    ##* set GH_PROJECT from path eg '~/Development/\<organization>/\<workspace>/\<project>'
+                    self[LbC().PROMPTS_KEY][LbC().GH_PROJECT_KEY]=k
+            ##* set GH_BRANCH from '~/Development/\<organization>/\<workspace>/\<project>/.git/HEAD'
+            self[LbC().PROMPTS_KEY][LbC().GH_BRANCH_KEY]=LbProject().getBranch()
+            i += 1
+
+        ##* set GH_USER to developer's username from '~/.gitconfig'
+        self[LbC().PROMPTS_KEY][LbC().GH_USER_KEY] = LbProject().getGHUser()
+
+        ##* set project folder
+        self[LbC().PROJECT_KEY][LbC().PROJECT_FOLDER_KEY]='/'.join(str(os.getcwd()).split('/')[0:-1])
+        ##* set repo url
+        self[LbC().PROJECT_KEY][LbC().REPO_URL_KEY]=LbC().REPO_URL_TEMPLATE.format(LbProject().getGHUser(),self[LbC().PROMPTS_KEY][LbC().GH_PROJECT_KEY])
+
+        return self
 
 def main():
     from pprint import pprint
+
     actual = LbStash()
     pprint(actual)
 
@@ -120,7 +154,12 @@ def main():
     pprint(actual)
 
     assert (not actual.isValid())
-    actual.getProject()
+
+    #actual.getProject()
+    path = '/'.join(str(__file__).split('/')[0:-1])
+    actual.setFromPath(path)
+
+    pprint(actual)
 
 
 if __name__ == "__main__":

@@ -19,7 +19,7 @@ from pylyttlebit.lb_constants import LbC
 # from pylyttlebit.lb_folders import LbFolders
 from pylyttlebit.script_lb_defaults import LbDefaults
 from pylyttlebit.step_lb_initialize_environment import LbInitializeEnvironment
-from pylyttlebit.step_lb_validate_prompt_inputs import LbValidatePromptInputs
+#from pylyttlebit.step_lb_validate_prompt_inputs import LbValidatePromptInputs
 from pylyttlebit.step_lb_impute_project_variables import LbImputeProjectVariables
 from pylyttlebit.step_lb_validate_input_variables import LbValidateInputVariables
 from pylyttlebit.step_lb_create_workspace import LbCreateWorkspace

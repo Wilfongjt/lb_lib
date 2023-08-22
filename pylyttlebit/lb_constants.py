@@ -37,6 +37,8 @@ class LbConstants():
         self.PROJECT_FOLDER_KEY= 'folder'
         ##* PROMPTS_KEY
         self.PROMPTS_KEY = 'prompts'
+        ##* SOURCE_KEY
+        self.SOURCE_KEY = 'source'
         ##* WORKSPACE_FOLDER_KEY
         self.WORKSPACE_FOLDER_KEY= 'workspace_folder'
         ##* WS_ORGANIZATION_KEY
