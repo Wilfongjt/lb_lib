@@ -1,5 +1,5 @@
 import unittest
-from lb_lib.lb_recorder import LbRecorder
+from pylyttlebit.lb_recorder import LbRecorder
 class LbRecorderTest(unittest.TestCase):
     def setUp(self):
         self.actual = LbRecorder()

@@ -1,32 +1,31 @@
 import unittest
-from pylyttlebit.lb_rebase import CollectInputs
+from pprint import pprint
+from pylyttlebit.script_lb_rebase import ImputeProjectVariables
 from pylyttlebit.lb_constants import LbConstants
-class CollectInputsTest(unittest.TestCase):
+class ImputeVariablesTest(unittest.TestCase):
     def setUp(self) -> None:
         print('setup')
-
-        self.stash = {}
-
-        self.actual = CollectInputs(self.stash).setVerbose(True).setTest(True)
+        self.stash = {
+            'prompts': {
+                LbConstants().WS_ORGANIZATION_KEY: 'TBD',
+                LbConstants().WS_WORKSPACE_KEY: 'TBD',
+                LbConstants().GH_USER_KEY: 'TBD',
+                LbConstants().GH_PROJECT_KEY: 'TBD',
+                LbConstants().GH_BRANCH_KEY: 'TBD',
+                LbConstants().GH_MESSAGE_KEY: 'TBD'
+            },
+            'project': {}
+        }
+        self.actual = ImputeProjectVariables(self.stash).setVerbose(True).setTest(True)
 
     def tearDown(self):
         print('teardown')
     def test_process(self):
         self.actual.process()
+        # added repo url as part of ImputeProjectVariables
 
-        # added as part of CollectInputs
-        self.assertTrue('GH_MESSAGE' in self.actual.getStash()[LbConstants().prompts_key])
-
-        # post collection
-        self.assertTrue(self.actual.getStash()[LbConstants().prompts_key]['GH_USER'] == 'TBD')
-        self.assertTrue(self.actual.getStash()[LbConstants().prompts_key]['GH_MESSAGE'] == 'TBD')
-
-        # post collection, path collected values will not be 'TBD'
-        self.assertTrue(self.actual.getStash()[LbConstants().prompts_key]['WS_ORGANIZATION'] != 'TBD')
-        self.assertTrue(self.actual.getStash()[LbConstants().prompts_key]['WS_WORKSPACE'] != 'TBD')
-        self.assertTrue(self.actual.getStash()[LbConstants().prompts_key]['GH_PROJECT'] != 'TBD')
-        self.assertTrue(self.actual.getStash()[LbConstants().prompts_key]['GH_BRANCH'] != 'TBD')
-
+        self.assertTrue(LbConstants().REPO_URL_KEY in self.actual.getStash()[LbConstants().PROJECT_KEY])
+        self.assertTrue('https://github.com/TBD/TBD.git' == self.actual.getStash()[LbConstants().PROJECT_KEY][LbConstants().REPO_URL_KEY])
 
 
 if __name__ == "__main__":

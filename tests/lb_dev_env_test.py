@@ -1,9 +1,13 @@
 import unittest
 import os
-from lb_lib.lb_dev_env import LbDevEnv
-from lb_lib.lb_util import LbUtil
+from pylyttlebit.lb_dev_env import LbDevEnv
+from pylyttlebit.lb_util import LbUtil
+from pylyttlebit.lb_constants import LbConstants
+#print('env', os.environ)
+
 class LbDevEnvTest(unittest.TestCase):
     def setUp(self):
+
         self.actual = LbDevEnv()
         self.temp_folder = '/'.join(str(__file__).split('/')[0:-1])
         self.temp_folder = '{}/temp'.format(self.temp_folder)
@@ -36,11 +40,11 @@ class LbDevEnvTest(unittest.TestCase):
         # output dictionary
         self.assertTrue(type(result) is dict)
         self.assertDictEqual(result, {
-            'WS_ORGANIZATION': 'TBD',
-            'WS_WORKSPACE': 'TBD',
-            'GH_USER': 'TBD',
-            'GH_PROJECT': 'TBD',
-            'GH_BRANCH': 'TBD'
+            LbConstants().WS_ORGANIZATION_KEY: 'TBD',
+            LbConstants().WS_WORKSPACE_KEY: 'TBD',
+            LbConstants().GH_USER_KEY: 'TBD',
+            LbConstants().GH_PROJECT_KEY: 'TBD',
+            LbConstants().GH_BRANCH_KEY: 'TBD'
         })
 
     def test_defaults_as_list(self):
@@ -88,11 +92,11 @@ class LbDevEnvTest(unittest.TestCase):
         self.assertTrue('GH_PROJECT=TBD' in result)
         self.assertTrue('GH_BRANCH=TBD' in result)
 
-        self.assertTrue('WS_ORGANIZATION' in os.environ)
-        self.assertTrue('WS_WORKSPACE' in os.environ)
-        self.assertTrue('GH_USER' in os.environ)
-        self.assertTrue('GH_PROJECT' in os.environ)
-        self.assertTrue('GH_BRANCH' in os.environ)
+        self.assertTrue(LbConstants().WS_ORGANIZATION_KEY in os.environ)
+        self.assertTrue(LbConstants().WS_WORKSPACE_KEY in os.environ)
+        self.assertTrue(LbConstants().GH_USER_KEY in os.environ)
+        self.assertTrue(LbConstants().GH_PROJECT_KEY in os.environ)
+        self.assertTrue(LbConstants().GH_BRANCH_KEY in os.environ)
 
         ##* Open when .env is found
         stuff = ['one=1','two=2']

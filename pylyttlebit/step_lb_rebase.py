@@ -33,10 +33,15 @@ class LbRebase(LbStep):
 
         # cd ${MY_GIT_PROJECT}/
         last_dir = os.getcwd()  # save for switching back later
-        print('project', LbProject().getProjectFolder())
-        project_folder = LbProject().getProjectFolder()
-        os.chdir(LbProject().getProjectFolder())
+        #print('project', LbProject().getProjectFolder())
+        #project_folder = LbProject().getProjectFolder()
+        project_folder = self.getStash(LbC().PROJECT_KEY)[LbC().PROJECT_FOLDER_KEY]
+        print('project_folder', project_folder)
+        os.chdir(project_folder)
+        command = 'ls'
+        os.system(command)
         # git checkout ${MY_BRANCH}
+
         ##*  Checkout branch
 
         command = 'git checkout {}'.format(prompts[LbC().GH_BRANCH_KEY])
@@ -103,12 +108,13 @@ class LbRebase(LbStep):
 
 def main():
     from pprint import pprint
+    from lb_stash import LocalStash
     # rebase this project
     from pylyttlebit.lb_stash import LbStash
-    stash = LbStash()
-    path = '/'.join(str(__file__).split('/')[0:-1])
+    stash = LocalStash()
+    #path = '/'.join(str(__file__).split('/')[0:-1])
     # configure for local rebase
-    stash.setFromPath(path)
+    #stash.setFromPath(path)
     pprint(stash)
     actual = LbRebase(stash)
     actual.run()

@@ -105,7 +105,7 @@ class LbStash(dict):
             return False
 
         return True
-
+    '''
     def setFromPath(self, path):
         #### Set Stash from path on request
         ##< Use when committing pylyttlebit project to git
@@ -141,6 +141,53 @@ class LbStash(dict):
         self[LbC().PROJECT_KEY][LbC().REPO_URL_KEY]=LbC().REPO_URL_TEMPLATE.format(LbProject().getGHUser(),self[LbC().PROMPTS_KEY][LbC().GH_PROJECT_KEY])
 
         return self
+        '''
+
+class LocalStash(LbStash):
+    def __init__(self):
+        super().__init__()
+
+        path = '/'.join(str(__file__).split('/')[0:-1])
+        self.setFromPath(path)
+
+    def setFromPath(self, path):
+        #### Set Stash from path on request
+        ##< Use when committing pylyttlebit project to git
+        #print('setFromPath', path)
+        #print(path.split('/'))
+        i = 0
+        dFound = False
+        path = path.split('/')
+        d = path.index(LbC().DEV_KEY)
+        for k in path:
+            if i >= d:
+                #if i-d == 0:
+                #    print(i - d, 'k development ', k)
+                if i-d == 1:
+                    ##* set WS_ORGANIZATION from path eg '~/Development/\<organization>'
+                    self[LbC().PROMPTS_KEY][LbC().WS_ORGANIZATION_KEY]=k
+                elif i-d == 2:
+                    ##* set WS_WORKSPACE from path eg '~/Development/\<organization>/\<workspace>'
+                    self[LbC().PROMPTS_KEY][LbC().WS_WORKSPACE_KEY]=k
+                elif i - d == 3:
+                    ##* set GH_PROJECT from path eg '~/Development/\<organization>/\<workspace>/\<project>'
+                    self[LbC().PROMPTS_KEY][LbC().GH_PROJECT_KEY]=k
+            ##* set GH_BRANCH from '~/Development/\<organization>/\<workspace>/\<project>/.git/HEAD'
+            self[LbC().PROMPTS_KEY][LbC().GH_BRANCH_KEY]=LbProject().getBranch()
+            i += 1
+
+        ##* set GH_USER to developer's username from '~/.gitconfig'
+        self[LbC().PROMPTS_KEY][LbC().GH_USER_KEY] = LbProject().getGHUser()
+
+        ##* set project folder
+        self[LbC().PROJECT_KEY][LbC().PROJECT_FOLDER_KEY]='/'.join(str(os.getcwd()).split('/')[0:-1])
+
+        ##* set repo url
+        self[LbC().PROJECT_KEY][LbC().REPO_URL_KEY]=LbC().REPO_URL_TEMPLATE.format(LbProject().getGHUser(),self[LbC().PROMPTS_KEY][LbC().GH_PROJECT_KEY])
+
+        ##* set local
+
+        return self
 
 def main():
     from pprint import pprint
@@ -156,8 +203,11 @@ def main():
     assert (not actual.isValid())
 
     #actual.getProject()
-    path = '/'.join(str(__file__).split('/')[0:-1])
-    actual.setFromPath(path)
+    #path = '/'.join(str(__file__).split('/')[0:-1])
+    #actual.setFromPath(path)
+
+    print('Local Stash')
+    actual = LocalStash()
 
     pprint(actual)
 

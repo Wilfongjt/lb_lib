@@ -1,6 +1,6 @@
 import unittest
-from lb_lib.lb_doc_folders import LbDocFolders
-from lb_lib.lb_exceptions import FolderNotFoundException
+from pylyttlebit.lb_doc_folders import LbDocFolders
+from pylyttlebit.lb_exceptions import FolderNotFoundException
 class LbDocFoldersTest(unittest.TestCase):
     def setUp(self):
         self.actual = LbDocFolders()

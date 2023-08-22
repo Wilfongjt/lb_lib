@@ -47,21 +47,21 @@ def main():
     if not os.getcwd().endswith('scripts'): # runs from /scripts folder
         print('Stopping... Will not run from repo folder.')
         print('            Not a project/repo scripts folder.')
-        print('            Install to _tools and run from git.rebase.sh. {}'.format(os.getcwd()))
+        print('            Install to _tools and run from git.rebase.sh.dep. {}'.format(os.getcwd()))
         exit(0)
     #
     ##1. __Collect and Define Inputs__
     #
     ##      * Confirm and Update Inputs with User
-    #
+    # OK
     prompts = getParameterPrompts()
     #
     ##      * Impute the Develpment folder name (aka <DEVELOPMENT>), eg ~/Development/
-    #
+    # ok
     devfolder = '{}/Development'.format(os.path.expanduser('~'))
     #
     ##      * Impute remote repo URL eg https://github.com/<GH_USER>/<GH_PROJECT>.git
-    #
+    # ok
     url = LbConstants().REPO_URL_TEMPLATE.format(prompts[LbConstants().GH_USER_KEY], prompts[LbConstants().GH_PROJECT_KEY])
 
     #
@@ -90,7 +90,7 @@ def main():
     #exit(0)
     #
     ##      * Stop when Development folder in not found, eg ~/Development
-    #
+    # ok
     folder = devfolder
     print('* checking folder {} '.format(folder), end='')
     if not LbProject().folder_exists(folder):
@@ -103,7 +103,7 @@ def main():
     os.chdir(folder)
     #
     ##      * Stop when Organization fold is not found, eg ~/Development/<WS_ORGANIZATION>
-    #
+    # ok test for project instead
     folder = '{}/{}'.format(folder,prompts[LbConstants().WS_ORGANIZATION_KEY])
     print('* checking folder {} '.format(folder), end='')
     if not LbProject().folder_exists(folder):
@@ -116,7 +116,7 @@ def main():
     os.chdir(folder)
     #
     ##      * Stop when Workspace folder is not found, eg ~/Development/<WS_ORGANIZATION>/<WS_WORKSPACE>
-    #
+    # # ok test for project instead
     folder = '{}/{}'.format(folder,prompts[LbConstants().WS_WORKSPACE_KEY])
     print('* checking folder {} '.format(folder), end='')
     if not LbProject().folder_exists(folder):
@@ -125,7 +125,7 @@ def main():
     print('ok')
     #
     ##      * Stop when Project folder is not found, eg ~/Development/<WS_ORGANIZATION>/<WS_WORKSPACE>/<GH_PROJECT>
-    #
+    # ok test for project instead
     folder = '{}/{}'.format(folder,prompts[LbConstants().GH_PROJECT_KEY])
     print('* checking folder {} '.format(folder), end='')
     if not LbProject().folder_exists(folder): # check for project folder
@@ -135,7 +135,7 @@ def main():
     #print('* checking for project repo', url, end='')
     #
     ##      * Stop when remote repo is not found
-    #
+    # Ok
     if not LbProject().hasRemoteProject(url):
         print('Stop...Repo doesnt exist')
         exit(0)
@@ -147,31 +147,31 @@ def main():
     print('* Switch to ', folder)
     #
     ##      * Stop when branch does not exist
-    #
+    # ok
     if not LbProject().hasBranch(prompts[LbConstants().GH_BRANCH_KEY]):
         print('stopping...Branch "{}" not found'.format(prompts[LbConstants().GH_BRANCH_KEY]))
         exit(0)
     #
     ##      * Stop when branch is equal to "TBD"
-    #
+    # ok
     if LbProject().getBranch() == 'TBD':
         print('stopping...Bad branch')
         exit(0)
     #
     ##      * Stop when branch is equal to "main"
-    #
+    # ok
     if LbProject().getBranch() == 'main':
         print('stopping...Cannot rebase the "main" branch')
         exit(0)
     #
     ##      * Stop when current branch is "main"
-    #
+    # not needed
     if LbProject().getCurrentBranch(folder) == 'main':
         print('stopping... commit to "main" branch not allowed!')
         exit(0)
     #
     ##      * Stop when current branch is 'TBD'
-    #
+    # not needed
     if LbProject().getCurrentBranch(folder) == 'TBD':
         print('stopping... branch not found {} how about {}'.format(prompts[LbConstants().GH_BRANCH_KEY], LbProject().getCurrentBranch(folder)))
         exit(0)

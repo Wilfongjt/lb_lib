@@ -163,14 +163,14 @@ def main():
     #print('* ', '{}_tools'.format())
     print('* scripts', file_names)
     print('* scripts source folder', getScriptsSourceFolder(prompts))
-    fn = 'git.branch.sh'
+    fn = 'git.branch.sh.dep'
     #currProject = '{}/scripts'.format(getCurrentProject())
     #print('A script', '{}/scripts'.format(srcFolder))
     print('Current Project', current_project_folder)
     #if 1==1: exit(0)
     LbTextFileHelper('{}/scripts'.format(current_project_folder), fn).copyTo(getScriptsSourceFolder(prompts), fn)
     #LbTextFileHelper('{}/scripts'.format(srcFolder), fn).copyTo(getScriptsSourceFolder(prompts), fn)
-    fn = 'git.rebase.sh'
+    fn = 'git.rebase.sh.dep'
     LbTextFileHelper('{}/scripts'.format(current_project_folder), fn).copyTo(getScriptsSourceFolder(prompts), fn)
 
     #for fn in file_names:
