@@ -107,7 +107,7 @@ class LbRebase(LbStep):
 
         if LbProject().prompt('PUSH?', 'N') not in ['N', 'n']:
             command = 'git push origin {}'.format(prompts[LbC().GH_BRANCH_KEY])
-            print('git push origin <GH_BRANCH_KEY>')
+            print('git push origin <GH_BRANCH_KEY> ... ', command)
             os.system(command)
 
         ##* Reset folder
