@@ -1,13 +1,13 @@
 import os
 import unittest
-from lb_lib.lb_text_file_helper import LbTextFileHelper
+from pylyttlebit.lb_text_file_helper import LbTextFileHelper
 
 class LbTextFileHelperTest(unittest.TestCase):
     def setUp(self):
         #self.folder = os.getcwd()
         self.folder = '/'.join(str(__file__).split('/')[0:-1])
         self.filename = str(__file__).split('/')[-1]
-        #print('folder',self.folder)
+        #print(LbConstants().app_folder,self.folder)
         #print('filename',self.filename)
         self.actual = LbTextFileHelper(folder=self.folder, filename=self.filename)
         self.actualNF = LbTextFileHelper(folder=self.folder, filename='nf_{}'.format(self.filename))

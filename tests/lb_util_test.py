@@ -1,27 +1,30 @@
 import os
 import unittest
-from lb_lib.lb_util import LbUtil
-from lb_lib.lb_exceptions import BadFileNameException, BadFolderNameException, FolderNotFoundException,SubfolderCopyException, FolderAlreadyExistsException
-from lb_lib.lb_constants import LbConstants
+from pylyttlebit.lb_util import LbUtil
+from pylyttlebit.lb_exceptions import BadFileNameException, BadFolderNameException, FolderNotFoundException,SubfolderCopyException, FolderAlreadyExistsException
+from pylyttlebit.lb_constants import LbConstants
+from pylyttlebit.lb_constants import LbC
 from os import listdir
 from os.path import isfile, join
 import shutil
+import time
+
 
 class LbUtilTest(unittest.TestCase):
 
     def setUp(self) -> None:
         self.actual = LbUtil()
         # use a .env extention to avoid pushing to github
-        #self.temp_filename = '{}.env'.format(str(__file__).split('/')[-1])
+        #self.TEMP_FILENAME = '{}.env'.format(str(__file__).split('/')[-1])
 
         # create a temp folder in users home folder
-        LbUtil().create_folder( LbConstants().temp_folder)
+        LbUtil().create_folder(LbConstants().TEMP_FOLDER)
 
 
     def tearDown(self) -> None:
         # remove all files and folders in temp folder
-        if self.tearDown_folder_exists(LbConstants().temp_folder):
-            shutil.rmtree(LbConstants().temp_folder)
+        if self.tearDown_folder_exists(LbConstants().TEMP_FOLDER):
+            shutil.rmtree(LbConstants().TEMP_FOLDER)
 
     def tearDown_get_file_list(self, path, ext=None):
         #### Get List of File Names on request
@@ -45,12 +48,15 @@ class LbUtilTest(unittest.TestCase):
         ##* folder exists when found on drive ... [x] has test
         exists = os.path.isdir('{}'.format(folder))
         return exists
-    def tearDown_createEmptyFile(self, folder=LbConstants().temp_folder, filename=LbConstants().empty_filename):
+
+    def tearDown_create_empty_file(self, folder=LbConstants().TEMP_FOLDER, filename=LbConstants().EMPTY_FILENAME):
+        #print('create file', folder, filename)
+
         with open('{}/{}'.format(folder, filename), 'w') as f:
             f.writelines([''])
         exists = os.path.isfile('{}/{}'.format(folder,filename))
         self.assertTrue(exists)
-        #self.assertTrue(LbUtil().file_exists(LbConstants().temp_folder, LbConstants().empty_filename))
+        #self.assertTrue(LbUtil().file_exists(LbConstants().temp_folder, LbConstants().EMPTY_FILENAME))
 
     def test_copy_folder(self):
         result = None
@@ -71,7 +77,7 @@ class LbUtilTest(unittest.TestCase):
         # copy source folder, subfolders, and files to destination folder when source folder is found
 
         srcfolder = '/'.join(str(__file__).split('/')[0:-1])
-        dstfolder = '{}/asubfolder'.format(LbConstants().temp_folder)
+        dstfolder = '{}/asubfolder'.format(LbConstants().TEMP_FOLDER)
 
         result = self.actual.copy_folder(srcfolder, dstfolder)
         self.assertNotEqual(len(self.tearDown_get_file_list(dstfolder)), 0)
@@ -96,7 +102,7 @@ class LbUtilTest(unittest.TestCase):
             self.actual.create_folder(folder)
         # create when good folder name
 
-        result = self.actual.create_folder( LbConstants().disposable_folder)
+        result = self.actual.create_folder(LbConstants().DISPOSABLE_FOLDER)
         self.assertTrue(type(result) is LbUtil)
 
         ##* return LbUtil ... [] has test
@@ -104,28 +110,36 @@ class LbUtilTest(unittest.TestCase):
 
         #pass
 
+    def test_current_directory(self):
+        result = self.actual.current_directory()
+        self.assertTrue(type(result) is str)
+
+    #def test_create_empty_file(self):
+    #    result = self.actual.create_empty_file(LbC().temp_folder, LbC().EMPTY_FILENAME)
+    #    self.assertTrue(os.path.isfile('{}/{}'.format(LbC().temp_folder, LbC().EMPTY_FILENAME)))
+
     def test_delete_file(self):
         # delete a file that doesnt exist
         # confirm file doesnt exist
-        exists = os.path.isfile('{}/{}'.format(LbConstants().temp_folder, LbConstants().empty_filename))
+        exists = os.path.isfile('{}/{}'.format(LbConstants().TEMP_FOLDER, LbConstants().EMPTY_FILENAME))
         self.assertFalse(exists)
 
         # attempt a delete of non-existing file... delete is skipped when file doesnt exist
-        result = self.actual.delete_file(LbConstants().temp_folder, LbConstants().empty_filename)
+        result = self.actual.delete_file(LbConstants().TEMP_FOLDER, LbConstants().EMPTY_FILENAME)
         self.assertTrue(type(result) is LbUtil)
 
         # create empty file to delete and confirm exists
-        self.tearDown_createEmptyFile(folder=LbConstants().temp_folder, filename=LbConstants().empty_filename)
+        self.tearDown_create_empty_file(folder=LbConstants().TEMP_FOLDER, filename=LbConstants().EMPTY_FILENAME)
 
         # make sure file exists
-        exists = os.path.isfile('{}/{}'.format(LbConstants().temp_folder, LbConstants().empty_filename))
+        exists = os.path.isfile('{}/{}'.format(LbConstants().TEMP_FOLDER, LbConstants().EMPTY_FILENAME))
         self.assertTrue(exists)
 
         # delete file
-        result = self.actual.delete_file(LbConstants().temp_folder, LbConstants().empty_filename)
+        result = self.actual.delete_file(LbConstants().TEMP_FOLDER, LbConstants().EMPTY_FILENAME)
 
         # confirm delete
-        exists = os.path.isfile('{}/{}'.format(LbConstants().temp_folder, LbConstants().empty_filename))
+        exists = os.path.isfile('{}/{}'.format(LbConstants().TEMP_FOLDER, LbConstants().EMPTY_FILENAME))
         self.assertFalse(exists)
 
         # confirn LbUnit
@@ -141,14 +155,14 @@ class LbUtilTest(unittest.TestCase):
             LbUtil().create_folder(createfolder)
 
         # delete a folder, subfolders and file
-        createfolder = '{}/temporary/anothertemp'.format(LbConstants().temp_folder)
-        deletefolder = '{}/temporary'.format(LbConstants().temp_folder)
+        createfolder = '{}/temporary/anothertemp'.format(LbConstants().TEMP_FOLDER)
+        deletefolder = '{}/temporary'.format(LbConstants().TEMP_FOLDER)
 
         # create a folder
         LbUtil().create_folder(createfolder)
 
         # add an empty file and assert it exists
-        self.tearDown_createEmptyFile(folder=createfolder)
+        self.tearDown_create_empty_file(folder=createfolder)
 
         # confirm folder exists
         self.assertTrue(os.path.isdir(createfolder))
@@ -165,12 +179,12 @@ class LbUtilTest(unittest.TestCase):
     def test_delete_folder_files(self):
         result = None
         # create two files
-        folder = '{}/delete_folder_files'.format(LbConstants().temp_folder)
+        folder = '{}/delete_folder_files'.format(LbConstants().TEMP_FOLDER)
         LbUtil().create_folder(folder)
 
         # add two empty files and assert existance
-        self.tearDown_createEmptyFile(folder=folder,filename='one.env')
-        self.tearDown_createEmptyFile(folder=folder,filename='two.env')
+        self.tearDown_create_empty_file(folder=folder,filename='one.env')
+        self.tearDown_create_empty_file(folder=folder,filename='two.env')
 
         # delete both files
         result = LbUtil().delete_folder_files(folder,ext='*')
@@ -180,6 +194,17 @@ class LbUtilTest(unittest.TestCase):
 
         # confirn LbUnit
         self.assertTrue(type(result) is LbUtil)
+
+    def test_get_env_value(self):
+        # None when not found
+        result = self.actual.get_env_value('NotAKey')
+        self.assertEqual(result, 'TBD')
+
+        result = self.actual.get_env_value('USER')
+        self.assertTrue(result != 'TBD')
+
+        # str when found
+        self.assertTrue(type(result) is str)
 
 
     #def test_create_delete_folder_file(self):
@@ -213,6 +238,13 @@ class LbUtilTest(unittest.TestCase):
     #    self.assertFalse(result)
 
     #    #copy_folder(self, src_folder, dst_folder)
+    def test_file_age(self):
+        folder = os.getcwd()
+        filename = str(__file__).split('/')[-1]
+        result = self.actual.file_age(folder, filename)
+        #print('result', result)
+        self.assertTrue(result >= 0)
+        self.assertTrue(type(result) is float)
 
     def test_file_exists(self):
         # file doesnt exist when folder is none and file is none
@@ -246,7 +278,7 @@ class LbUtilTest(unittest.TestCase):
 
     def test_get_file_list(self):
         folder = os.getcwd().replace('/tests','')
-        print('folder', folder)
+        #print(LbConstants().APP_FOLDER_KEY, folder)
 
         ##* return [] when folder is None
         result = self.actual.get_folder_list(None)
@@ -255,7 +287,7 @@ class LbUtilTest(unittest.TestCase):
         ##* returns [] when folder NOT found
         result = self.actual.get_folder_list('/notafolder')
         self.assertTrue(result == [])
-
+        #print('test_get_file_list folder', folder)
         result = self.actual.get_folder_list(folder)
         self.assertNotEqual(result, [])
 
@@ -285,6 +317,25 @@ class LbUtilTest(unittest.TestCase):
 
         ##* return list
         self.assertTrue(type(result) is list)
+
+    def test_is_empty(self):
+        # folder=None filename is None
+        result = self.actual.is_empty(None, None)
+        self.assertTrue(result)
+        # create empty file
+
+        self.tearDown_create_empty_file(LbC().TEMP_FOLDER, LbC().EMPTY_FILENAME)
+        #print('filelist',self.tearDown_get_file_list(LbC().temp_folder,'*'))
+
+        # file should exist
+        result = self.actual.is_empty(LbC().TEMP_FOLDER, LbC().EMPTY_FILENAME)
+        self.assertTrue(result)
+
+        filename = str(__file__).split('/')[-1]
+        folder = '/'.join(str(__file__).split('/')[0:-1])
+        #print('folder', folder)
+        result = self.actual.is_empty(folder, filename )
+        self.assertFalse(result)
 
 if __name__ == "__main__":
     # execute as script

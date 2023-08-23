@@ -1,5 +1,5 @@
 import unittest
-from lb_lib.lb_doc_comments import LbDocComments
+from pylyttlebit.lb_doc_comments import LbDocComments
 
 class LbDocCommentsTest(unittest.TestCase):
     def setUp(self):
