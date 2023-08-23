@@ -82,13 +82,13 @@ class LbRebase(LbStep):
         ##* Pull origin main ... git pull origin ${MY_TRUNK}
 
         command = 'git pull origin main'
-        print('git pull origin ${MY_TRUNK} ... ', command)
+        print('git pull origin ${MY_TRUNK} .... ', command)
         # os.system(command)
 
         ##* Checkout branch ... git checkout ${MY_BRANCH}
 
         command = 'git checkout {}'.format(prompts[LbC().GH_BRANCH_KEY])
-        print('git checkout <GH_BRANCH_KEY> ... ', command)
+        print('git checkout <GH_BRANCH> ... ', command)
         # os.system(command)
         # feedback
         # git branch
