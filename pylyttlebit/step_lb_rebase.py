@@ -56,7 +56,7 @@ class LbRebase(LbStep):
         ##* Add files to git  ... git add .
 
         command = 'git add .'
-        print('git add .  ................... ', command)
+        print('git add .  .................... ', command)
         os.system('git add .')
 
         ##* Ask User for GitHub Message
@@ -93,7 +93,7 @@ class LbRebase(LbStep):
         # feedback
         # git branch
         command = 'git branch'
-        print('git branch ... ', command)
+        print('git branch .................... ', command)
         # os.system(command)
 
         ##* Rebase repo
