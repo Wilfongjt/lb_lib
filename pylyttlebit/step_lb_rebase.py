@@ -56,7 +56,7 @@ class LbRebase(LbStep):
         ##* Add files to git  ... git add .
 
         command = 'git add .'
-        print('git add .  ... ', command)
+        print('git add .  ................... ', command)
         os.system('git add .')
 
         ##* Ask User for GitHub Message
@@ -70,25 +70,25 @@ class LbRebase(LbStep):
         ##* Commit with <MESSAGE> ... git commit -m "${COMMIT_MSG}"
 
         command = 'git commit -m {}'.format(prompts['GH_MESSAGE'])
-        print('Commit with <MESSAGE> ... ', command)
+        print('Commit with <MESSAGE> ......... ', command)
         os.system(command)
 
         ##* Checkout main branch ... git checkout ${MY_TRUNK}
 
         command = 'git checkout main'
-        print('git checkout main ... ', command)
+        print('git checkout main ............. ', command)
         os.system(command)
 
         ##* Pull origin main ... git pull origin ${MY_TRUNK}
 
         command = 'git pull origin main'
-        print('git pull origin ${MY_TRUNK} .... ', command)
+        print('git pull origin ${MY_TRUNK} ... ', command)
         # os.system(command)
 
         ##* Checkout branch ... git checkout ${MY_BRANCH}
 
         command = 'git checkout {}'.format(prompts[LbC().GH_BRANCH_KEY])
-        print('git checkout <GH_BRANCH> ... ', command)
+        print('git checkout <GH_BRANCH> ...... ', command)
         # os.system(command)
         # feedback
         # git branch
@@ -99,7 +99,7 @@ class LbRebase(LbStep):
         ##* Rebase repo
         # git rebase ${MY_BRANCH}
         command = 'git rebase {}'.format(prompts[LbC().GH_BRANCH_KEY])
-        print('git rebase <GH_BRANCH_KEY> ... ', command)
+        print('git rebase <GH_BRANCH_KEY> .... ', command)
         # os.system(command)
 
         ##* Push to origin
