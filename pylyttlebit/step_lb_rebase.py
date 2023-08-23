@@ -83,34 +83,36 @@ class LbRebase(LbStep):
 
         command = 'git pull origin main'
         print('git pull origin ${MY_TRUNK} ... ', command)
-        # os.system(command)
+        os.system(command)
 
         ##* Checkout branch ... git checkout ${MY_BRANCH}
 
         command = 'git checkout {}'.format(prompts[LbC().GH_BRANCH_KEY])
         print('git checkout <GH_BRANCH> ...... ', command)
-        # os.system(command)
+        os.system(command)
+
         # feedback
         # git branch
         command = 'git branch'
         print('git branch .................... ', command)
-        # os.system(command)
+        os.system(command)
 
-        ##* Rebase repo
-        # git rebase ${MY_BRANCH}
+        ##* Rebase repo ... git rebase ${MY_BRANCH}
+
         command = 'git rebase {}'.format(prompts[LbC().GH_BRANCH_KEY])
         print('git rebase <GH_BRANCH_KEY> .... ', command)
         # os.system(command)
 
         ##* Push to origin
+
         if LbProject().prompt('PUSH?', 'N') not in ['N', 'n']:
             command = 'git push origin {}'.format(prompts[LbC().GH_BRANCH_KEY])
             print('git push origin <GH_BRANCH_KEY>')
-            os.system(command)
+            #os.system(command)
 
         ##* Reset folder
 
-        #os.chdir(project_folder)
+        os.chdir(project_folder)
 
         return self
 
