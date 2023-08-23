@@ -37,6 +37,9 @@ class LbConstants():
         self.PROJECT_FOLDER_KEY= 'folder'
         ##* PROMPTS_KEY
         self.PROMPTS_KEY = 'prompts'
+
+        ##* rebase script filename
+        self.REBASE_SCRIPT_FILENAME = 'git.rebase.sh'
         ##* SOURCE_KEY
         self.SOURCE_KEY = 'source'
         ##* WORKSPACE_FOLDER_KEY

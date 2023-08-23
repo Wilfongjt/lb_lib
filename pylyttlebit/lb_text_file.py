@@ -13,7 +13,31 @@ class LbTextFile(list, LbRecorder):
 
         self.filename = None
         self.folder = None
+    def create(self, defaults):
+        ###### Create env file on request
 
+        if LbUtil().file_exists(self.getFolder(),self.getFilename()):
+            ##* skip create when env file exists
+            return self
+
+        ##* create file when file doesnt exist
+
+        self.addStep('create')
+        self.addStep('(defaults)')
+        #self.load(['{}={}'.format(k, defaults[k]) for k in defaults])
+        self.addStep('(environment)', arrow='*')
+        self.save()
+
+        self.addStep('// (environment)')
+
+        self.clear()
+        return self
+
+    def getStartText(self):
+        rc = '''
+        
+        '''
+        return rc
     def getFolder(self):
         ## __Get folder name on request__
         ##* returns folder name ... [x] has test

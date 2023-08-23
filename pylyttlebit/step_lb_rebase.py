@@ -4,6 +4,7 @@ from pylyttlebit.lb_step import LbStep
 from pylyttlebit.lb_constants import LbC
 from pylyttlebit.lb_project import LbProject
 
+# deprecate use LbRbaseScript instead
 class LbRebase(LbStep):
     def __init__(self, stash):
         super().__init__()
