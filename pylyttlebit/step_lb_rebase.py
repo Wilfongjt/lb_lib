@@ -18,12 +18,16 @@ class LbRebase(LbStep):
 
     def process(self):
         super().process()
+
         #### Rebase Project
+
         print('')
         print('process Rebase')
         # pprint(self.getStash())
         print('source', self.getStash())
+
         ##* Stop when invalid
+
         if not self.getStash().isValid():
             pprint(self.getStash())
             print('Terminate Rebase due to invalid settings!')
@@ -32,57 +36,59 @@ class LbRebase(LbStep):
         prompts = self.getStash(LbC().PROMPTS_KEY)
 
         # cd ${MY_GIT_PROJECT}/
+
+        ##* Change folder to project folder
+
         last_dir = os.getcwd()  # save for switching back later
-        #print('project', LbProject().getProjectFolder())
-        #project_folder = LbProject().getProjectFolder()
+
         project_folder = self.getStash(LbC().PROJECT_KEY)[LbC().PROJECT_FOLDER_KEY]
         print('project_folder', project_folder)
         os.chdir(project_folder)
         command = 'ls'
         os.system(command)
-        # git checkout ${MY_BRANCH}
 
-        ##*  Checkout branch
+        ##*  Checkout branch ... git checkout ${MY_BRANCH}
 
         command = 'git checkout {}'.format(prompts[LbC().GH_BRANCH_KEY])
         print('git checkout ... ', command)
         os.system(command)
 
-        ##* Add files to git  ...
-        # git add .
+        ##* Add files to git  ... git add .
+
         command = 'git add .'
         print('git add .  ... ', command)
         os.system('git add .')
 
-        ##* Commit with <MESSAGE>
-        # git commit -m "${COMMIT_MSG}"
+        ##* Ask User for GitHub Message
+
         print('prompts', prompts)
-        #print('GH_MESSAGE_KEY', prompts[LbC().GH_MESSAGE_KEY])
         if LbC().GH_MESSAGE_KEY not in prompts:
             prompts[LbC().GH_MESSAGE_KEY] = LbProject().prompt(LbC().GH_MESSAGE_KEY
                                                      , LbProject().get_env_value(LbC().GH_MESSAGE_KEY)
                                                      , hardstop=True)
 
+        ##* Commit with <MESSAGE> ... git commit -m "${COMMIT_MSG}"
+
         command = 'git commit -m {}'.format(prompts['GH_MESSAGE'])
         print('Commit with <MESSAGE> ... ', command)
         os.system(command)
 
-        ##* Checkout main branch
-        # git checkout ${MY_TRUNK}
+        ##* Checkout main branch ... git checkout ${MY_TRUNK}
+
         command = 'git checkout main'
         print('git checkout main ... ', command)
         os.system(command)
 
-        ##* Pull origin main
-        # git pull origin ${MY_TRUNK}
+        ##* Pull origin main ... git pull origin ${MY_TRUNK}
+
         command = 'git pull origin main'
         print('git pull origin ${MY_TRUNK} ... ', command)
         # os.system(command)
 
-        ##* Checkout branch
-        # git checkout ${MY_BRANCH}
+        ##* Checkout branch ... git checkout ${MY_BRANCH}
+
         command = 'git checkout {}'.format(prompts[LbC().GH_BRANCH_KEY])
-        print('git checkout ${MY_BRANCH} ... ', command)
+        print('git checkout <GH_BRANCH_KEY> ... ', command)
         # os.system(command)
         # feedback
         # git branch
@@ -93,16 +99,18 @@ class LbRebase(LbStep):
         ##* Rebase repo
         # git rebase ${MY_BRANCH}
         command = 'git rebase {}'.format(prompts[LbC().GH_BRANCH_KEY])
-        print('git rebase ${MY_BRANCH} ... ', command)
+        print('git rebase <GH_BRANCH_KEY> ... ', command)
         # os.system(command)
 
         ##* Push to origin
         if LbProject().prompt('PUSH?', 'N') not in ['N', 'n']:
             command = 'git push origin {}'.format(prompts[LbC().GH_BRANCH_KEY])
+            print('git push origin <GH_BRANCH_KEY>')
             os.system(command)
 
-        # reset folder
-        os.chdir(project_folder)
+        ##* Reset folder
+
+        #os.chdir(project_folder)
 
         return self
 
