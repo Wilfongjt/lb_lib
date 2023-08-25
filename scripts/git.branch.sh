@@ -69,6 +69,6 @@ if [ $(hasGitBranchChanges) != 0 ]; then
 fi
 echo 'D'
 # change to new branch
-export GH_BRANCH=$(get_input "gh.branch" "${GH_BRANCH}")
-echo "new branch ${GH_BRANCH}"
+export NEXT_BRANCH=$(get_input "gh.branch" "${GH_BRANCH}")
+echo "new branch ${NEXT_BRANCH}"
 # update .env
