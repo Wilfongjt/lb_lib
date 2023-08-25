@@ -37,6 +37,21 @@ function hasGitBranchChanges() {
   fi
   echo $rc
 }
+function createGitBranch() {
+  if [ $# -ne 1 ]; then
+    echo "Usage: createGitBranch <branch-name>"
+    return 1
+  fi
+  local branch_name="$1"
+  # Check if the branch already exists
+  if git show-ref --quiet "refs/heads/$branch_name"; then
+    echo "Branch '$branch_name' already exists."
+    return 1
+  fi
+  # Create and switch to the new branch
+  git checkout -b "$branch_name"
+  echo "Created and switched to branch '$branch_name'."
+}
 # open .env and load variables
 set -o allexport
 source .env set
@@ -70,5 +85,7 @@ fi
 echo 'D'
 # change to new branch
 export NEXT_BRANCH=$(get_input "gh.branch" "${GH_BRANCH}")
+$(createGitBranch "${NEXT_BRANCH}")
+git branch
 echo "new branch ${NEXT_BRANCH}"
 # update .env
