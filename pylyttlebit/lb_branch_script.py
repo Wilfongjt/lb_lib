@@ -89,6 +89,32 @@ class LbBranchScript(LbTextFile):
           echo "Created and switched to branch '$branch_name'."
         }
         
+        function updateOrAddLineInFile() {
+          if [ $# -ne 3 ]; then
+            echo "Usage: updateOrAddLineInFile <file> <search-pattern> <new-line>"
+            return 1
+          fi
+        
+          local file="$1"
+          local search_pattern="$2"
+          local new_line="$3"
+        
+          # Check if the file exists
+          if [ ! -e "$file" ]; then
+            echo "File '$file' does not exist."
+            return 1
+          fi
+        
+          # Check if the line already exists in the file
+          if grep -qF "$search_pattern" "$file"; then
+            sed -i "s|$search_pattern|$new_line|g" "$file"
+            echo "Updated line in '$file'."
+          else
+            echo "$new_line" >> "$file"
+            echo "Added line to '$file'."
+          fi
+        }
+
         # open .env and load variables
         set -o allexport
         source .env set
@@ -140,12 +166,12 @@ class LbBranchScript(LbTextFile):
         
         git branch
         echo "new branch ${NEXT_BRANCH}"
+
+        # update .env with GH_BRANCH=NEXT_BRANCH
         
+        $(updateOrAddLineInFile ".env" "GH_BRANCH=${GH_BRANCH}" "GH_BRANCH=${NEXT_BRANCH}")
         
-        
-        
-        # update .env
-        
+        export GH_BRANCH=${NEXT_BRANCH}
         '''
         return [ln.replace('        ', '') for ln in rc.split('\n')]
 
