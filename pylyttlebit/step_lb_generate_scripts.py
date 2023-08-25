@@ -2,6 +2,7 @@ import os
 from pprint import pprint
 from pylyttlebit.lb_step import LbStep
 from pylyttlebit.lb_constants import LbC
+from lb_branch_script import LbBranchScript
 from lb_rebase_script import LbRebaseScript
 from lb_project import LbProject
 
@@ -25,6 +26,8 @@ class LbGenerateScripts(LbStep):
             LbProject().create_folder(script_folder)
 
         ##* Generate rebase script in target project folder
+
+        actual = LbBranchScript().setFolder(script_folder).create().save()
 
         actual = LbRebaseScript().setFolder(script_folder).create().save()
 

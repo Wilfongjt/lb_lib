@@ -13,6 +13,8 @@ class LbConstants():
         self.APP_KEY = 'app'
         ##* APP_FOLDER_KEY
         self.APP_FOLDER_KEY = 'app_folder'
+        ##* BRANCH_SCRIPT_FILENAME
+        self.BRANCH_SCRIPT_FILENAME='git.branch.sh'
         ##* DEV_KEY
         self.DEV_KEY = 'Development'
         ##* DEV_FOLDER_KEY
