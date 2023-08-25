@@ -1,6 +1,6 @@
 import unittest
 from pprint import pprint
-from pylyttlebit.script_lb_rebase import ValidateInputs
+#from pylyttlebit.script_lb_rebase import ValidateInputs
 from pylyttlebit.lb_constants import LbC
 class ValidateInputsTest(unittest.TestCase):
     def setUp(self) -> None:

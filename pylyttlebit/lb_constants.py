@@ -40,6 +40,8 @@ class LbConstants():
 
         ##* rebase script filename
         self.REBASE_SCRIPT_FILENAME = 'git.rebase.sh'
+        ##* script folder key
+        self.SCRIPT_FOLDER_KEY = 'script_folder'
         ##* SOURCE_KEY
         self.SOURCE_KEY = 'source'
         ##* WORKSPACE_FOLDER_KEY

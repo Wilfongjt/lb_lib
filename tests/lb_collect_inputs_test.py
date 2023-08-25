@@ -1,5 +1,5 @@
 import unittest
-from pylyttlebit.script_lb_rebase import PromptRebaseInputs
+# from pylyttlebit.script_lb_rebase import PromptRebaseInputs
 from pylyttlebit.lb_constants import LbConstants
 class CollectInputsTest(unittest.TestCase):
     def setUp(self) -> None:

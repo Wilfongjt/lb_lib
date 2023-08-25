@@ -25,8 +25,9 @@ from pylyttlebit.step_lb_validate_input_variables import LbValidateInputVariable
 from pylyttlebit.step_lb_create_workspace import LbCreateWorkspace
 from pylyttlebit.step_lb_clone_project import LbCloneProject
 from pylyttlebit.step_lb_save_environment import LbSaveEnvironment
-from pylyttlebit.step_lb_status import LbStatus
+from pylyttlebit.step_lb_show_status import LbStatus
 from pylyttlebit.lb_stash import LbStash
+from pylyttlebit.step_lb_generate_scripts import LbGenerateScripts
 '''
 class LbEnvironment(LbDefaults):
     #### LbEnvironment Variables
@@ -101,6 +102,8 @@ class LbBranch(LbStepList):
         self.add(LbCreateWorkspace(lb_stash))
         ##1. Clone Project
         self.add(LbCloneProject(lb_stash))
+        ##1. Generate Rebase Script
+        self.add(LbGenerateScripts(lb_stash))
         ##1. Save Environment
         self.add(LbSaveEnvironment(lb_stash))
         ##1. Show Status

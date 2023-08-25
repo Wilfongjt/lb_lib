@@ -1,0 +1,32 @@
+---
+title: Branch Script
+---
+
+stateDiagram-v2
+    subgraph branch
+        [*] --> InitializeEnvironment: (stash)
+        InitializeEnvironment --> PromptInputs
+        PromptInputs --> ImputeVariables:ccc
+        PromptInputs --> PromptInputs:prompts
+        ImputeVariables --> ValidateInputs
+        ValidateInputs --> CreateWorkspace
+        CreateWorkspace --> CloneProject
+        CloneProject --> GenerateScripts
+        GenerateScripts --> SaveEnvironment
+        SaveEnvironment --> Status
+    end
+
+    subgraph xyx
+        #Status --> [*]
+        #Stash --> Prompts
+        Prompts --> WS_Organization
+        Prompts --> WS_Workspace
+        Prompts --> GH_User
+        Prompts --> GH_Project
+        Prompts --> GH_Branch
+        #Stash --> Project
+        Project --> folder
+        Project --> repo_url
+        Project --> script_folder
+    end
+

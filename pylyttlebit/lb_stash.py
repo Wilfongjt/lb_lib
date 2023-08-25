@@ -23,12 +23,10 @@ class LbStash(dict):
         #self[LbC().INVALID_KEY]=[]
         self[LbC().SOURCE_KEY]= {'folder': '/'.join(str(__file__).split('/')[0:-1])}
         self[LbC().PROJECT_KEY]={'folder': 'TBD',
-                                 'repo_url': 'TBD'}
-
+                                 'repo_url': 'TBD',
+                                 'script_folder': 'TBD'}
         self[LbC().PROMPTS_KEY]= LbDefaults()
         self[LbC().PROCESS_KEY]=[]
-
-
 
     def getInvalid(self):
         return self[LbC().INVALID_KEY]
@@ -185,7 +183,9 @@ class LocalStash(LbStash):
         ##* set repo url
         self[LbC().PROJECT_KEY][LbC().REPO_URL_KEY]=LbC().REPO_URL_TEMPLATE.format(LbProject().getGHUser(),self[LbC().PROMPTS_KEY][LbC().GH_PROJECT_KEY])
 
-        ##* set local
+        ##* set script_folder
+        self[LbC().PROJECT_KEY][LbC().SCRIPT_FOLDER_KEY] = '{}/scripts'.format('/'.join(str(os.getcwd()).split('/')[0:-1]))
+
 
         return self
 
