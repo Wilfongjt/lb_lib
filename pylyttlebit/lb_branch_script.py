@@ -103,7 +103,8 @@ class LbBranchScript(LbTextFile):
         
         echo 'C'
         
-        # identify changes to commit
+        # dont allow new branch when changes are outstanding
+        
         if [ $(hasGitBranchChanges) != 0 ]; then
             echo ${GH_BRANCH}
             echo "${GH_BRANCH} has uncommited changes ... Run git.rebase.sh before opening a new branch"
@@ -111,10 +112,12 @@ class LbBranchScript(LbTextFile):
         fi
         
         echo 'D'
-        # commit changes to local repo
+
         # change to new branch
+
         export GH_BRANCH=$(get_input "gh.branch" "${GH_BRANCH}")
         echo "new branch ${GH_BRANCH}"
+        
         # update .env
         
         '''
