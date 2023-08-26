@@ -50,7 +50,33 @@ function createGitBranch() {
   fi
   # Create and switch to the new branch
   git checkout -b "$branch_name"
-  echo "Created and switched to branch '$branch_name'."
+  #echo "Created and switched to branch '$branch_name'."
+}
+function replaceLineInFile() {
+  if [ $# -ne 3 ]; then
+    echo "Usage: replaceLineInFile <filename> <target_line> <replacement_line>"
+    return 1
+  fi
+  local filename="$1"
+  local target_line="$2"
+  local replacement_line="$3"
+  if [ ! -f "$filename" ]; then
+    echo "File '$filename' not found."
+    return 1
+  fi
+  local line=""
+  local backup="$filename.bak"
+  echo "# start" > temp.env
+  while IFS= read -r line; do
+    # Process each line here, you can replace this with your own logic.
+    #echo "Line: $line"
+    if [ $line = $target_line ]; then
+      echo $replacement_line >> temp.env
+    else
+      echo "$line" >> temp.env
+    fi
+  done < "$filename"
+  cp "temp.env" "$filename"
 }
 # open .env and load variables
 set -o allexport
@@ -69,23 +95,27 @@ if [ $(current_git_branch) = ${GH_TRUNK} ]; then
     echo "Script wont commit changes to main branch ${GH_TRUNK}"
     exit
 fi
+echo 'C'
 # check for expected branch ie GH_BRANCH must match current branch
+git branch
 if [ $(current_git_branch) != ${GH_BRANCH} ]; then
     echo "expected branch ${GH_BRANCH} found $(current_git_branch)"
     echo "...stopping"
     exit
 fi
-echo 'C'
+echo 'D'
 # dont allow new branch when changes are outstanding
 if [ $(hasGitBranchChanges) != 0 ]; then
     echo ${GH_BRANCH}
     echo "${GH_BRANCH} has uncommited changes ... Run git.rebase.sh before opening a new branch"
     exit
 fi
-echo 'D'
+echo 'E'
 # change to new branch
 export NEXT_BRANCH=$(get_input "gh.branch" "${GH_BRANCH}")
 $(createGitBranch "${NEXT_BRANCH}")
 git branch
 echo "new branch ${NEXT_BRANCH}"
-# update .env
+# update .env with GH_BRANCH=NEXT_BRANCH
+echo $(replaceLineInFile ".env" "GH_BRANCH=${GH_BRANCH}" "GH_BRANCH=${NEXT_BRANCH}")
+export GH_BRANCH=${NEXT_BRANCH}
