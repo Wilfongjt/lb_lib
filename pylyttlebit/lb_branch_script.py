@@ -86,34 +86,39 @@ class LbBranchScript(LbTextFile):
         
           # Create and switch to the new branch
           git checkout -b "$branch_name"
-          echo "Created and switched to branch '$branch_name'."
+          #echo "Created and switched to branch '$branch_name'."
         }
         
-        function updateOrAddLineInFile() {
+        function replaceLineInFile() {
           if [ $# -ne 3 ]; then
-            echo "Usage: updateOrAddLineInFile <file> <search-pattern> <new-line>"
+            echo "Usage: replaceLineInFile <filename> <target_line> <replacement_line>"
             return 1
           fi
         
-          local file="$1"
-          local search_pattern="$2"
-          local new_line="$3"
+          local filename="$1"
+          local target_line="$2"
+          local replacement_line="$3"
         
-          # Check if the file exists
-          if [ ! -e "$file" ]; then
-            echo "File '$file' does not exist."
+          if [ ! -f "$filename" ]; then
+            echo "File '$filename' not found."
             return 1
           fi
+          local line=""
+          local backup="$filename.bak"
+          echo "# start" > temp.env
+          while IFS= read -r line; do
+            # Process each line here, you can replace this with your own logic.
+            #echo "Line: $line"
+            if [ $line = $target_line ]; then
+              echo $replacement_line >> temp.env
+            else
+              echo "$line" >> temp.env
+            fi
         
-          # Check if the line already exists in the file
-          if grep -qF "$search_pattern" "$file"; then
-            sed -i "s|$search_pattern|$new_line|g" "$file"
-            echo "Updated line in '$file'."
-          else
-            echo "$new_line" >> "$file"
-            echo "Added line to '$file'."
-          fi
+          done < "$filename"
+          cp "temp.env" "$filename"
         }
+
 
         # open .env and load variables
         set -o allexport
@@ -138,15 +143,16 @@ class LbBranchScript(LbTextFile):
             exit
         fi
         
+        echo 'C'
         # check for expected branch ie GH_BRANCH must match current branch
-        
+        git branch
         if [ $(current_git_branch) != ${GH_BRANCH} ]; then
             echo "expected branch ${GH_BRANCH} found $(current_git_branch)"
             echo "...stopping"
             exit
         fi
         
-        echo 'C'
+        echo 'D'
         
         # dont allow new branch when changes are outstanding
         
@@ -156,7 +162,7 @@ class LbBranchScript(LbTextFile):
             exit
         fi
         
-        echo 'D'
+        echo 'E'
 
         # change to new branch
 
@@ -169,9 +175,9 @@ class LbBranchScript(LbTextFile):
 
         # update .env with GH_BRANCH=NEXT_BRANCH
         
-        $(updateOrAddLineInFile ".env" "GH_BRANCH=${GH_BRANCH}" "GH_BRANCH=${NEXT_BRANCH}")
-        
+        echo $(replaceLineInFile ".env" "GH_BRANCH=${GH_BRANCH}" "GH_BRANCH=${NEXT_BRANCH}")
         export GH_BRANCH=${NEXT_BRANCH}
+        
         '''
         return [ln.replace('        ', '') for ln in rc.split('\n')]
 
@@ -302,6 +308,7 @@ def main():
     # pprint(actual)
     assert (actual != [])
 
+    print('executue in terminal')
 
 if __name__ == "__main__":
     # execute only if run as a script
