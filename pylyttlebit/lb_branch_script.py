@@ -86,7 +86,7 @@ class LbBranchScript(LbTextFile):
         
           # Create and switch to the new branch
           git checkout -b "$branch_name"
-          #echo "Created and switched to branch '$branch_name'."
+          echo "Created and switched to branch '$branch_name'."
         }
         
         function replaceLineInFile() {
@@ -100,6 +100,7 @@ class LbBranchScript(LbTextFile):
           local replacement_line="$3"
         
           if [ ! -f "$filename" ]; then
+            
             echo "File '$filename' not found."
             return 1
           fi
@@ -145,7 +146,7 @@ class LbBranchScript(LbTextFile):
         
         echo 'C'
         # check for expected branch ie GH_BRANCH must match current branch
-        git branch
+        
         if [ $(current_git_branch) != ${GH_BRANCH} ]; then
             echo "expected branch ${GH_BRANCH} found $(current_git_branch)"
             echo "...stopping"
@@ -157,8 +158,8 @@ class LbBranchScript(LbTextFile):
         # dont allow new branch when changes are outstanding
         
         if [ $(hasGitBranchChanges) != 0 ]; then
-            echo ${GH_BRANCH}
             echo "${GH_BRANCH} has uncommited changes ... Run git.rebase.sh before opening a new branch"
+            echo "...stopping"
             exit
         fi
         
@@ -168,11 +169,10 @@ class LbBranchScript(LbTextFile):
 
         export NEXT_BRANCH=$(get_input "gh.branch" "${GH_BRANCH}")
         
-        $(createGitBranch "${NEXT_BRANCH}")
+        echo $(createGitBranch "${NEXT_BRANCH}")
         
-        git branch
-        echo "new branch ${NEXT_BRANCH}"
-
+        echo 'F'
+        
         # update .env with GH_BRANCH=NEXT_BRANCH
         
         echo $(replaceLineInFile ".env" "GH_BRANCH=${GH_BRANCH}" "GH_BRANCH=${NEXT_BRANCH}")

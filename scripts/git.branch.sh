@@ -50,7 +50,7 @@ function createGitBranch() {
   fi
   # Create and switch to the new branch
   git checkout -b "$branch_name"
-  #echo "Created and switched to branch '$branch_name'."
+  echo "Created and switched to branch '$branch_name'."
 }
 function replaceLineInFile() {
   if [ $# -ne 3 ]; then
@@ -106,16 +106,17 @@ fi
 echo 'D'
 # dont allow new branch when changes are outstanding
 if [ $(hasGitBranchChanges) != 0 ]; then
-    echo ${GH_BRANCH}
     echo "${GH_BRANCH} has uncommited changes ... Run git.rebase.sh before opening a new branch"
+    echo "...stopping"
     exit
 fi
 echo 'E'
 # change to new branch
 export NEXT_BRANCH=$(get_input "gh.branch" "${GH_BRANCH}")
-$(createGitBranch "${NEXT_BRANCH}")
+echo $(createGitBranch "${NEXT_BRANCH}")
+echo 'F'
 git branch
-echo "new branch ${NEXT_BRANCH}"
+#echo "new branch ${NEXT_BRANCH}"
 # update .env with GH_BRANCH=NEXT_BRANCH
 echo $(replaceLineInFile ".env" "GH_BRANCH=${GH_BRANCH}" "GH_BRANCH=${NEXT_BRANCH}")
 export GH_BRANCH=${NEXT_BRANCH}
