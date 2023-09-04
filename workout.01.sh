@@ -174,6 +174,7 @@ function checkout_branch() {
   fi
   # has changes
   if [ "$(has_branch_changes)" = 'true' ]; then
+    echo "    Uncommited changes"
     return 1
   fi
 
@@ -556,6 +557,7 @@ echo "    branch: $(is_ok $?)"
 #
 # Checkout branch when current branch is main
 #
+echo "Checkout branch when current branch is main"
 rc=$(checkout_branch "$GH_BRANCH")
 echo "    checked out $GH_BRANCH: $(is_ok $?)"
 
