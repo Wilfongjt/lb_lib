@@ -535,8 +535,8 @@ echo "    clone is $(is_ok $?)"
 # Stage files...add . when current branch is not main
 #
 echo "* Stage Files when current branch is not main"
+echo "    current branch: $(get_branch_current)"
 rc=$(stage_branch_current)
-echo $(get_branch_current)
 echo "    $GH_PROJECT staging: $(is_ok $?)"
 
 echo "----"
@@ -544,8 +544,11 @@ echo "----"
 #
 # Commit branch when current branch is not main
 #
-echo "Commit branch when current branch is not main"
+echo "* Commit branch when current branch is not main"
+echo "    current branch: $(get_branch_current)"
 echo $(commit_branch_current "$GH_MESSAGE")
+echo "    $GH_PROJECT commit: $(is_ok $?)"
+
 exit
 # Create branch when it doesnt exist
 
