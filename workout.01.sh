@@ -135,10 +135,10 @@ function create_branch() {
     return 0
   fi
 
-  if [[ $(count_branches) -ne 1 ]]; then
-    echo "Cannot create more than 1 branch"
-    return 1
-  fi
+  #if [[ $(count_branches) -ne 1 ]]; then
+  #  echo "Cannot create more than 1 branch"
+  #  return 1
+  #fi
 
   git branch "$new_branch"
   echo "new branch $new_branch"
@@ -549,7 +549,7 @@ echo "    $GH_PROJECT commit: $(is_ok $?)"
 
 # Create branch when it doesnt exist
 echo "Create branch when it doesnt exist"
-
+echo "   branch $GH_BRANCH exists: $(has_branch)"
 rc=$(create_branch "$GH_BRANCH")
 echo "    branch: $(is_ok $?)"
 exit
