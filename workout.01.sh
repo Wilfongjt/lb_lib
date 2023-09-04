@@ -532,7 +532,9 @@ echo "    clone is $(is_ok $?)"
 # Stage files...add . when current branch is not main
 #
 echo "* Stage Files when current branch is not main"
-echo $(stage_branch_current)
+rc=$(stage_branch_current)
+echo "    $GH_PROJECT staging: $(is_ok $?)"
+
 echo "----"
 
 #
