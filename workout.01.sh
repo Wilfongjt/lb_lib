@@ -548,8 +548,8 @@ rc=$(commit_branch_current "$GH_MESSAGE")
 echo "    $GH_PROJECT commit: $(is_ok $?)"
 
 # Create branch when it doesnt exist
-echo "Create branch when it doesnt exist"
-echo "   branch $GH_BRANCH exists: $(has_branch $GH_BRANCH)"
+echo "* Create branch when it doesnt exist"
+echo "    branch $GH_BRANCH exists: $(has_branch $GH_BRANCH)"
 rc=$(create_branch "$GH_BRANCH")
 echo "    branch: $(is_ok $?)"
 exit
