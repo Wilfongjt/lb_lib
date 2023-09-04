@@ -409,6 +409,9 @@ function get_branch_current() {
         echo "Usage: get_branch_current "
         return 1
     fi
+
+    echo $(git symbolic-ref --short HEAD 2>/dev/null)
+
     return 0
 }; echo $(get_branch_current "help");
 
