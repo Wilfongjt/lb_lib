@@ -164,12 +164,12 @@ function checkout_branch() {
   local current_branch=$(git symbolic-ref --short HEAD 2>/dev/null)
   # branch must exist
   if [[ "$(has_branch $branch_name)" = "false" ]]; then
-    echo "Cannot checkout branch, branch not found: $branch_name"
+    echo "    Cannot checkout branch, branch not found: $branch_name"
     return 1
   fi
   # already checked out
   if [[ "$branch_name" = "$current_branch" ]]; then
-    echo "already checkedout $branch_name"
+    echo "    Already checkedout $branch_name"
     return 0
   fi
   # has changes
@@ -556,7 +556,7 @@ echo "    branch: $(is_ok $?)"
 #
 # Checkout branch when current branch is main
 #
-echo $(checkout_branch "$GH_BRANCH")
+rc=$(checkout_branch "$GH_BRANCH")
 echo "    checked out $GH_BRANCH: $(is_ok $?)"
 
 git status
