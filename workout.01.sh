@@ -552,11 +552,13 @@ echo "* Create branch when it doesnt exist"
 echo "    branch $GH_BRANCH exists: $(has_branch $GH_BRANCH)"
 rc=$(create_branch "$GH_BRANCH")
 echo "    branch: $(is_ok $?)"
-exit
+
 #
 # Checkout branch when current branch is main
 #
 echo $(checkout_branch "$GH_BRANCH")
+echo "    checked out $GH_BRANCH: $(is_ok $?)"
+
 git status
 exit
 #
