@@ -546,7 +546,7 @@ echo "----"
 #
 echo "* Commit branch when current branch is not main"
 echo "    current branch: $(get_branch_current)"
-echo $(commit_branch_current "$GH_MESSAGE")
+rc=$(commit_branch_current "$GH_MESSAGE")
 echo "    $GH_PROJECT commit: $(is_ok $?)"
 
 exit
