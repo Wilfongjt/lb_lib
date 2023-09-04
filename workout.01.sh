@@ -183,12 +183,14 @@ function checkout_branch() {
 }; echo $(checkout_branch "main"); echo $(checkout_branch); #echo $(checkout_branch "00_init");
 #
 function stage_branch_current() {
+  # Stage files...add . when current branch is not main
   if [ $# -ne 0 ]; then
         echo "Usage: stage_branch_current"
         return 1
   fi
-  # dont stage the main bRANCH
   local current_branch=$(git symbolic-ref --short HEAD 2>/dev/null)
+
+  # dont stage the main bRANCH
 
   if [[ "$current_branch" = "main" ]]; then
       echo "Dont stage main branch"
@@ -202,6 +204,8 @@ function stage_branch_current() {
 };
 #
 function commit_branch_current() {
+  # Commit branch when current branch is not main
+
   if [ $# -ne 1 ]; then
         echo "Usage: commit_branch_current <commit-message>"
         return 1
@@ -213,6 +217,7 @@ function commit_branch_current() {
   local commit_message="$1"
 
   git commit -m "$commit_message"
+  echo "commited $current_branch"
 
   return 0
 };
@@ -557,7 +562,7 @@ echo "    branch: $(is_ok $?)"
 #
 # Checkout branch when current branch is main
 #
-echo "Checkout branch when current branch is main"
+echo "* Checkout branch when current branch is main"
 rc=$(checkout_branch "$GH_BRANCH")
 echo "    checked out $GH_BRANCH: $(is_ok $?)"
 
