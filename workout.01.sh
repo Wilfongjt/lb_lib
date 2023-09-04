@@ -35,13 +35,13 @@ function get_input() {
     local default=$2
     local answer
 
-    #if [[ "$default" -eq "" ]]; then
     if [ -z "$default" ]; then
       default="TBD"
     fi
+    prompt="....$prompt"
     prompt+="[${default}]"
     read -p $prompt answer
-    #if [ "$answer" = "" ]; then
+
     if [ -z "$answer" ]; then
       answer=$default
     fi
@@ -216,27 +216,7 @@ function commit_branch_current() {
   return 0
 };
 #
-function dep_add_commit_branch() {
-  # Add & Commit branch when current branch is not main
-  #                          and current branch has uncommitted changes
-  if [ $# -ne 1 ]; then
-        echo "Usage: add_commit_branch <branch-name> <commit-message>"
-        return 1
-  fi
-  local branch_name="$1"
-  local message="$2"
-  # Must have commit message
-  # No commits to main
-  # Get the current branch name
-  local current_branch=$(git symbolic-ref --short HEAD 2>/dev/null)
-  #if [[ "$branch_name" -ne "$current_branch" ]]; then
-    #echo "Cannot commit to main branch"
-    #return 1
 
-  #fi
-  return 0
-};
-#
 function create_env() {
     if [ $# -ne 1 ]; then
         echo "Usage: create_env <file_name> "
@@ -423,32 +403,6 @@ function clone_project() {
     cd "$last_folder/"
     return 0
 };     echo $(clone_project);
-
-function dephas_branch_changes() {
-    if [ $# -ne 0 ]; then
-        echo "Usage: has_branch_changes"
-        return 1
-    fi
-    local rc
-    # Get the current branch name
-    current_branch=$(git symbolic-ref --short HEAD 2>/dev/null)
-    # Check if the branch exists and is not empty
-    if [ -n "$current_branch" ]; then
-      # Check if there are any changes in the branch
-      if [[ $(git status --porcelain) ]]; then
-        echo "Branch '$current_branch' has uncommitted changes."
-        rc=1
-      else
-        echo "Branch '$current_branch' is clean with no uncommitted changes."
-        rc=0
-      fi
-    else
-      echo "Not in a Git branch."
-      rc=2
-    fi
-    #echo $rc
-    return $rc
-}; #echo $(has_branch_changes "help")
 #
 function get_branch_current() {
     if [ $# -ne 0 ]; then
@@ -457,35 +411,7 @@ function get_branch_current() {
     fi
     return 0
 }; echo $(get_branch_current "help");
-#function set_env() { env_filename variable_name variable_value return 0 }
 
-function depadd_branch() {
-    if [ $# -ne 1 ]; then
-        echo "Usage: add_branch <branch_name> "
-        return 1
-    fi
-
-    local branch_name="$1" # new branch name
-    if [$(count_branches) -ne 1 ]; then
-      # commit changes
-      #if [  ]; then
-      #  # git add .
-    #  export GH_MESSAGE=$(get_input "gh.message" "${GH_MESSAGE}")
-      #  #git commit -m $GH_MESSAGE"
-      #fi
-      return 1
-    fi
-    # Get the current branch name
-    local current_branch=$(git symbolic-ref --short HEAD 2>/dev/null)
-    #if [[ "$branch_name" -eq "$current_branch" ]]; then
-
-    #fi
-
-    # save current branches changes
-    #git checkout "$branch_name"
-
-    return 0
-}; #echo $(add_branch)
 function set_branch() {
     if [ $# -ne 1 ]; then
         echo "Usage: set_branch <branch_name> "
@@ -510,45 +436,7 @@ echo "GH_BRANCH=GH_BRANCH" > workout.env
 echo "GH_BRANCH2=GH_BRANCH" >> workout.env
 echo "GH_BRANCH3=GH_BRANCH" >> workout.env
 
-function depreplace_line_in_file() {
-    # write original file (.env) one line at a time to temporaty file (temp.env)
-    # replace line with replacement_line when line equals target_line
-    # overwrite original file (.env) with temporary file ()
-    # delete temporary file
-    if [ $# -ne 3 ]; then
-      echo "Usage: replace_line_in_file <filename> <target_line> <replacement_line>"
-      return 1
-    fi
 
-    local filename="$1"
-    local target_line="$2"
-    local replacement_line="$target_line=$3"
-    echo "file $filename"
-    echo "target_line $target_line"
-    echo "replacement_line $replacement_line"
-    if [ ! -f "$filename" ]; then
-      echo "File '$filename' not found."
-      return 1
-    fi
-    local line=""
-    local backup="$filename.bak"
-    echo $replacement_line > temp.env
-    while IFS= read -r line; do
-      # Process each line here, you can replace this with your own logic.
-      #echo "Line: $line"
-      if [ $line = $target_line ]; then
-        echo "# $line" >> temp.env
-        echo $replacement_line >> temp.env
-      else
-        echo "$line" >> temp.env
-      fi
-
-    done < "$filename"
-    # replace original .env with new temp.env
-    cp "temp.env" "$filename"
-    # delete the temporary file
-    rm "temp.env"
-};
 #
 # SCRIPT START
 #
@@ -556,10 +444,11 @@ echo "... Initialize Environment ..."
 #
 # Initialize from environment file when .env found
 #
+echo "* Initialize from environment file when .env found"
 env_file_name="xxxx.env"
 if test -f "$env_file_name"; then
     #if [ -f "$env_file_name" ]; then
-    echo "Load environment from file $env_file_name"
+    echo "    Load environment from file $env_file_name"
     set -o allexport
     source $env_file_name set
     set +o allexport
@@ -578,7 +467,7 @@ rc=$(create_env "$env_file_name")
 #
 # Confirm Inputs
 #
-echo "    Confirm Inputs"
+echo "* Confirm Inputs"
 export GH_TRUNK=main
 export WS_ORGANIZATION=$(get_input "ws.organization" "${WS_ORGANIZATION}")
 export WS_WORKSPACE=$(get_input "ws.workspace" "${WS_WORKSPACE}")
@@ -599,7 +488,7 @@ rc=$(validate_inputs "GH_")
 echo "    validate GH $(is_ok $?)"
 
 if [[ $(validate_inputs "WS_") -eq 0 || $(validate_inputs "GH_") -eq 0 ]]; then
-  echo "* Invalid Input stopping..."
+  echo "* Invalid Input"
   echo "$(show_inputs "WS_")"
   echo "$(show_inputs "GH_")"
   echo "    ...stopped"
@@ -611,18 +500,20 @@ fi
 # Update the environment file
 #
 echo "* Update the environment file"
-# echo "hio $env_file_name $WS_ORGANIZATION"
+
 rc=$(add_env_variable "$env_file_name" "WS_ORGANIZATION" "$WS_ORGANIZATION")
 
 rc=$(add_env_variable "$env_file_name" "WS_WORKSPACE" "$WS_WORKSPACE")
 rc=$(add_env_variable "$env_file_name" "GH_PROJECT" "$GH_PROJECT")
 rc=$(add_env_variable "$env_file_name" "GH_USER" "$GH_USER")
 rc=$(add_env_variable "$env_file_name" "GH_BRANCH" "$GH_BRANCH")
-echo "    env is updated"
+echo "    Updated updated environment file: $env_file_name"
+
 #
 # Create the workspace when folder is not found
 #
-echo "* Create workspace"
+echo "* Create workspace when folder is not found"
+
 rc=$(create_workspace "$WS_ORGANIZATION" "$WS_WORKSPACE")
 echo "    workspace is $(is_ok $?)"
 
@@ -637,18 +528,19 @@ echo "    workspace: ${HOME}/Development/${WS_ORGANIZATION}/${WS_WORKSPACE}"
 echo "    project  :   ${HOME}/Development/${WS_ORGANIZATION}/${WS_WORKSPACE}/${GH_PROJECT}"
 rc=$(clone_project "$WS_ORGANIZATION" "$WS_WORKSPACE" "$GH_PROJECT" "$GH_USER")
 echo "    clone is $(is_ok $?)"
-exit
+
 # Stage files...add . when current branch is not main
 #
-echo "* Stage Files"
+echo "* Stage Files when current branch is not main"
 echo $(stage_branch_current)
 echo "----"
-exit
+
 #
 # Commit branch when current branch is not main
 #
+echo "Commit branch when current branch is not main"
 echo $(commit_branch_current "$GH_MESSAGE")
-
+exit
 # Create branch when it doesnt exist
 
 echo $(create_branch "$GH_BRANCH")
@@ -657,6 +549,7 @@ echo $(create_branch "$GH_BRANCH")
 # Checkout branch when current branch is main
 #
 echo $(checkout_branch "$GH_BRANCH")
+git status
 exit
 #
 # Add & Commit branch when current branch is not main

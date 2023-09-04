@@ -1,6 +1,5 @@
 #!/bin/bash
-function get_input()
-{
+function get_input(){
   # prompt for input
   # $1 is prompt
   # $2 is default value
@@ -97,7 +96,6 @@ if [ $(current_git_branch) = ${GH_TRUNK} ]; then
 fi
 echo 'C'
 # check for expected branch ie GH_BRANCH must match current branch
-git branch
 if [ $(current_git_branch) != ${GH_BRANCH} ]; then
     echo "expected branch ${GH_BRANCH} found $(current_git_branch)"
     echo "...stopping"
@@ -115,8 +113,7 @@ echo 'E'
 export NEXT_BRANCH=$(get_input "gh.branch" "${GH_BRANCH}")
 echo $(createGitBranch "${NEXT_BRANCH}")
 echo 'F'
-git branch
-#echo "new branch ${NEXT_BRANCH}"
 # update .env with GH_BRANCH=NEXT_BRANCH
+echo ls
 echo $(replaceLineInFile ".env" "GH_BRANCH=${GH_BRANCH}" "GH_BRANCH=${NEXT_BRANCH}")
 export GH_BRANCH=${NEXT_BRANCH}

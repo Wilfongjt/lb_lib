@@ -25,11 +25,52 @@ class LbBranchScript(LbTextFile):
                 self.append(ln)
 
         return self
+
     def getStartText(self):
+        rc = '''
+        #!/bin/bash
+        # functions
+        function get_input() {
+            if [ $# -ne 2 ]; then
+                echo "Usage: get_input <prompt> <default>"
+                return 1
+            fi
+        }
+        function get_current_branch() {}
+        function has_repo() {}
+        function has_changes() {}
+        function clone_repo() {}
+        function initialize_env() {}
+        function create_branch() {}
+        function replace_line_in_file() {}
+        function rebase_branch() {}
+        
+        # script
+        # clone when .git not found
+                
+        # initalize .env with WS_ORGANIZATION=TBD when .env is not found
+        # initalize .env with WS_WORKSPACE=TBD when .env is not found
+        # initalize .env with GH_USER=TBD when .env is not found
+        # initalize .env with GH_PROJECT=TBD when .env is not found
+        # initalize .env with GH_BRANCH=TBD when .env is not found
+        
+        # stop when current branch is main
+        # stop when current branch is not equal to GH_BRANCH
+        
+        # stop when GH_BRANCH = TBD
+        
+        # rebase when 
+        
+        '''
+    def depgetStartText(self):
         rc = '''
         #!/bin/bash
         function get_input()
         {
+            if [ $# -ne 2 ]; then
+                echo "Usage: get_input <prompt> <default>"
+                return 1
+            fi
           # prompt for input
           # $1 is prompt
           # $2 is default value
@@ -100,7 +141,6 @@ class LbBranchScript(LbTextFile):
           local replacement_line="$3"
         
           if [ ! -f "$filename" ]; then
-            
             echo "File '$filename' not found."
             return 1
           fi
@@ -111,13 +151,17 @@ class LbBranchScript(LbTextFile):
             # Process each line here, you can replace this with your own logic.
             #echo "Line: $line"
             if [ $line = $target_line ]; then
+              echo "# $line" >> temp.env
               echo $replacement_line >> temp.env
             else
               echo "$line" >> temp.env
             fi
         
           done < "$filename"
+          # replace original .env with new temp.env
           cp "temp.env" "$filename"
+          # delete the temporary file
+          rm "temp.env"
         }
 
 
@@ -174,7 +218,7 @@ class LbBranchScript(LbTextFile):
         echo 'F'
         
         # update .env with GH_BRANCH=NEXT_BRANCH
-        
+        echo ls
         echo $(replaceLineInFile ".env" "GH_BRANCH=${GH_BRANCH}" "GH_BRANCH=${NEXT_BRANCH}")
         export GH_BRANCH=${NEXT_BRANCH}
         
