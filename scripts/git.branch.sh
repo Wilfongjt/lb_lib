@@ -1,6 +1,5 @@
 #!/bin/bash
-function get_input()
-{
+function get_input(){
   # prompt for input
   # $1 is prompt
   # $2 is default value
@@ -50,7 +49,7 @@ function createGitBranch() {
   fi
   # Create and switch to the new branch
   git checkout -b "$branch_name"
-  #echo "Created and switched to branch '$branch_name'."
+  echo "Created and switched to branch '$branch_name'."
 }
 function replaceLineInFile() {
   if [ $# -ne 3 ]; then
@@ -97,7 +96,6 @@ if [ $(current_git_branch) = ${GH_TRUNK} ]; then
 fi
 echo 'C'
 # check for expected branch ie GH_BRANCH must match current branch
-git branch
 if [ $(current_git_branch) != ${GH_BRANCH} ]; then
     echo "expected branch ${GH_BRANCH} found $(current_git_branch)"
     echo "...stopping"
@@ -106,16 +104,16 @@ fi
 echo 'D'
 # dont allow new branch when changes are outstanding
 if [ $(hasGitBranchChanges) != 0 ]; then
-    echo ${GH_BRANCH}
     echo "${GH_BRANCH} has uncommited changes ... Run git.rebase.sh before opening a new branch"
+    echo "...stopping"
     exit
 fi
 echo 'E'
 # change to new branch
 export NEXT_BRANCH=$(get_input "gh.branch" "${GH_BRANCH}")
-$(createGitBranch "${NEXT_BRANCH}")
-git branch
-echo "new branch ${NEXT_BRANCH}"
+echo $(createGitBranch "${NEXT_BRANCH}")
+echo 'F'
 # update .env with GH_BRANCH=NEXT_BRANCH
+echo ls
 echo $(replaceLineInFile ".env" "GH_BRANCH=${GH_BRANCH}" "GH_BRANCH=${NEXT_BRANCH}")
 export GH_BRANCH=${NEXT_BRANCH}
