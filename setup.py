@@ -1,9 +1,10 @@
 from setuptools import setup, find_packages
 
-from pylyttlebit import __version__
+#from pylyttlebit import __version__
+from git_script import __version__
 
 setup(
-    name='pylyttlebit',
+    name='git_script',
     version=__version__,
     url='https://github.com/Wilfongjt/lb_lib',
     author='James Wilfong',

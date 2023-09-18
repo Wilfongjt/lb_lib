@@ -136,7 +136,7 @@ class LbStash(dict):
         ##* set project folder
         self[LbC().PROJECT_KEY][LbC().PROJECT_FOLDER_KEY]='/'.join(str(os.getcwd()).split('/')[0:-1])
         ##* set repo url
-        self[LbC().PROJECT_KEY][LbC().REPO_URL_KEY]=LbC().REPO_URL_TEMPLATE.format(LbProject().getGHUser(),self[LbC().PROMPTS_KEY][LbC().GH_PROJECT_KEY])
+        self[LbC().PROJECT_KEY][LbC().REPO_URL_KEY]=LbC().GIT_URL_TEMPLATE.format(LbProject().getGHUser(),self[LbC().PROMPTS_KEY][LbC().GH_PROJECT_KEY])
 
         return self
         '''

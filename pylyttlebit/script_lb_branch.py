@@ -102,7 +102,7 @@ class LbBranch(LbStepList):
         self.add(LbCreateWorkspace(lb_stash))
         ##1. Clone Project
         self.add(LbCloneProject(lb_stash))
-        ##1. Generate Rebase Script
+        ##1. Generate Rebase ProjectScript
         self.add(LbGenerateScripts(lb_stash))
         ##1. Save Environment
         self.add(LbSaveEnvironment(lb_stash))

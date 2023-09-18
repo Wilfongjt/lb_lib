@@ -184,7 +184,7 @@ class LbBranchScript(LbTextFile):
         # never allow a commit to main branch
         
         if [ $(current_git_branch) = ${GH_TRUNK} ]; then
-            echo "Script wont commit changes to main branch ${GH_TRUNK}"
+            echo "ProjectScript wont commit changes to main branch ${GH_TRUNK}"
             exit
         fi
         

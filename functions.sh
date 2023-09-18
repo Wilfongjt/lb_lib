@@ -1,25 +1,22 @@
-#!/bin/bash
-
-echo "... Functions ..."
 function is_ok() {
-    if [ $# -ne 1 ]; then
-        echo "Usage: is_ok <return_code_number>"
+    if [ $# -ne 2 ]; then
+        echo "Usage: is_ok <return_code_number> <fail-message>"
         return 1
     fi
     local rc=$1
+    local fail_msg=$2
     if [ $rc -eq 0 ]; then
         echo "ok"
     else
-        echo "bad"
+        echo "$fail_msg"
     fi
 
-    return 0
+    return $rc
 };
-echo $(is_ok 0);
-echo $(is_ok "0");
-echo $(is_ok 1);
-echo $(is_ok "1");
-#exit
+#echo $(is_ok 0);
+#echo $(is_ok "0");
+#echo $(is_ok 1);
+#echo $(is_ok "1");
 #valid_inputs=1 # global to indicate valid inputs
 # base independent functions
 function get_input() {
@@ -35,19 +32,20 @@ function get_input() {
     local default=$2
     local answer
 
+    #if [[ "$default" -eq "" ]]; then
     if [ -z "$default" ]; then
       default="TBD"
     fi
-    prompt="....$prompt"
     prompt+="[${default}]"
     read -p $prompt answer
-
+    #if [ "$answer" = "" ]; then
     if [ -z "$answer" ]; then
       answer=$default
     fi
     echo $answer
     return 0
-};    echo $(get_input);
+};    #echo $(get_input);
+
 # echo $(get_input "GH_PROJECT" "$GH_PROJECT")
 #
 function has_repo() {
@@ -65,7 +63,7 @@ function has_repo() {
     #echo "repo exists"
     echo 1
     return 0
-};     echo $(has_repo "help");
+};     #echo $(has_repo "help");
 #
 function has_branch() {
     if [ $# -ne 1 ]; then
@@ -83,7 +81,7 @@ function has_branch() {
     fi
 
     echo "$result"
-}; echo $(has_branch); #echo $(has_branch "main"); echo $(has_branch "00_init"); echo $(has_branch "01_bad")
+}; #echo $(has_branch); #echo $(has_branch "main"); echo $(has_branch "00_init"); echo $(has_branch "01_bad")
 #
 function has_branch_changes() {
 
@@ -111,7 +109,7 @@ function count_branches() {
 
   # Print the branch count
   echo "$branch_count"
-}; echo $(count_branches "help"); #echo "branches...$(count_branches)"
+}; #echo $(count_branches "help"); #echo "branches...$(count_branches)"
 #if [$(count_branches) -eq 2 ]; then
 #  echo "True"
 #fi
@@ -135,19 +133,17 @@ function create_branch() {
     return 0
   fi
 
-  #if [[ $(count_branches) -ne 1 ]]; then
-  #  echo "Cannot create more than 1 branch"
-  #  return 1
-  #fi
+  if [[ $(count_branches) -ne 1 ]]; then
+    echo "Cannot create more than 1 branch"
+    return 1
+  fi
 
   git branch "$new_branch"
   echo "new branch $new_branch"
   return 0
-}; echo $(create_branch); #echo $(create_branch "main"); #echo $(create_branch "x01");
+}; #echo $(create_branch); #echo $(create_branch "main"); #echo $(create_branch "x01");
 #
 function checkout_branch() {
-  # "* Checkout branch when current branch is main"
-
   # fail checkout when current branch has uncommitted changes
   # fail checkout when new_branch is main
   # checkout first branch when current_branch is main and branch count is 1
@@ -166,54 +162,44 @@ function checkout_branch() {
   local current_branch=$(git symbolic-ref --short HEAD 2>/dev/null)
   # branch must exist
   if [[ "$(has_branch $branch_name)" = "false" ]]; then
-    echo "    Cannot checkout branch, branch not found: $branch_name"
+    echo "Cannot checkout branch, branch not found: $branch_name"
     return 1
   fi
-  #
-  #if [[ "$branch_name" = "main" ]]; then
-  #  echo "    Already checkedout $branch_name"
-  #  return 0
-  #fi
-
   # already checked out
   if [[ "$branch_name" = "$current_branch" ]]; then
-    echo "    Already checkedout $branch_name"
+    echo "already checkedout $branch_name"
     return 0
   fi
-  # current branch has changes
+  # has changes
   if [ "$(has_branch_changes)" = 'true' ]; then
-    echo "    Uncommited changes"
     return 1
   fi
 
   git checkout "$branch_name"
 
-}; echo $(checkout_branch "main"); echo $(checkout_branch); #echo $(checkout_branch "00_init");
+}; #echo $(checkout_branch "main"); echo $(checkout_branch); #echo $(checkout_branch "00_init");
 #
 function stage_branch_current() {
-  # Stage files...add . when current branch is not main
   if [ $# -ne 0 ]; then
         echo "Usage: stage_branch_current"
         return 1
   fi
+  # dont stage the main bRANCH
   local current_branch=$(git symbolic-ref --short HEAD 2>/dev/null)
 
-  # dont stage the main bRANCH
-
   if [[ "$current_branch" = "main" ]]; then
-      echo "Dont stage main branch"
-      return 0
+      #echo "Dont stage main branch"
+      echo "not allowed on main"
+      return 1
   fi
 
   git add .
 
-  echo "staged $current_branch"
+  echo "ok"
   return 0
 };
 #
 function commit_branch_current() {
-  # Commit branch when current branch is not main
-
   if [ $# -ne 1 ]; then
         echo "Usage: commit_branch_current <commit-message>"
         return 1
@@ -225,12 +211,10 @@ function commit_branch_current() {
   local commit_message="$1"
 
   git commit -m "$commit_message"
-  echo "commited $current_branch"
-
+  echo "xxxok"
   return 0
 };
 #
-
 function create_env() {
     if [ $# -ne 1 ]; then
         echo "Usage: create_env <file_name> "
@@ -251,7 +235,7 @@ function create_env() {
     fi
 
     return 0
-};   echo $(create_env);
+};   #echo $(create_env);
 #
 function add_env_variable() {
   # echo $# $1 $2 $3
@@ -305,9 +289,8 @@ function add_env_variable() {
     # delete the temporary file
     rm "temp.env"
     return 0
-}; echo $(add_env_variable);
+}; #echo $(add_env_variable);
 #
-
 function show_inputs() {
   if [ $# -ne 1 ]; then
         echo "Usage: show_inputs <prefix>"
@@ -324,7 +307,6 @@ function show_inputs() {
     done
 
 }; #echo $(show_inputs "X");
-
 #
 function validate_inputs() {
     if [ $# -ne 1 ]; then
@@ -354,7 +336,7 @@ function validate_inputs() {
     fi
     echo 1
     return 0
-}; echo $(validate_inputs "GH_");
+}; #echo $(validate_inputs "GH_");
 #
 function create_workspace() {
    if [ $# -ne 2 ]; then
@@ -377,8 +359,8 @@ function create_workspace() {
       return 1
     fi
     return 0
-}; $(create_workspace);
-
+}; #$(create_workspace);
+#
 function clone_project() {
     # aka clone
 
@@ -416,19 +398,18 @@ function clone_project() {
     # reset to original folder
     cd "$last_folder/"
     return 0
-};     echo $(clone_project);
+};     #echo $(clone_project);
 #
 function get_branch_current() {
     if [ $# -ne 0 ]; then
         echo "Usage: get_branch_current "
         return 1
     fi
-
-    echo $(git symbolic-ref --short HEAD 2>/dev/null)
-
+    local current_branch=$(git symbolic-ref --short HEAD 2>/dev/null)
+    echo "$current_branch"
     return 0
-}; echo $(get_branch_current "help");
-
+}; #echo $(get_branch_current "help");
+#
 function set_branch() {
     if [ $# -ne 1 ]; then
         echo "Usage: set_branch <branch_name> "
@@ -437,154 +418,23 @@ function set_branch() {
     #local branch_name="$1"
     #git checkout "$branch_name"
     return 0
-}; echo $(set_branch);
+}; #echo $(set_branch);
 #
 function rebase_branch() {
     if [ $# -ne 1 ]; then
         echo "Usage: rebase_branch <branch_name> "
         return 1
     fi
+    local branch_name="$1"
+    # fail if main has uncommitted changes
+    # fail if branch_name has uncommitted changes
+    # refresh remote's main branch
+
+    # rebase
+
+    # push branch_name to remote repo
+
+
     return 0
-}; echo $(rebase_branch);
+}; #echo $(rebase_branch);
 
-#readLinesFromFile
-
-echo "GH_BRANCH=GH_BRANCH" > workout.env
-echo "GH_BRANCH2=GH_BRANCH" >> workout.env
-echo "GH_BRANCH3=GH_BRANCH" >> workout.env
-
-
-#
-# SCRIPT START
-#
-echo "... Initialize Environment ..."
-#
-# Initialize from environment file when .env found
-#
-echo "* Initialize from environment file when .env found"
-env_file_name="xxxx.env"
-if test -f "$env_file_name"; then
-    #if [ -f "$env_file_name" ]; then
-    echo "    Load environment from file $env_file_name"
-    set -o allexport
-    source $env_file_name set
-    set +o allexport
-fi
-#
-# env
-#
-#echo "............"
-#exit
-# Create an environment file when .env not found
-
-echo "* Create an environment file when .env not found"
-rc=$(create_env "$env_file_name")
-
-#exit
-#
-# Confirm Inputs
-#
-echo "* Confirm Inputs"
-export GH_TRUNK=main
-export WS_ORGANIZATION=$(get_input "ws.organization" "${WS_ORGANIZATION}")
-export WS_WORKSPACE=$(get_input "ws.workspace" "${WS_WORKSPACE}")
-export GH_USER=$(get_input "gh.user" "${GH_USER}")
-export GH_PROJECT=$(get_input "gh.project" "${GH_PROJECT}")
-export GH_BRANCH=$(get_input "gh.branch" "${GH_BRANCH}")
-export GH_MESSAGE=$(get_input "gh.message" "${GH_MESSAGE}")
-#echo "----"
-#
-# Validate Inputs
-#
-echo "* Validate Inputs"
-rc=$(validate_inputs "WS_")
-
-echo "    validate WS $(is_ok $?)"
-rc=$(validate_inputs "GH_")
-
-echo "    validate GH $(is_ok $?)"
-
-if [[ $(validate_inputs "WS_") -eq 0 || $(validate_inputs "GH_") -eq 0 ]]; then
-  echo "* Invalid Input"
-  echo "$(show_inputs "WS_")"
-  echo "$(show_inputs "GH_")"
-  echo "    ...stopped"
-  exit 1
-fi
-
-#echo "----"
-#
-# Update the environment file
-#
-echo "* Update the environment file"
-
-rc=$(add_env_variable "$env_file_name" "WS_ORGANIZATION" "$WS_ORGANIZATION")
-
-rc=$(add_env_variable "$env_file_name" "WS_WORKSPACE" "$WS_WORKSPACE")
-rc=$(add_env_variable "$env_file_name" "GH_PROJECT" "$GH_PROJECT")
-rc=$(add_env_variable "$env_file_name" "GH_USER" "$GH_USER")
-rc=$(add_env_variable "$env_file_name" "GH_BRANCH" "$GH_BRANCH")
-echo "    Updated updated environment file: $env_file_name"
-
-#
-# Create the workspace when folder is not found
-#
-echo "* Create workspace when folder is not found"
-
-rc=$(create_workspace "$WS_ORGANIZATION" "$WS_WORKSPACE")
-echo "    workspace is $(is_ok $?)"
-
-#echo "----"
-#
-# Clone GitHub Project Repository when repo is not found
-#
-
-echo "* Clone GitHub Project"
-echo "    url      : https://github.com/${GH_USER}/${GH_PROJECT}.git"
-echo "    workspace: ${HOME}/Development/${WS_ORGANIZATION}/${WS_WORKSPACE}"
-echo "    project  :   ${HOME}/Development/${WS_ORGANIZATION}/${WS_WORKSPACE}/${GH_PROJECT}"
-rc=$(clone_project "$WS_ORGANIZATION" "$WS_WORKSPACE" "$GH_PROJECT" "$GH_USER")
-echo "    clone is $(is_ok $?)"
-
-# Stage files...add . when current branch is not main
-#
-echo "* Stage Files when current branch is not main"
-echo "    current branch: $(get_branch_current)"
-rc=$(stage_branch_current)
-echo "    $GH_PROJECT staging: $(is_ok $?)"
-
-#
-# Commit branch when current branch is not main
-#
-echo "* Commit branch when current branch is not main"
-echo "    current branch: $(get_branch_current)"
-rc=$(commit_branch_current "$GH_MESSAGE")
-echo "    $GH_PROJECT commit: $(is_ok $?)"
-
-# Create branch when it doesnt exist
-echo "* Create branch when it doesnt exist"
-echo "    branch $GH_BRANCH exists: $(has_branch $GH_BRANCH)"
-rc=$(create_branch "$GH_BRANCH")
-echo "    branch: $(is_ok $?)"
-
-#
-# Checkout branch when current branch is main
-#
-echo "* Checkout branch when current branch is main"
-rc=$(checkout_branch "$GH_BRANCH")
-echo "    checked out $GH_BRANCH: $(is_ok $?)"
-
-git status
-exit
-
-
-#
-# Rebase when current branch has changes
-#                            and is not main
-
-# Push branch when branch has committed changes
-
-
-# Open GitHub
-
-#git status
