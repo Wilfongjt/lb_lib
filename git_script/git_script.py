@@ -11,7 +11,6 @@ class UtilityScript(dict, LbRecorder):
         LbRecorder.__init__(self)
         self['fail'] = False
         self['fail_msg'] = []
-
     def ch_dir(self, folder):
         # self.addStep('ch_dir')
         os.chdir(folder)
@@ -99,6 +98,7 @@ class UtilityScript(dict, LbRecorder):
 
 class ProjectScript(UtilityScript):
     def __init__(self):
+        super().__init__()
         self.WORKSPACE_FOLDER = '{}/Development/{}/{}'
         self.PROJECT_FOLDER = '{}/Development/{}/{}/{}'
     def assertTrue(self, expression):
