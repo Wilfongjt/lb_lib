@@ -1,25 +1,19 @@
 import os
 import sys
 from pprint import pprint
-from lb_util import LbUtil
 import subprocess
 import shutil
-
+from lb_util import LbUtil
 from lb_recorder import LbRecorder
 
-class ProjectScript(dict, LbRecorder):
+class UtilityScript(dict, LbRecorder):
     def __init__(self):
         LbRecorder.__init__(self)
         self['fail'] = False
         self['fail_msg'] = []
-        self.WORKSPACE_FOLDER = '{}/Development/{}/{}'
-        self.PROJECT_FOLDER = '{}/Development/{}/{}/{}'
 
-    def assertTrue(self, expression):
-        assert (expression == True)
-        return self
     def ch_dir(self, folder):
-        #self.addStep('ch_dir')
+        # self.addStep('ch_dir')
         os.chdir(folder)
         return self
     def copy_to(self, source_file_path, destination_folder):
@@ -28,20 +22,11 @@ class ProjectScript(dict, LbRecorder):
         try:
             self.addStep('copy_to')
             shutil.copy2(source_file_path, destination_folder)
-            #print(f"File '{source_file_path}' copied to '{destination_folder}' successfully.")
-            self['copy_to']="ok, {}".format(str(source_file_path).split('/')[-1])
+            # print(f"File '{source_file_path}' copied to '{destination_folder}' successfully.")
+            self['copy_to'] = "ok, {}".format(str(source_file_path).split('/')[-1])
         except Exception as e:
-            #print(f"Error copying file: {str(e)}")
-            self.setFail(True, f"Error copying file: {str(e)}")
-        return self
-    def create_workspace(self, folder):
-        self.addStep('[Create-workspace]')
-        if not self.folder_exists(folder):
-            os.makedirs(folder, exist_ok=True)
-            self['create_workspace'] = 'created @ {}'.format(folder)
-        else:
-            self['create_workspace'] = 'existing @ {}'.format(folder)
-            self.addStep('(workspace:{})'.format(folder.split('/')[-1]))
+            # print(f"Error copying file: {str(e)}")
+            self.set_fail(True, f"Error copying file: {str(e)}")
         return self
     def exit(self):
         self.addStep('exit')
@@ -55,10 +40,9 @@ class ProjectScript(dict, LbRecorder):
         exists = os.path.isdir('{}'.format(folder))
         ##* returns bool ... [x] has test
         return exists
-
     def get(self, key):
         if key not in self:
-            self.setFail(True, '{} Not Found'.format(key))
+            self.set_fail(True, '{} Not Found'.format(key))
             raise Exception('{} Not Found'.format(key))
         return self[key]
     def get_env_value(self, key):
@@ -66,6 +50,104 @@ class ProjectScript(dict, LbRecorder):
         rc = None
         if key in os.environ:
             rc=os.environ[key]
+        return rc
+    def hasFailed(self):
+        return self['fail']
+    def on_fail_exit(self):
+        if self['fail']:
+            self.addStep('failed')
+            self.report()
+            # print('fails when "{}"'.format(self['fail_msg']))
+            sys.exit(1)
+        return self
+    def print(self, ln):
+        print(ln)
+        return self
+    def set(self, key, value):
+        #self.addStep(key)
+        self[key] = value
+        return self
+    def set_fail(self, tf, msg=None):
+        #### Generalize Fail
+        self['fail'] = tf
+        self['fail_msg'].append(msg.replace('\n',' '))
+        return self
+    def subprocess(self, command, verbose=False):
+        rc = False
+        ret = subprocess.run(command, capture_output=True, shell=True)
+        if verbose:
+            self.print('subprocess'.format(command))
+        if ret.returncode != 0:
+            self.set_fail(True, ret.stderr.decode('ascii'))
+            if verbose:
+                self.print('    - ret {}'.format(ret))
+            #rc= ret.stderr.decoce('ascii')
+        else:
+            if verbose:
+                self.print('    - ret {}'.format(ret))
+            rc = ret.stdout.decode('ascii').strip()
+        return rc
+    def write_to(self, folder, filename, test_line):
+        self.addStep('write-to')
+
+        # write a file to the project folder
+        with open('{}/{}'.format(folder,filename), 'a') as f:
+            f.write(test_line)
+        self['write_to']=filename
+        return self
+
+
+class ProjectScript(UtilityScript):
+    def __init__(self):
+        self.WORKSPACE_FOLDER = '{}/Development/{}/{}'
+        self.PROJECT_FOLDER = '{}/Development/{}/{}/{}'
+    def assertTrue(self, expression):
+        assert (expression == True)
+        return self
+    def create_workspace(self, folder):
+        self.addStep('[Create-workspace]')
+        if not self.folder_exists(folder):
+            os.makedirs(folder, exist_ok=True)
+            self['create_workspace'] = 'created @ {}'.format(folder)
+        else:
+            self['create_workspace'] = 'existing @ {}'.format(folder)
+            self.addStep('(workspace:{})'.format(folder.split('/')[-1]))
+        return self
+    def get_workspace_folder(self):
+
+        fldr=self.WORKSPACE_FOLDER.format(os.environ['HOME']
+                                     , os.environ["WS_ORGANIZATION"]
+                                     , os.environ["WS_WORKSPACE"])
+        return fldr
+    def get_project_folder(self):
+        fl=self.PROJECT_FOLDER.format(os.environ['HOME']
+                                      , os.environ["WS_ORGANIZATION"]
+                                      , os.environ["WS_WORKSPACE"]
+                                      , os.environ["GH_PROJECT"])
+        return fl
+    def is_project_folder(self):
+        # is the current folder a project folder
+        # eg ~/Development/organization/workspace/project
+        # must have Development at forth position from end
+
+        rc = False
+
+        fldr = os.getcwd()
+        dev_pos = -4
+        rc = self.validate_folder(fldr, dev_pos)
+
+        return rc
+    def is_workspace_folder(self):
+        # is the current folder a workspace folder
+        # eg ~/Development/organization/workspace/project
+        # must have Development at forth position from end
+
+        rc = False
+
+        fldr = os.getcwd()
+        dev_pos = -3
+        rc = self.validate_folder(fldr, dev_pos)
+
         return rc
     def load_env(self, folder=None, filename=None):
         self.addStep('[Load-env]')
@@ -88,113 +170,8 @@ class ProjectScript(dict, LbRecorder):
                 self.addStep('variable')
         #pprint(self)
         return self
-
-    def validate_folder(self, folder, dev_pos):
-        # is the given folder a project folder
-        # eg ~/Development/organization/workspace/project
-        # project must have Development at forth position from end
-        # workspace must have Development at third position from end
-
-        rc = True
-        fldr = folder.split('/')
-        # Development
-
-        if fldr[dev_pos] != 'Development':
-            rc = False
-
-        return rc
-    def is_project_folder(self):
-        # is the current folder a project folder
-        # eg ~/Development/organization/workspace/project
-        # must have Development at forth position from end
-
-        rc = False
-
-        fldr = os.getcwd()
-        dev_pos=-4
-        rc = self.validate_folder(fldr, dev_pos)
-
-        return rc
-    def is_workspace_folder(self):
-        # is the current folder a workspace folder
-        # eg ~/Development/organization/workspace/project
-        # must have Development at forth position from end
-
-        rc = False
-
-        fldr = os.getcwd()
-        dev_pos=-3
-        rc = self.validate_folder(fldr, dev_pos)
-
-        return rc
-    def get_workspace_folder(self):
-
-        fldr=self.WORKSPACE_FOLDER.format(os.environ['HOME']
-                                     , os.environ["WS_ORGANIZATION"]
-                                     , os.environ["WS_WORKSPACE"])
-        return fldr
-    def depget_workspace_folder(self, expected=False):
-        if not expected: # found on drive
-            offset = 3
-            fldr = os.getcwd().split('/')
-            d=0
-            i=0
-            for f in fldr:
-                if 'Development' == f:
-                    d=i
-                i+=1
-            fldr = fldr[0:d+offset]
-            print('get_workspace_folder actual', fldr)
-            fldr = '/'.join(fldr)
-        else: # expected
-            fldr=self.WORKSPACE_FOLDER.format(os.environ['HOME']
-                                         , os.environ["WS_ORGANIZATION"]
-                                         , os.environ["WS_WORKSPACE"])
-        return fldr
-
-    def get_project_folder(self):
-        fl=self.PROJECT_FOLDER.format(os.environ['HOME']
-                                      , os.environ["WS_ORGANIZATION"]
-                                      , os.environ["WS_WORKSPACE"]
-                                      , os.environ["GH_PROJECT"])
-        return fl
-    def depget_project_folder(self, expected=False):
-        if not expected: # actual...found on drive
-            offset = 4
-            fl = os.getcwd().split('/')
-            d=0
-            i=0
-            for f in fl:
-                if 'Development' == f:
-                    d=i
-                i+=1
-            fl = fl[0:d+offset]
-            #print('get_workspace_folder actual', fldr)
-            fl = '/'.join(fl)
-        else: # expected ... found in environment
-            fl=self.PROJECT_FOLDER.format(os.environ['HOME']
-                                          , os.environ["WS_ORGANIZATION"]
-                                          , os.environ["WS_WORKSPACE"]
-                                          , os.environ["GH_PROJECT"])
-        return fl
-    def hasFailed(self):
-        return self['fail']
-    def on_fail_exit(self):
-        if self['fail']:
-            self.addStep('failed')
-            self.report()
-            #print('fails when "{}"'.format(self['fail_msg']))
-            sys.exit(1)
-        return self
-    def print(self,ln):
-        print(ln)
-        return self
     def report(self):
         print('hasFailed', self.hasFailed())
-    def set(self, key, value):
-        #self.addStep(key)
-        self[key] = value
-        return self
     def set_env(self, key, value="TBD"):
         ##* add environment variable when not found
         line_list = []
@@ -238,26 +215,19 @@ class ProjectScript(dict, LbRecorder):
             f.writelines(['{}\n'.format(ln) for ln in line_list])
 
         return self
+    def validate_folder(self, folder, dev_pos):
+        # is the given folder a project folder
+        # eg ~/Development/organization/workspace/project
+        # project must have Development at forth position from end
+        # workspace must have Development at third position from end
 
-    def setFail(self, tf, msg=None):
-        #### Generalize Fail
-        self['fail'] = tf
-        self['fail_msg'].append(msg.replace('\n',' '))
-        return self
-    def subprocess(self, command, verbose=False):
-        rc = False
-        ret = subprocess.run(command, capture_output=True, shell=True)
-        if verbose:
-            self.print('subprocess'.format(command))
-        if ret.returncode != 0:
-            self.setFail(True, ret.stderr.decode('ascii'))
-            if verbose:
-                self.print('    - ret {}'.format(ret))
-            #rc= ret.stderr.decoce('ascii')
-        else:
-            if verbose:
-                self.print('    - ret {}'.format(ret))
-            rc = ret.stdout.decode('ascii').strip()
+        rc = True
+        fldr = folder.split('/')
+        # Development
+
+        if fldr[dev_pos] != 'Development':
+            rc = False
+
         return rc
     def validate_input(self, key, value):
         ##* test for Null key
@@ -266,24 +236,17 @@ class ProjectScript(dict, LbRecorder):
         #self.addStep('validate-input')
         if not key:
             self.addStep('invalid')
-            self.setFail(True, 'Key is None')
+            self.set_fail(True, 'Key is None')
         elif not value:
             self.addStep('invalid')
-            self.setFail(True, '{} value is None'.format(key))
+            self.set_fail(True, '{} value is None'.format(key))
         elif value == 'TBD':
             self.addStep('invalid')
-            self.setFail(True, '{} value is TBD'.format(key))
+            self.set_fail(True, '{} value is TBD'.format(key))
         else:
             self.addStep('valid')
         return self
-    def write_to(self, folder, filename, test_line):
-        self.addStep('write-to')
 
-        # write a file to the project folder
-        with open('{}/{}'.format(folder,filename), 'a') as f:
-            f.write(test_line)
-        self['write_to']=filename
-        return self
 def mainProjectScript():
     print('Testing mainProjectScript')
     folder = '/'.join(os.getcwd().split('/')[0:-1])
@@ -298,6 +261,7 @@ def mainProjectScript():
     assert (actual.validate_folder(folder,-3))
     os.chdir('..') # switch to workspace folder
     assert (actual.is_workspace_folder())
+
 class GitCommands(ProjectScript):
     def __init__(self):
         super().__init__()
@@ -324,7 +288,7 @@ class GitCommands(ProjectScript):
         ret = subprocess.run(command, capture_output=True, shell=True)
         # print(ret)
         if ret.returncode != 0:
-            self.setFail(True, ret.stderr.decode('ascii'))
+            self.set_fail(True, ret.stderr.decode('ascii'))
             self.addStep('({})'.format('failed'))
             self.ch_dir(last_folder)
         else:
@@ -369,12 +333,6 @@ class GitCommands(ProjectScript):
             self.addStep('(branch: {})'.format(self.get_branch_current(folder=project_folder)))
         #self.ch_dir(last_folder)
         return self
-
-    # project name from actual folder
-    # project name from environment variable
-    # project name from self
-    #print('get_project_name', str(os.getcwd()).split('/')[-4])
-
     def get_project_name(self):
         #pprint(os.environ)
         if 'GH_PROJECT' in os.environ:
@@ -382,7 +340,6 @@ class GitCommands(ProjectScript):
         else:
             self['project_name']='TBD'
         return self['project_name']
-
     def get_branch_current(self, folder=None):
         # folder is the project_folder
         rc = None
@@ -400,7 +357,7 @@ class GitCommands(ProjectScript):
         #print('get_branch_current rc {}'.format(rc))
 
         if ret.returncode != 0:
-            self.setFail(True, ret.stderr.decode('ascii'))
+            self.set_fail(True, ret.stderr.decode('ascii'))
         else:
             rc = ret.stdout.decode('ascii').strip()
 
@@ -418,7 +375,6 @@ class GitCommands(ProjectScript):
         self['branches'] = std_out
 
         return self['branches']
-
     def getUncommittedFiles(self):
         rc = ''
         command=self.GIT_UNCOMMITTED_FILES_COMMAND
@@ -434,7 +390,6 @@ class GitCommands(ProjectScript):
             rc = [{"track": t[0], "file": t[1]} for t in rc]
             #print('rc',rc)
         return rc
-
     def has_branch(self, project_folder,  branch_name):
         rc = False
         command = self.GIT_HAS_BRANCH_COMMAND
@@ -458,7 +413,7 @@ class GitCommands(ProjectScript):
         self.addStep('pull-origin')
         #self.addStep('(pull-origin: {})'.format(branch))
         if branch != self.get_branch_current(folder=project_folder):
-            self.setFail(True, 'Unexpected branch')
+            self.set_fail(True, 'Unexpected branch')
             return self
 
         last_folder = os.getcwd()
@@ -471,7 +426,7 @@ class GitCommands(ProjectScript):
         ret = subprocess.run(command, capture_output=True, shell=True)
         # print(ret)
         if ret.returncode != 0:
-            self.setFail(True, ret.stderr.decode('ascii'))
+            self.set_fail(True, ret.stderr.decode('ascii'))
             self.addStep('({})'.format('failed'))
         else:
             rc = ret.stdout.decode('ascii').strip()
@@ -579,7 +534,7 @@ class GitScript(GitCommands):
         if self.get_branch_current(folder=project_folder) == 'main':
             #check get_branh_current
             self['commit_branch']='"Dont commit for {} @ {}"'.format(self.get_branch_current(folder=project_folder), project_folder)
-            self.setFail(True, "Dont commit main branch for {}".format(project_folder))
+            self.set_fail(True, "Dont commit main branch for {}".format(project_folder))
             return self
 
         self.checkout_branch(project_folder,gh_branch)
@@ -589,7 +544,7 @@ class GitScript(GitCommands):
         ret = subprocess.run(command, capture_output=True, shell=True)
         if ret.returncode not in [0,1]:
             #print(ret)
-            self.setFail(True, ret.stdout.decode('ascii').replace('\n',' '))
+            self.set_fail(True, ret.stdout.decode('ascii').replace('\n', ' '))
             self['commit_branch'] = '"{}"'.format(ret.stdout.decode('ascii').replace('\n',' '))
 
         else:
@@ -611,7 +566,7 @@ class GitScript(GitCommands):
         # make sure branch is available @ project
         if not self.has_branch(project_folder, branch):
             self.addStep('failed-branch')
-            self.setFail(True, 'Cannot rebase, {} branch NOT FOUND @ {}'.format(branch, project_folder))
+            self.set_fail(True, 'Cannot rebase, {} branch NOT FOUND @ {}'.format(branch, project_folder))
             self['rebase']='Cannot rebase, {} branch NOT FOUND @ {}'.format(branch, project_folder)
             return self
         # set the folder
@@ -634,7 +589,7 @@ class GitScript(GitCommands):
         # print(ret)
         if ret.returncode != 0:
             self.addStep('(failed-rebase)')
-            self.setFail(True, ret.stderr.decode('ascii'))
+            self.set_fail(True, ret.stderr.decode('ascii'))
             self['rebase']='{}'.format(ret.stderr.decode('ascii'))
 
         else:
@@ -668,7 +623,7 @@ class GitScript(GitCommands):
         # print(ret)
         if ret.returncode != 0:
             self.addStep('failed')
-            self.setFail(True, ret.stderr.decode('ascii'))
+            self.set_fail(True, ret.stderr.decode('ascii'))
         else:
             self.addStep('success')
             self['push']='ok, {}'.format(branch)
@@ -687,7 +642,7 @@ class GitScript(GitCommands):
         ret = subprocess.run(command, capture_output=True, shell=True)
         # print(ret)
         if ret.returncode != 0:
-            self.setFail(True, ret.stderr.decode('ascii'))
+            self.set_fail(True, ret.stderr.decode('ascii'))
         else:
             self['git_hub'] = 'open, {}'.format(gh_project)
             #rc = ret.stdout.decode('ascii').strip()

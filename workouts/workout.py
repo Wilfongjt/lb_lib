@@ -105,7 +105,7 @@ def main():
     assert (not actual.is_workspace_folder())
     folder = '/'.join(folder.split('/')[0:-1])
     assert (actual.validate_folder(folder,-3))
-    os.chdir('..')
+    os.chdir('../..')
     assert (actual.is_workspace_folder())
 
     folder = start_folder
