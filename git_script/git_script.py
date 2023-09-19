@@ -95,7 +95,6 @@ class UtilityScript(dict, LbRecorder):
         self['write_to']=filename
         return self
 
-
 class ProjectScript(UtilityScript):
     def __init__(self):
         super().__init__()
@@ -579,7 +578,6 @@ class GitScript(GitCommands):
         self.checkout_branch(project_folder, "main")
         # refresh main branch
         self.pull_origin(project_folder, 'main')
-
         # restore original branch
         self.checkout_branch(project_folder, branch)
         self.addStep('rebase')
