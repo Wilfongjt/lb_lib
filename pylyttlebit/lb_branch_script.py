@@ -29,7 +29,7 @@ class LbBranchScript(LbTextFile):
     def getStartText(self):
         rc = '''
         #!/bin/bash
-        # functions
+        # lib
         function get_input() {
             if [ $# -ne 2 ]; then
                 echo "Usage: get_input <prompt> <default>"
