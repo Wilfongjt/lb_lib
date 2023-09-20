@@ -18,7 +18,7 @@ function is_ok() {
 #echo $(is_ok 1);
 #echo $(is_ok "1");
 #valid_inputs=1 # global to indicate valid inputs
-# base independent functions
+# base independent lib
 function get_input() {
     # prompt user for input or return default when no user value is given
 

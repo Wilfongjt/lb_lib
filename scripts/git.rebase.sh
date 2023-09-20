@@ -17,7 +17,7 @@ function get_input()
 }
 # open _bk.config and load variables
 set -o allexport
-source .env set
+source ../.env set
 set +o allexport
 # show env
 #env
