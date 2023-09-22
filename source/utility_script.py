@@ -3,7 +3,9 @@ import sys
 #from pprint import pprint
 import subprocess
 import shutil
-from code.lb_recorder import LbRecorder
+from source.lb_recorder import LbRecorder
+from os import listdir
+from os.path import isfile, join
 
 class UtilityScript(dict, LbRecorder):
     def __init__(self):
@@ -69,6 +71,34 @@ class UtilityScript(dict, LbRecorder):
             self.set_fail(True, '{} Not Found'.format(key))
             raise Exception('{} Not Found'.format(key))
         return self[key]
+    def get_file_list(self, path, ext=None):
+        #### Get List of File Names on request
+        onlyfiles = []
+
+        ##* return [] when folder is None ... [x] has test
+        if not path:
+            return []
+
+        ##* returns [] when folder NOT found ... [x] has test
+        if not self.folder_exists(path):
+            return []
+        # get list of files
+        lst = listdir(path)
+
+        ##* returns [] when no files found ... [ ] has test
+
+        if lst == []:
+            return []
+        ##* return all files when ext = "*" ... [x] has test
+        onlyfiles = [f for f in lst if isfile(join(path, f))]
+
+        ##* return files when file has specified extention ... [x] has test
+        if ext != None and ext != '*':
+            onlyfiles = [f for f in onlyfiles if f.startswith(ext) or f.endswith(ext)]
+
+        ##* return list of filenames when files found [x] has test
+        return [fn for fn in onlyfiles if '.DS_Store' not in fn]
+
     def get_env_value(self, key):
         #self.addStep('get_env_value')
         rc = None

@@ -1,6 +1,6 @@
 import os
 from pprint import pprint
-from pylyttlebit.lb_text_file import LbTextFile
+from source.lb_text_file import LbTextFile
 class LbDocComments(LbTextFile):
     #### Convert a python file to a Markdown document
 
@@ -15,6 +15,7 @@ class LbDocComments(LbTextFile):
                          'copy'
                          'create',
                          'collect',
+                         'commit',
                          'decorate',
                          'define',
                          'delete',
@@ -41,6 +42,7 @@ class LbDocComments(LbTextFile):
                          'setup',
                          'show',
                          'skip',
+                         'stage',
                          'stop',
                          'validate',
                          'when'

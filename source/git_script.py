@@ -6,7 +6,7 @@ import subprocess
 #from lb_util import LbUtil
 #from lb_recorder import LbRecorder
 
-from code.git_commands import GitCommands
+from source.git_commands import GitCommands
 class GitScript(GitCommands):
     def __init__(self):
         super().__init__()
