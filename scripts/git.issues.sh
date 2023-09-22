@@ -14,7 +14,7 @@ get_github_issues() {
   # Check if the request was successful (HTTP status 200)
   #local status_code=$(echo "$response" | grep -o 'HTTP/1.1 [0-9]*' | awk '{print $2}')
   #if [ "$status_code" != "200" ]; then
-  #  echo "Error: Failed to retrieve GitHub issues. HTTP status code $status_code"
+  #  echo "Error: Failed to retrieve GitHub issues. HTTP status source $status_code"
   #  return 1
   #fi
 
