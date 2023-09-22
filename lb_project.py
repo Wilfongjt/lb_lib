@@ -1,5 +1,5 @@
 import os
-from _lib.git_script import GitScript
+from code.git_script import GitScript
 
 def main():
     #### LyttleBit Project
@@ -110,7 +110,7 @@ def main():
     #print('curr folder', os.getcwd())
 
 def main_document():
-    from _lib.lb_doc_comments import LbDocComments
+    from code.lb_doc_comments import LbDocComments
     print('lb_project')
     folder = '/'.join(str(__file__).split('/')[0:-1])
     filename = str(__file__).split('/')[-1]

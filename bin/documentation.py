@@ -1,10 +1,10 @@
 import settings
-import _lib.git_commands
-import _lib.git_script
-import _lib.project_script
-import _lib.utility_script
-import _lib.lb_doc_comments
-import _lib.lb_recorder
+import code.git_commands
+import code.git_script
+import code.project_script
+import code.utility_script
+import code.lb_doc_comments
+import code.lb_recorder
 
 import lb_project
 
