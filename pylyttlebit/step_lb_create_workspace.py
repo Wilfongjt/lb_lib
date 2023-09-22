@@ -32,7 +32,7 @@ class LbCreateWorkspace(LbStep):
 
             print('    * create workspace failed({})'.format(workspace_folder))
 
-        # identify the project data
+        # identify the bin data
 
         self.addStep(self.formulate(self.getStash().getProject()))
 

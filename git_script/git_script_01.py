@@ -80,7 +80,7 @@ class ProjectScript(dict):
         return rc
 
     def write_to(self, folder, filename, test_line):
-        # write a file to the project folder
+        # write a file to the bin folder
         with open('{}/{}'.format(folder,filename), 'a') as f:
             f.write(test_line)
         self['write_to']=filename
@@ -364,7 +364,7 @@ class GitScript(ProjectScript):
 
         #print('get_project_info project_name',self.get_project_info(key='project_name',project_folder=project_folder) )
 
-        #print('curr project',self.get_project_name(folder=project_folder) )
+        #print('curr bin',self.get_project_name(folder=project_folder) )
         #print('stage_branch project_folder',project_folder)
         #if self.get_branch_current(folder=project_folder) == 'main':
         #    self['stage_branch']='"Dont stage main branch"'
@@ -491,7 +491,7 @@ class GitScript(ProjectScript):
         else:
             self['push']='ok, {}'.format(branch)
             rc = ret.stdout.decode('ascii').strip()
-        # restore the project's original branch
+        # restore the bin's original branch
         self.checkout_branch(project_folder, last_branch)
         # restore original folder
         self.ch_dir(last_folder)

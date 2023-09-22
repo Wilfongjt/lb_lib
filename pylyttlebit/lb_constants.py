@@ -34,7 +34,7 @@ class LbConstants():
         ##* PROCESS_KEY
         self.PROCESS_KEY='process'
         ##* PROJECT_KEY
-        self.PROJECT_KEY = 'project'
+        self.PROJECT_KEY = 'bin'
         ##* PROJECT_FOLDER_KEY
         self.PROJECT_FOLDER_KEY= 'folder'
         ##* PROMPTS_KEY

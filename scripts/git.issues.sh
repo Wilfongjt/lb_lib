@@ -63,7 +63,7 @@ output_file="output.txt"
 my_array=("Element 1" "Element 2" "Element 3")
 write_array_to_file "$output_file" "${my_array[@]}"
 
-# change to project folder
+# change to bin folder
 cd ..
 # open load variables
 set -o allexport

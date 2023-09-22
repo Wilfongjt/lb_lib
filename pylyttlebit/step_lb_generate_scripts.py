@@ -25,7 +25,7 @@ class LbGenerateScripts(LbStep):
         if LbProject().isCloned(self.getStash(LbC().PROJECT_KEY)[LbC().PROJECT_FOLDER_KEY]):
             LbProject().create_folder(script_folder)
 
-        ##* Generate rebase script in target project folder
+        ##* Generate rebase script in target bin folder
 
         actual = LbBranchScript().setFolder(script_folder).create().save()
 
@@ -34,7 +34,7 @@ class LbGenerateScripts(LbStep):
         if self.isVerbose():
             pprint(self.getStash())
 
-        # identify the project data
+        # identify the bin data
 
         self.addStep(self.formulate(self.getStash().getProject()))
 

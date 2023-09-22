@@ -8,7 +8,7 @@ from lb_project import LbProject
 class LbStash(dict):
     #### Stash environment variables in memory
 
-    # eg {project:{folder: 'TBD', repo_url: 'TBD' },
+    # eg {bin:{folder: 'TBD', repo_url: 'TBD' },
     #     process:[],
     #     prompts:{'GH_BRANCH': '00_init',
     #              'GH_PROJECT': 'pylyttlebit',
@@ -106,7 +106,7 @@ class LbStash(dict):
     '''
     def setFromPath(self, path):
         #### Set Stash from path on request
-        ##< Use when committing pylyttlebit project to git
+        ##< Use when committing pylyttlebit bin to git
         #print('setFromPath', path)
         #print(path.split('/'))
         i = 0
@@ -124,16 +124,16 @@ class LbStash(dict):
                     ##* set WS_WORKSPACE from path eg '~/Development/\<organization>/\<workspace>'
                     self[LbC().PROMPTS_KEY][LbC().WS_WORKSPACE_KEY]=k
                 elif i - d == 3:
-                    ##* set GH_PROJECT from path eg '~/Development/\<organization>/\<workspace>/\<project>'
+                    ##* set GH_PROJECT from path eg '~/Development/\<organization>/\<workspace>/\<bin>'
                     self[LbC().PROMPTS_KEY][LbC().GH_PROJECT_KEY]=k
-            ##* set GH_BRANCH from '~/Development/\<organization>/\<workspace>/\<project>/.git/HEAD'
+            ##* set GH_BRANCH from '~/Development/\<organization>/\<workspace>/\<bin>/.git/HEAD'
             self[LbC().PROMPTS_KEY][LbC().GH_BRANCH_KEY]=LbProject().getBranch()
             i += 1
 
         ##* set GH_USER to developer's username from '~/.gitconfig'
         self[LbC().PROMPTS_KEY][LbC().GH_USER_KEY] = LbProject().getGHUser()
 
-        ##* set project folder
+        ##* set bin folder
         self[LbC().PROJECT_KEY][LbC().PROJECT_FOLDER_KEY]='/'.join(str(os.getcwd()).split('/')[0:-1])
         ##* set repo url
         self[LbC().PROJECT_KEY][LbC().REPO_URL_KEY]=LbC().GIT_URL_TEMPLATE.format(LbProject().getGHUser(),self[LbC().PROMPTS_KEY][LbC().GH_PROJECT_KEY])
@@ -150,7 +150,7 @@ class LocalStash(LbStash):
 
     def setFromPath(self, path):
         #### Set Stash from path on request
-        ##< Use when committing pylyttlebit project to git
+        ##< Use when committing pylyttlebit bin to git
         #print('setFromPath', path)
         #print(path.split('/'))
         i = 0
@@ -168,16 +168,16 @@ class LocalStash(LbStash):
                     ##* set WS_WORKSPACE from path eg '~/Development/\<organization>/\<workspace>'
                     self[LbC().PROMPTS_KEY][LbC().WS_WORKSPACE_KEY]=k
                 elif i - d == 3:
-                    ##* set GH_PROJECT from path eg '~/Development/\<organization>/\<workspace>/\<project>'
+                    ##* set GH_PROJECT from path eg '~/Development/\<organization>/\<workspace>/\<bin>'
                     self[LbC().PROMPTS_KEY][LbC().GH_PROJECT_KEY]=k
-            ##* set GH_BRANCH from '~/Development/\<organization>/\<workspace>/\<project>/.git/HEAD'
+            ##* set GH_BRANCH from '~/Development/\<organization>/\<workspace>/\<bin>/.git/HEAD'
             self[LbC().PROMPTS_KEY][LbC().GH_BRANCH_KEY]=LbProject().getBranch()
             i += 1
 
         ##* set GH_USER to developer's username from '~/.gitconfig'
         self[LbC().PROMPTS_KEY][LbC().GH_USER_KEY] = LbProject().getGHUser()
 
-        ##* set project folder
+        ##* set bin folder
         self[LbC().PROJECT_KEY][LbC().PROJECT_FOLDER_KEY]='/'.join(str(os.getcwd()).split('/')[0:-1])
 
         ##* set repo url

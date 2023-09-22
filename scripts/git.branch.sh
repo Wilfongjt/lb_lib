@@ -85,7 +85,7 @@ export GH_TRUNK=main
 # show env
 env
 echo 'A'
-# goto project folder
+# goto bin folder
 cd ..
 ls
 echo 'B'

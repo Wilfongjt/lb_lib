@@ -36,7 +36,7 @@ class LbValidateInputVariables(LbStep):
         # #* Invalid when Project folder is not found
 
         #folder = self.getStash().getProject()[LbC().PROJECT_FOLDER_KEY]
-        #if not LbProject().folder_exists(folder): # check for project folder
+        #if not LbProject().folder_exists(folder): # check for bin folder
         #    self.getStash().setInvalid('unknown_folder {}'.format(folder))
 
         ##* Invalid when remote Project is not found
@@ -52,7 +52,7 @@ class LbValidateInputVariables(LbStep):
 
         # identify the lb_stash data
 
-        self.addStep(self.formulate(self.getStash().getProject(), title='project'))
+        self.addStep(self.formulate(self.getStash().getProject(), title='bin'))
 
         # reocord process steps
 

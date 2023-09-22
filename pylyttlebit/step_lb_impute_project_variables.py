@@ -37,7 +37,7 @@ class LbImputeProjectVariables(LbStep):
         folder = '{}/{}'.format(folder, self.getStash().getPrompts(LbC().WS_WORKSPACE_KEY))
         folder = '{}/{}'.format(folder, self.getStash().getPrompts(LbC().GH_PROJECT_KEY))
 
-        print('    * impute project folder', folder)
+        print('    * impute bin folder', folder)
 
         #if self.getStash().isValid():
         #    self.addStep('(success)')
@@ -52,9 +52,9 @@ class LbImputeProjectVariables(LbStep):
 
         #self.getStash().validate()
 
-        # identify the project data
+        # identify the bin data
 
-        self.addStep(self.formulate(self.getStash().getProject(), title='project'))
+        self.addStep(self.formulate(self.getStash().getProject(), title='bin'))
 
         # record process steps
 

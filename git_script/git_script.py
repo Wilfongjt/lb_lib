@@ -89,7 +89,7 @@ class UtilityScript(dict, LbRecorder):
     def write_to(self, folder, filename, test_line):
         self.addStep('write-to')
 
-        # write a file to the project folder
+        # write a file to the bin folder
         with open('{}/{}'.format(folder,filename), 'a') as f:
             f.write(test_line)
         self['write_to']=filename
@@ -125,8 +125,8 @@ class ProjectScript(UtilityScript):
                                       , os.environ["GH_PROJECT"])
         return fl
     def is_project_folder(self):
-        # is the current folder a project folder
-        # eg ~/Development/organization/workspace/project
+        # is the current folder a bin folder
+        # eg ~/Development/organization/workspace/bin
         # must have Development at forth position from end
 
         rc = False
@@ -138,7 +138,7 @@ class ProjectScript(UtilityScript):
         return rc
     def is_workspace_folder(self):
         # is the current folder a workspace folder
-        # eg ~/Development/organization/workspace/project
+        # eg ~/Development/organization/workspace/bin
         # must have Development at forth position from end
 
         rc = False
@@ -215,9 +215,9 @@ class ProjectScript(UtilityScript):
 
         return self
     def validate_folder(self, folder, dev_pos):
-        # is the given folder a project folder
-        # eg ~/Development/organization/workspace/project
-        # project must have Development at forth position from end
+        # is the given folder a bin folder
+        # eg ~/Development/organization/workspace/bin
+        # bin must have Development at forth position from end
         # workspace must have Development at third position from end
 
         rc = True
@@ -250,7 +250,7 @@ def mainProjectScript():
     print('Testing mainProjectScript')
     folder = '/'.join(os.getcwd().split('/')[0:-1])
     print('folder',folder)
-    os.chdir(folder) # switch to project folder
+    os.chdir(folder) # switch to bin folder
     actual = ProjectScript()
     assert (actual.validate_folder(folder,-4))
     assert (actual.is_project_folder())
@@ -277,7 +277,7 @@ class GitCommands(ProjectScript):
 
         last_folder = os.getcwd() # change back when fail
         self.addStep('checkout')
-        #self.addStep('(project:{})'.format(self.get_project_name(folder)))
+        #self.addStep('(bin:{})'.format(self.get_project_name(folder)))
 
         self.ch_dir(folder) # change to new folder
 
@@ -292,13 +292,13 @@ class GitCommands(ProjectScript):
             self.ch_dir(last_folder)
         else:
             rc = ret.stdout.decode('ascii').strip()
-            self.addStep('(project:{}, branch: {})'.format(self.get_project_name(),branch_name))
+            self.addStep('(bin:{}, branch: {})'.format(self.get_project_name(),branch_name))
 
         #self.ch_dir(last_folder)
 
         return self
     def create_branch(self, project_folder=None, branch=None):
-        #print('project-name {}'.format(self.get_project_name(project_folder)))
+        #print('bin-name {}'.format(self.get_project_name(project_folder)))
         #print('create branch {} project_folder {}'.format(branch, project_folder))
         self.addStep('[Create-branch]')
 
@@ -310,7 +310,7 @@ class GitCommands(ProjectScript):
             raise Exception('create_branch invalid branch {}'.format(branch))
 
         if not self.is_project(project_folder=project_folder):
-            raise Exception('project NOT FOUND: {}'.format(project_folder))
+            raise Exception('bin NOT FOUND: {}'.format(project_folder))
 
         if self.has_branch(project_folder, branch):
             ##* dont recreate a branch
@@ -429,7 +429,7 @@ class GitCommands(ProjectScript):
             self.addStep('({})'.format('failed'))
         else:
             rc = ret.stdout.decode('ascii').strip()
-            self.addStep('(project:{},branch:{})'.format(self.get_project_name(),self.get_branch_current(project_folder)))
+            self.addStep('(bin:{},branch:{})'.format(self.get_project_name(),self.get_branch_current(project_folder)))
             #self.addStep('({})'.format(self.get_branch_current(project_folder)))
 
         self.ch_dir(last_folder)
@@ -463,7 +463,7 @@ class GitScript(GitCommands):
 
         return self
     def clone_project_in(self, gh_user, gh_project, workspace_folder):
-        self.addStep('[Clone-project]')
+        self.addStep('[Clone-bin]')
 
         project_folder='{}/{}'.format(workspace_folder,gh_project)
         project_url = self.GIT_URL_TEMPLATE.format(gh_user, gh_project)
@@ -475,8 +475,8 @@ class GitScript(GitCommands):
             self['clone_project']='found @ {}'.format(project_folder)
             self['project_name'] = gh_project
             self.addStep('cloned')
-            self.addStep('(project:{})'.format(self.get_project_name()))
-            # self.addStep('(project: {})'.format(self.get_project_name(project_folder)))
+            self.addStep('(bin:{})'.format(self.get_project_name()))
+            # self.addStep('(bin: {})'.format(self.get_project_name(project_folder)))
         else:
             self.addStep('cloning')
             command = self.GIT_CLONE_TEMPLATE.format(project_url)
@@ -489,7 +489,7 @@ class GitScript(GitCommands):
 
                 self['clone_project']='created @ {}'.format(project_folder)
                 self['project_name']=gh_project
-                self.addStep('(project:{})'.format(self.get_project_name()))
+                self.addStep('(bin:{})'.format(self.get_project_name()))
 
                 self.checkout_branch(project_folder, 'main')
 
@@ -548,7 +548,7 @@ class GitScript(GitCommands):
 
         else:
             self.addStep('committed')
-            self.addStep('(project:{},branch:{})'.format(self.get_project_name(),gh_branch))
+            self.addStep('(bin:{},branch:{})'.format(self.get_project_name(),gh_branch))
             self['commit_branch'] = 'committed for {} @ {}'.format(gh_branch, project_folder)
 
         self.ch_dir(last_folder)
@@ -562,7 +562,7 @@ class GitScript(GitCommands):
             self.addStep('failed-prior')
             self['rebase'] = 'Cannot rebase due to prior failure'
             return self
-        # make sure branch is available @ project
+        # make sure branch is available @ bin
         if not self.has_branch(project_folder, branch):
             self.addStep('failed-branch')
             self.set_fail(True, 'Cannot rebase, {} branch NOT FOUND @ {}'.format(branch, project_folder))
@@ -626,7 +626,7 @@ class GitScript(GitCommands):
             self.addStep('success')
             self['push']='ok, {}'.format(branch)
             rc = ret.stdout.decode('ascii').strip()
-        # restore the project's original branch
+        # restore the bin's original branch
         self.checkout_branch(project_folder, last_branch)
         # restore original folder
         self.ch_dir(last_folder)
@@ -655,7 +655,7 @@ class GitScript(GitCommands):
     def use(self, project_folder, branch):
         self.addStep('[Use]')
 
-        # change folder to project folder
+        # change folder to bin folder
         # checkout branch
         self.ch_dir(project_folder)
         self.checkout_branch(project_folder, branch)
@@ -685,9 +685,9 @@ def main():
             .create_workspace(actual.get_workspace_folder()).on_fail_exit() \
             .print('  1. cwd              {}'.format(os.getcwd())) \
             .print('  1. workspace folder {}'.format(actual.get_workspace_folder()))\
-            .print('  1. project folder   {}'.format(actual.get_project_folder()))
+            .print('  1. bin folder   {}'.format(actual.get_project_folder()))
 
-    actual  .print('  2. project nm {}'.format(actual.get_project_name())) \
+    actual  .print('  2. bin nm {}'.format(actual.get_project_name())) \
             .print('  2. is_project {}'.format(actual.is_project(actual.get_project_folder()))) \
             .print('  2. branches   {}'.format(actual.get_branches(actual.get_project_folder()))) \
             .print('  2. cwd        {}'.format(os.getcwd())) \
@@ -697,7 +697,7 @@ def main():
             .clone_project_in(actual.get('GH_USER')
                               , actual.get('GH_PROJECT')
                               , actual.get_workspace_folder()).on_fail_exit()\
-            .print('  2. project nm {}'.format(actual.get_project_name()))\
+            .print('  2. bin nm {}'.format(actual.get_project_name()))\
             .print('  2. is_project {}'.format(actual.is_project(actual.get_project_folder())))\
             .print('  2. branches   {}'.format(actual.get_branches(actual.get_project_folder())))\
             .print('  2. cwd        {}'.format(os.getcwd()))\

@@ -32,7 +32,7 @@ class LbProject(LbUtil):
     def getBranch(self):
         #### Get branch name on request
         ##* branch is found in .git repo eg (HEAD ref: refs/heads/00_init)
-        # get the project folder
+        # get the bin folder
         pos = 4
         rc = self.current_directory().split('/')
         idx = rc.index('Development')  # os.getcwd().split('/').index('Development')
@@ -59,7 +59,7 @@ class LbProject(LbUtil):
     def depgetCurrentBranch(self, project_folder):
         head_dir = Path(".") / ".git" / "HEAD"
         # head_dir = Path(project_folder) / ".git" / "HEAD"
-        print('project folder', project_folder)
+        print('bin folder', project_folder)
         print('cwd', os.getcwd())
         print('head_dir', head_dir)
 
@@ -77,7 +77,7 @@ class LbProject(LbUtil):
         ##* Split the current folder name
         # look for Development folder
         # print(type(self.current_directory()),self.current_directory())
-        ##* retrieve  from folder name eg "/User/~/Development/\<organization>/\<workspace>/\<project>/"
+        ##* retrieve  from folder name eg "/User/~/Development/\<organization>/\<workspace>/\<bin>/"
 
         pos = 1
         # split folder
@@ -100,7 +100,7 @@ class LbProject(LbUtil):
     def getOrganizationFromPath(self):
         #### Get the Organization Name on request
         # get the organization folder
-        ##* retrieve \<organization> from path eg "~/Development/\<organization>/\<workspace>/\<project>/"
+        ##* retrieve \<organization> from path eg "~/Development/\<organization>/\<workspace>/\<bin>/"
 
         pos = 2
         rc = self.current_directory().split('/')
@@ -119,7 +119,7 @@ class LbProject(LbUtil):
         return rc
     def getProjectFromPath(self):
         #### Get the Project Name on request
-        ##* retrieve \<project> from path eg "~/Development/\<organization>/\<workspace>/\<project>/"
+        ##* retrieve \<bin> from path eg "~/Development/\<organization>/\<workspace>/\<bin>/"
 
         pos = 4
         rc = self.current_directory().split('/')
@@ -135,7 +135,7 @@ class LbProject(LbUtil):
 
     def getWorkspaceFromPath(self):
         #### Get the Workspace Name on request
-        ##* retrieve \<workspace> from path eg "~/Development/\<organization>/\<workspace>/\<project>/"
+        ##* retrieve \<workspace> from path eg "~/Development/\<organization>/\<workspace>/\<bin>/"
 
         # get the workspace folder
         pos = 3
@@ -184,7 +184,7 @@ class LbProject(LbUtil):
 
     def isCloned(self, project_folder):
         #### Test for".git" in Project
-        # expects the cur folder to be a project folder
+        # expects the cur folder to be a bin folder
         # print('cwd', os.getcwd())
         # print('isCloned', project_folder, end='')
         exists = os.path.isdir('{}/.git'.format(project_folder))

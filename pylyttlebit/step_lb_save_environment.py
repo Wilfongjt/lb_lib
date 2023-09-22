@@ -59,7 +59,7 @@ class LbSaveEnvironment(LbStep):
         #for ln in env:
         #    print('    * {}'.format(ln))
 
-        # identify the project data
+        # identify the bin data
 
         self.addStep(self.formulate(self.getStash().getProject()))
 
