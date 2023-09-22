@@ -24,7 +24,9 @@ set +o allexport
 #env
 # goto project folder
 #cd ..
+
 ls
+
 # confirm values
 export GH_TRUNK=main
 export WS_ORGANIZATION=$(get_input "ws.organization" "${WS_ORGANIZATION}")
@@ -57,6 +59,7 @@ cd ${GH_PROJECT}/
 git checkout ${GH_BRANCH}
 git add .
 git commit -m "${GH_MESSAGE}"
+exit 0
 # download any repo changes made by another
 git checkout ${GH_TRUNK} 
 echo "----"
