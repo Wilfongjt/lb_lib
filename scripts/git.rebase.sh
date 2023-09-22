@@ -15,6 +15,7 @@ function get_input()
   fi
   echo $answer
 }
+cd ..
 # open _bk.config and load variables
 set -o allexport
 source .env set
@@ -22,7 +23,7 @@ set +o allexport
 # show env
 #env
 # goto project folder
-cd ..
+#cd ..
 ls
 # confirm values
 export GH_TRUNK=main

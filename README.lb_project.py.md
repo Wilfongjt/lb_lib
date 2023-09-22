@@ -6,7 +6,8 @@ __Generate__ project folders and starter scripts for a project
 * __Confirm__ Environment Variables with User
 * __Save__ Environment Variables
 * __Validate__ Environment Variables
-* __Clone__ Existing Repository
+* Create Project Folders __When__ project folder is not found
+* __Clone__ Existing Repository __When__ __Clone__ is not found
 * __Provide__ Custom GIT Scripts in Repository
 * __Setup__ a Working Repository Branch
     * <gh_user>/<issue-number>/\<description>
