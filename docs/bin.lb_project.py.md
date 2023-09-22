@@ -12,8 +12,8 @@ __Generate__ bin folders and starter scripts for a bin
 * __Setup__ a Working Repository Branch
     * <gh_user>/<issue-number>/\<description>
     * wilfongjt/01/init
-* Stage Branch
-* Commit Branch
+* __Stage__ Branch
+* __Commit__ Branch
 ### Project Folders
 ```
 <user>

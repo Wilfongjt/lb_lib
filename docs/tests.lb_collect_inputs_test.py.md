@@ -1,0 +1,3 @@
+
+source CollectInputsTest(unittest.TestCase)
+
