@@ -7,27 +7,22 @@
 ##* Set a branch
 
 '''
-import os
-import subprocess
-from pprint import pprint
-from pylyttlebit.lb_step import LbStep
-from pylyttlebit.lb_step_list import LbStepList
-from pylyttlebit.lb_project import LbProject
-from pylyttlebit.lb_dev_env import LbDevEnv
-from pylyttlebit.lb_util import LbUtil
-from pylyttlebit.lb_constants import LbC
+from dep.pylyttlebit.lb_step import LbStep
+from dep.pylyttlebit.lb_step_list import LbStepList
+from dep.pylyttlebit.lb_project import LbProject
+from dep.pylyttlebit.lb_constants import LbC
 # from pylyttlebit.lb_folders import LbFolders
-from pylyttlebit.script_lb_defaults import LbDefaults
-from pylyttlebit.step_lb_initialize_environment import LbInitializeEnvironment
+from dep.pylyttlebit.script_lb_defaults import LbDefaults
+from dep.pylyttlebit.step_lb_initialize_environment import LbInitializeEnvironment
 #from pylyttlebit.step_lb_validate_prompt_inputs import LbValidatePromptInputs
-from pylyttlebit.step_lb_impute_project_variables import LbImputeProjectVariables
-from pylyttlebit.step_lb_validate_input_variables import LbValidateInputVariables
-from pylyttlebit.step_lb_create_workspace import LbCreateWorkspace
-from pylyttlebit.step_lb_clone_project import LbCloneProject
-from pylyttlebit.step_lb_save_environment import LbSaveEnvironment
-from pylyttlebit.step_lb_show_status import LbStatus
-from pylyttlebit.lb_stash import LbStash
-from pylyttlebit.step_lb_generate_scripts import LbGenerateScripts
+from dep.pylyttlebit.step_lb_impute_project_variables import LbImputeProjectVariables
+from dep.pylyttlebit.step_lb_validate_input_variables import LbValidateInputVariables
+from dep.pylyttlebit.step_lb_create_workspace import LbCreateWorkspace
+from dep.pylyttlebit.step_lb_clone_project import LbCloneProject
+from dep.pylyttlebit.step_lb_save_environment import LbSaveEnvironment
+from dep.pylyttlebit.step_lb_show_status import LbStatus
+from dep.pylyttlebit.lb_stash import LbStash
+from dep.pylyttlebit.step_lb_generate_scripts import LbGenerateScripts
 '''
 class LbEnvironment(LbDefaults):
     #### LbEnvironment Variables
@@ -119,7 +114,7 @@ class LbBranch(LbStepList):
             return False
         return True
 def main_document():
-    from pylyttlebit.lb_doc_comments import LbDocComments
+    from dep.pylyttlebit.lb_doc_comments import LbDocComments
     print('lb_branch')
     folder = '/'.join(str(__file__).split('/')[0:-1])
     filename = str(__file__).split('/')[-1]

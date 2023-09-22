@@ -151,14 +151,13 @@ class UtilityScript(dict, LbRecorder):
         return self
 
 def main():
-    from pprint import pprint
     start_folder = os.getcwd() # script should start and stop in the same folder
     actual = UtilityScript()
     assert (actual)
     assert (actual.on_fail_exit()) # should be ok
 
 def main_document():
-    from pylyttlebit.lb_doc_comments import LbDocComments
+    from dep.pylyttlebit import LbDocComments
     print('utility_script')
     folder = '/'.join(str(__file__).split('/')[0:-1])
     filename = str(__file__).split('/')[-1]

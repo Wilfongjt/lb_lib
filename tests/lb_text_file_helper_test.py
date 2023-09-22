@@ -1,6 +1,5 @@
-import os
 import unittest
-from pylyttlebit.lb_text_file_helper import LbTextFileHelper
+from dep.pylyttlebit.lb_text_file_helper import LbTextFileHelper
 
 class LbTextFileHelperTest(unittest.TestCase):
     def setUp(self):

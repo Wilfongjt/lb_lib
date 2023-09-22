@@ -1,7 +1,5 @@
 
 import unittest
-import re
-import typing
 from typing import TypeVar
 
 Self = TypeVar("Self", bound="Recorder")
@@ -134,7 +132,7 @@ def main():
     #actual.preview('preview')
 
 def main_document():
-    from pylyttlebit.lb_doc_comments import LbDocComments
+    from dep.pylyttlebit.lb_doc_comments import LbDocComments
     print('lb_recorder')
     folder = '/'.join(str(__file__).split('/')[0:-1])
     filename = str(__file__).split('/')[-1]

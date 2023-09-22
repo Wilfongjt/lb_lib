@@ -1,5 +1,4 @@
 import os
-from pprint import pprint
 from source.lb_text_file import LbTextFile
 class LbDocComments(LbTextFile):
     #### Convert a python file to a Markdown document
@@ -113,7 +112,6 @@ class LbDocComments(LbTextFile):
 
 
 def main():
-    from pylyttlebit.lb_text_file import LbTextFile
     folder = os.getcwd()
     filename = str(__file__).split('/')[-1]
     actual = LbDocComments() #.setFolder(os.getcwd()).setFilename(filename)
@@ -139,7 +137,7 @@ def main():
 
 
 def main_document():
-    from pylyttlebit.lb_doc_comments import LbDocComments
+    from dep.pylyttlebit import LbDocComments
     print('lb_doc_commmentsv')
     folder = '/'.join(str(__file__).split('/')[0:-1])
     filename = str(__file__).split('/')[-1]

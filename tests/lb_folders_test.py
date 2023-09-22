@@ -1,6 +1,5 @@
 import unittest
-import os
-from pylyttlebit.lb_folders import LbFolders
+from dep.pylyttlebit import LbFolders
 class LbFoldersTest(unittest.TestCase):
     def setUp(self):
         self.actual = LbFolders()

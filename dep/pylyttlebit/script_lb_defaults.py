@@ -1,5 +1,5 @@
 
-from pylyttlebit.lb_constants import LbConstants
+from dep.pylyttlebit.lb_constants import LbConstants
 class LbDefaults(dict):
     #### Default Environment Variables
     ##* Defaults for starting a environment file (.env)
@@ -12,7 +12,7 @@ class LbDefaults(dict):
         self[LbConstants().GH_BRANCH_KEY] = 'TBD'
 
 def main_document():
-    from pylyttlebit.lb_doc_comments import LbDocComments
+    from dep.pylyttlebit.lb_doc_comments import LbDocComments
     print('lb_exceptions')
     folder = '/'.join(str(__file__).split('/')[0:-1])
     filename = str(__file__).split('/')[-1]

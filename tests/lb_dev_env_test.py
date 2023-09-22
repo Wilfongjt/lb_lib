@@ -1,8 +1,8 @@
 import unittest
 import os
-from pylyttlebit.lb_dev_env import LbDevEnv
-from pylyttlebit.lb_util import LbUtil
-from pylyttlebit.lb_constants import LbConstants
+from dep.pylyttlebit import LbDevEnv
+from dep.pylyttlebit import LbUtil
+from dep.pylyttlebit.lb_constants import LbConstants
 #print('env', os.environ)
 
 class LbDevEnvTest(unittest.TestCase):

@@ -1,8 +1,6 @@
-import settings
 import os
-import sys
 import subprocess
-from git_script.lb_recorder import LbRecorder
+from dep.git_script.lb_recorder import LbRecorder
 
 #from git_script.git_script_01 import GitScript
 #from git_script.lb_util import LbUtil

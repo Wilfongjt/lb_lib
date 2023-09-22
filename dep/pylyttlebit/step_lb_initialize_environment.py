@@ -1,9 +1,9 @@
 from pprint import pprint
-from pylyttlebit.lb_step import LbStep
-from pylyttlebit.lb_folders import LbFolders
-from pylyttlebit.lb_constants import LbConstants, LbC
-from pylyttlebit.lb_dev_env import LbDevEnv
-from pylyttlebit.script_lb_defaults import LbDefaults
+from dep.pylyttlebit.lb_step import LbStep
+from dep.pylyttlebit.lb_folders import LbFolders
+from dep.pylyttlebit.lb_constants import LbC
+from dep.pylyttlebit.lb_dev_env import LbDevEnv
+from dep.pylyttlebit.script_lb_defaults import LbDefaults
 class LbInitializeEnvironment(LbStep):
     #### Initialize LbEnvironment
 
@@ -80,7 +80,7 @@ class LbInitializeEnvironment(LbStep):
         return self
 
 def main_document():
-    from pylyttlebit.lb_doc_comments import LbDocComments
+    from dep.pylyttlebit.lb_doc_comments import LbDocComments
     print('step_lb_initialize_environment')
     folder = '/'.join(str(__file__).split('/')[0:-1])
     filename = str(__file__).split('/')[-1]
@@ -93,7 +93,7 @@ if __name__ == "__main__":
     main()
     # unittest.main()
 def main():
-    from pylyttlebit.lb_stash import LbStash
+    from dep.pylyttlebit.lb_stash import LbStash
     stash = LbStash()
     actual = LbInitializeEnvironment(stash).setFolder(LbC().TEMP_FOLDER).setFilename(LbC().TEMP_FILENAME).process()
     print('lb_stash', actual.getStash())

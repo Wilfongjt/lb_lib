@@ -1,9 +1,9 @@
 import unittest
 import os
-from pylyttlebit.lb_constants import LbC
-from pylyttlebit.lb_text_file import LbTextFile
-from pylyttlebit.lb_exceptions import FolderNotFoundException, FileNotFoundException, BadFileNameException, BadFolderNameException
-from pylyttlebit.lb_util import LbUtil
+from dep.pylyttlebit.lb_constants import LbC
+from dep.pylyttlebit import LbTextFile
+from dep.pylyttlebit.lb_exceptions import FolderNotFoundException, BadFileNameException, BadFolderNameException
+from dep.pylyttlebit import LbUtil
 
 # start with no file
 # folder_exists false
