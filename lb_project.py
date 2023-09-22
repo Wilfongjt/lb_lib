@@ -8,6 +8,7 @@ def main():
     ##### Features
     from pprint import pprint
     start_folder = os.getcwd() # script should start and stop in the same folder
+    env_file_name = 'runtime.env'
     src_script_rebase = '{}/scripts/git.rebase.sh'.format(start_folder)
     actual = GitScript()
     assert (actual)
@@ -15,8 +16,8 @@ def main():
 
     ##* Load Enviroment Variables from file
     actual  .print('* INITIALIZE') \
-            .set('env_file_name', '.env') \
-            .load_env(folder=os.getcwd(), filename='git.script.env') \
+            .set('env_file_name', env_file_name) \
+            .load_env(folder=os.getcwd(), filename=env_file_name)
 
     ##* Confirm Environment Variables with User
     ##* Save Environment Variables
@@ -35,11 +36,13 @@ def main():
 
     ##* Validate Environment Variables
     actual  .print('* VALIDATE INPUTS') \
-        .validate_inputs(prefix=['WS_', 'GH_']).on_fail_exit() \
-        .print('* CREATE WORKSPACE') \
+        .validate_inputs(prefix=['WS_', 'GH_']).on_fail_exit()
+
+    ##* Create Project Folders when project folder is not found
+    actual  .print('* CREATE WORKSPACE') \
         .create_workspace(actual.get_workspace_folder()).on_fail_exit()
 
-    ##* Clone Existing Repository
+    ##* Clone Existing Repository when clone is not found
     actual  .print('* CLONE') \
         .clone_project_in(actual.get('GH_USER')
                           , actual.get('GH_PROJECT')
@@ -63,18 +66,19 @@ def main():
     actual  .print('* USE') \
         .use(actual.get_project_folder() ,actual.get_env_value('GH_BRANCH'))
 
-    #actual  .print('* STAGE BRANCH') \
-    #    .stage_branch(os.environ['GH_BRANCH']
-    #                  , actual.get_project_folder()).on_fail_exit()
+    ##* Stage Branch
+    actual  .print('* STAGE BRANCH') \
+            .stage_branch(os.environ['GH_BRANCH']
+                          , actual.get_project_folder()).on_fail_exit()
         #.print('  5. cwd        {}'.format(os.getcwd())) \
         #.print('  5. current br {}'.format(actual.get_branch_current())) \
         #.print('  5. branches   {}'.format(actual.get_branches(actual.get_project_folder())))
 
     # actual.report()
-
-    #actual  .print('* COMMIT') \
-    #    .commit_branch(os.environ['GH_BRANCH']
-    #                   , actual.get_project_folder())
+    ##* Commit Branch
+    actual  .print('* COMMIT') \
+            .commit_branch(os.environ['GH_BRANCH']
+                           , actual.get_project_folder())
         #.print('  6. cwd {}'.format(os.getcwd())) \
         #.print('  6. uncommitted {}'.format(actual.getUncommittedFiles()))
     # actual.report()
