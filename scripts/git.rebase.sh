@@ -59,7 +59,7 @@ cd ${GH_PROJECT}/
 git checkout ${GH_BRANCH}
 git add .
 git commit -m "${GH_MESSAGE}"
-exit 0
+#exit 0
 # download any repo changes made by another
 git checkout ${GH_TRUNK} 
 echo "----"
