@@ -79,11 +79,11 @@ class LbDocFolders(LbTextFile):
 def main():
     from pprint import pprint
     from pylyttlebit.lb_doc_comments import LbDocComments
-    #from code.doc_comments import DocComments
+    #from source.doc_comments import DocComments
 
     #print(DocComments(os.getcwd(), 'doc_folders.py').toMarkdown())
     actual = LbDocFolders() #os.getcwd(), title='Example')
-    # actual = DocFolders('{}/code'.format(os.getcwd()))
+    # actual = DocFolders('{}/source'.format(os.getcwd()))
     assert (actual==[])
     assert (actual.setFolder(os.getcwd())==[])
     assert (actual.open() != [])
