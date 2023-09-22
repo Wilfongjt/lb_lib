@@ -2,8 +2,7 @@
     stepA <-> stepB <-> stepC
     prosess[stepA <-> stepB <-> stepC, stepD <-> stepE <-> stepF]
 '''
-from pylyttlebit.lb_constants import LbC
-from pylyttlebit.lb_recorder import LbRecorder
+from dep.pylyttlebit.lb_recorder import LbRecorder
 class LbStepList(list, LbRecorder):
     def __init__(self):
         LbRecorder.__init__(self)
@@ -56,7 +55,7 @@ class LbStepList(list, LbRecorder):
         return self
 
 def main():
-    from pylyttlebit.lb_step import LbStep
+    from dep.pylyttlebit.lb_step import LbStep
     actual = LbStepList()
     print(actual)
     assert (actual == [])   # empty
@@ -70,7 +69,7 @@ def main():
 
 
 def main_document():
-    from pylyttlebit.lb_doc_comments import LbDocComments
+    from dep.pylyttlebit.lb_doc_comments import LbDocComments
     print('lb_step_list')
     folder = '/'.join(str(__file__).split('/')[0:-1])
     filename = str(__file__).split('/')[-1]

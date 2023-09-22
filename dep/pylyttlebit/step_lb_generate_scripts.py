@@ -1,7 +1,6 @@
-import os
 from pprint import pprint
-from pylyttlebit.lb_step import LbStep
-from pylyttlebit.lb_constants import LbC
+from dep.pylyttlebit.lb_step import LbStep
+from dep.pylyttlebit.lb_constants import LbC
 from lb_branch_script import LbBranchScript
 from lb_rebase_script import LbRebaseScript
 from lb_project import LbProject
@@ -47,7 +46,7 @@ class LbGenerateScripts(LbStep):
         return self
 
 def main_document():
-    from pylyttlebit.lb_doc_comments import LbDocComments
+    from dep.pylyttlebit.lb_doc_comments import LbDocComments
     print('step_lb_generate_rebase_script')
     folder = '/'.join(str(__file__).split('/')[0:-1])
     filename = str(__file__).split('/')[-1]
@@ -55,8 +54,7 @@ def main_document():
 
 def main():
     # output into local scripts folder
-    from pprint import pprint
-    from pylyttlebit.lb_stash import LocalStash
+    from dep.pylyttlebit.lb_stash import LocalStash
 
     stash = LocalStash() # force output into local scripts folder
     actual = LbGenerateScripts(stash).setVerbose(False).process()

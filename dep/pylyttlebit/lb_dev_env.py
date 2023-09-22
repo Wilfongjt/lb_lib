@@ -1,8 +1,6 @@
 import os
-from pylyttlebit.lb_text_file import LbTextFile
-from pylyttlebit.lb_project import LbProject
-from pylyttlebit.lb_constants import LbConstants
-from pylyttlebit.lb_util import LbUtil
+from dep.pylyttlebit.lb_text_file import LbTextFile
+from dep.pylyttlebit.lb_project import LbProject
 
 '''
     + --> empty ---> + --> 
@@ -269,7 +267,6 @@ class LbDevEnv(LbTextFile):
 
 def main():
     from pprint import pprint
-    from pylyttlebit.lb_doc_comments import LbDocComments
     print('lb_dev_env')
     #folder = '/'.join(str(__file__).split('/')[0:-1])
     #filename = str(__file__).split('/')[-1]
@@ -408,7 +405,7 @@ def main():
     print('---')
     pprint(os.environ)
 def main_document():
-    from pylyttlebit.lb_doc_comments import LbDocComments
+    from dep.pylyttlebit.lb_doc_comments import LbDocComments
     print('lb_dev_env')
     folder = '/'.join(str(__file__).split('/')[0:-1])
     filename = str(__file__).split('/')[-1]

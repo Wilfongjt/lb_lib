@@ -1,6 +1,6 @@
 from lb_recorder import LbRecorder
-from lb_constants import LbC
-from pprint import pprint
+
+
 class LbStep(LbRecorder):
     def __init__(self):
         LbRecorder.__init__(self)
@@ -204,7 +204,7 @@ def main():
 
 
 def main_document():
-    from pylyttlebit.lb_doc_comments import LbDocComments
+    from dep.pylyttlebit.lb_doc_comments import LbDocComments
     print('lb_step')
     folder = '/'.join(str(__file__).split('/')[0:-1])
     filename = str(__file__).split('/')[-1]

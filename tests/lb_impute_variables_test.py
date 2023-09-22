@@ -1,7 +1,6 @@
 import unittest
-from pprint import pprint
 # from pylyttlebit.script_lb_rebase import ImputeProjectVariables
-from pylyttlebit.lb_constants import LbConstants
+from dep.pylyttlebit.lb_constants import LbConstants
 class ImputeVariablesTest(unittest.TestCase):
     def setUp(self) -> None:
         print('setup')

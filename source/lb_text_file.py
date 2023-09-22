@@ -1,9 +1,6 @@
-import os
-
-import pylyttlebit.lb_exceptions
-from pylyttlebit.lb_recorder import LbRecorder
-from pylyttlebit.lb_exceptions import BadFileNameException, BadFolderNameException, FileNotFoundException, FolderNotFoundException
-from pylyttlebit.lb_util import LbUtil
+from dep.pylyttlebit.lb_recorder import LbRecorder
+from dep.pylyttlebit.lb_exceptions import BadFileNameException, BadFolderNameException, FolderNotFoundException
+from dep.pylyttlebit import LbUtil
 class LbTextFile(list, LbRecorder):
     ## Open, Load and Save text file
     def hello_world(self):
@@ -245,7 +242,7 @@ def main():
 
 
 def main_document():
-    from pylyttlebit.lb_doc_comments import LbDocComments
+    from dep.pylyttlebit import LbDocComments
     print('lb_text_file')
     folder = '/'.join(str(__file__).split('/')[0:-1])
     filename = str(__file__).split('/')[-1]

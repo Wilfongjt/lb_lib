@@ -5,8 +5,7 @@ from os import listdir
 import shutil
 import time
 
-from pylyttlebit.lb_exceptions import BadFileNameException, \
-                                 BadFolderNameException, \
+from dep.pylyttlebit.lb_exceptions import BadFolderNameException, \
                                  FolderNotFoundException, \
                                  FolderAlreadyExistsException, \
                                  SubfolderCopyException
@@ -104,7 +103,19 @@ class LbUtil():
         ##* return "TBD" when not found ... [x] has test
         ##* returns str ... [x] has test
         return rc
-
+    def get_input(self, msg, default, hardstop=True):
+        #### Prompt user for input
+        rc = '{} [{}] : '.format(msg, default)
+        rc = input(rc)
+        if not rc:
+            rc = default
+        ##* hard stop when user types 'n','N','x','X','q' or 'Q'
+        if rc in ['n','N','x','X','q','Q','TBD']:
+            if hardstop:
+                print('stopping...Stopped')
+                exit(0)
+        ##* return str
+        return rc
     def file_age(self, folder, filename):
         #### Calculate the age of a file
         ##* age is system datetime - file datetime ... no test
@@ -228,7 +239,6 @@ class LbUtil():
 
 
 def main():
-    from pylyttlebit.lb_doc_comments import LbDocComments
     print('lb_util')
     folder = '/'.join(str(__file__).split('/')[0:-1])
     filename = str(__file__).split('/')[-1]
@@ -237,7 +247,7 @@ def main():
     # print('file_exists', LbUtil().file_exists(folder, '0.env'))
 
 def main_document():
-    from pylyttlebit.lb_doc_comments import LbDocComments
+    from dep.pylyttlebit.lb_doc_comments import LbDocComments
     print('lb_util')
     folder = '/'.join(str(__file__).split('/')[0:-1])
     filename = str(__file__).split('/')[-1]

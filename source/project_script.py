@@ -1,8 +1,4 @@
 import os
-import sys
-from pprint import pprint
-import subprocess
-import shutil
 #from lb_util import LbUtil
 #from lb_recorder import LbRecorder
 from source.utility_script import UtilityScript
@@ -190,14 +186,13 @@ def mainProjectScript():
     assert (actual.is_workspace_folder())
 
 def main():
-    from pprint import pprint
     start_folder = os.getcwd() # script should start and stop in the same folder
     actual = ProjectScript()
     assert (actual)
     assert (actual.on_fail_exit()) # should be ok
 
 def main_document():
-    from pylyttlebit.lb_doc_comments import LbDocComments
+    from dep.pylyttlebit import LbDocComments
     print('project_script')
     folder = '/'.join(str(__file__).split('/')[0:-1])
     filename = str(__file__).split('/')[-1]

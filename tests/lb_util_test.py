@@ -1,13 +1,12 @@
 import os
 import unittest
-from pylyttlebit.lb_util import LbUtil
-from pylyttlebit.lb_exceptions import BadFileNameException, BadFolderNameException, FolderNotFoundException,SubfolderCopyException, FolderAlreadyExistsException
-from pylyttlebit.lb_constants import LbConstants
-from pylyttlebit.lb_constants import LbC
+from dep.pylyttlebit import LbUtil
+from dep.pylyttlebit.lb_exceptions import BadFolderNameException, FolderNotFoundException,SubfolderCopyException, FolderAlreadyExistsException
+from dep.pylyttlebit.lb_constants import LbConstants
+from dep.pylyttlebit.lb_constants import LbC
 from os import listdir
 from os.path import isfile, join
 import shutil
-import time
 
 
 class LbUtilTest(unittest.TestCase):

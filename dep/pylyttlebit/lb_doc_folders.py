@@ -1,6 +1,6 @@
 import os
-from pylyttlebit.lb_text_file import LbTextFile
-from pylyttlebit.lb_exceptions import FolderNotFoundException,BadFolderNameException
+from dep.pylyttlebit.lb_text_file import LbTextFile
+from dep.pylyttlebit.lb_exceptions import FolderNotFoundException,BadFolderNameException
 class LbDocFolders(LbTextFile):
     ## Given a folder, generate a text graphic of folders and files
 
@@ -77,8 +77,7 @@ class LbDocFolders(LbTextFile):
         return self
 
 def main():
-    from pprint import pprint
-    from pylyttlebit.lb_doc_comments import LbDocComments
+    from dep.pylyttlebit.lb_doc_comments import LbDocComments
     #from source.doc_comments import DocComments
 
     #print(DocComments(os.getcwd(), 'doc_folders.py').toMarkdown())
@@ -95,7 +94,7 @@ def main():
 
 
 def main_document():
-    from pylyttlebit.lb_doc_comments import LbDocComments
+    from dep.pylyttlebit.lb_doc_comments import LbDocComments
     print('lb_doc_folders')
     folder = '/'.join(str(__file__).split('/')[0:-1])
     filename = str(__file__).split('/')[-1]

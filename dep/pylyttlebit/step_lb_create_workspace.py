@@ -1,7 +1,6 @@
-from pprint import pprint
-from pylyttlebit.lb_step import LbStep
-from pylyttlebit.lb_constants import LbC
-from pylyttlebit.lb_util import LbUtil
+from dep.pylyttlebit.lb_step import LbStep
+from dep.pylyttlebit.lb_constants import LbC
+from dep.pylyttlebit.lb_util import LbUtil
 class LbCreateWorkspace(LbStep):
     def __init__(self, stash):
         super().__init__()
@@ -44,7 +43,7 @@ class LbCreateWorkspace(LbStep):
 
         return self
 def main_document():
-    from pylyttlebit.lb_doc_comments import LbDocComments
+    from dep.pylyttlebit.lb_doc_comments import LbDocComments
     print('step_lb_create_workspace')
     folder = '/'.join(str(__file__).split('/')[0:-1])
     filename = str(__file__).split('/')[-1]
@@ -52,7 +51,7 @@ def main_document():
 
 def main():
     from pprint import pprint
-    from pylyttlebit.lb_stash import LbStash
+    from dep.pylyttlebit.lb_stash import LbStash
 
     stash = LbStash()
     actual = LbCreateWorkspace(stash).process()

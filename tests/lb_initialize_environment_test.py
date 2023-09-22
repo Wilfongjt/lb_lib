@@ -1,6 +1,6 @@
 import unittest
-from pylyttlebit.script_lb_rebase import InitializeEnvironment
-from pylyttlebit.lb_constants import LbConstants
+from dep.pylyttlebit import InitializeEnvironment
+from dep.pylyttlebit.lb_constants import LbConstants
 class InitializeEnvironmentTest(unittest.TestCase):
     def setUp(self) -> None:
         print('setup')

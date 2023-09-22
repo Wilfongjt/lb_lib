@@ -258,7 +258,7 @@ def mainProjectScript():
     assert (not actual.is_workspace_folder())
     folder = '/'.join(folder.split('/')[0:-1])
     assert (actual.validate_folder(folder,-3))
-    os.chdir('..') # switch to workspace folder
+    os.chdir('../..') # switch to workspace folder
     assert (actual.is_workspace_folder())
 
 class GitCommands(ProjectScript):

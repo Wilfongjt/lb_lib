@@ -1,6 +1,6 @@
 import os
-from pylyttlebit.lb_util import LbUtil
-from pylyttlebit.lb_constants import LbC
+from dep.pylyttlebit.lb_util import LbUtil
+from dep.pylyttlebit.lb_constants import LbC
 
 class LbFolders():
     def hello_world(self):
@@ -63,7 +63,7 @@ class LbFolders():
         return self
 
 def main():
-    from pylyttlebit.lb_doc_comments import LbDocComments
+    from dep.pylyttlebit.lb_doc_comments import LbDocComments
     print('lb_folders')
     folder = '/'.join(str(__file__).split('/')[0:-1])
     filename = str(__file__).split('/')[-1]
@@ -96,7 +96,7 @@ def main():
     assert (LbUtil().folder_exists(actual.getTempFolder()))
 
 def main_document():
-    from pylyttlebit.lb_doc_comments import LbDocComments
+    from dep.pylyttlebit.lb_doc_comments import LbDocComments
     print('lb_folders')
     folder = '/'.join(str(__file__).split('/')[0:-1])
     filename = str(__file__).split('/')[-1]

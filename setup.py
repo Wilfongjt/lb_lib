@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 #from pylyttlebit import __version__
-from git_script import __version__
+from dep.git_script import __version__
 
 setup(
     name='git_script',

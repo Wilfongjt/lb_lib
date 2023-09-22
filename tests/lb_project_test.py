@@ -1,5 +1,5 @@
 import unittest
-from pylyttlebit.lb_project import LbProject
+from dep.pylyttlebit.lb_project import LbProject
 
 class LbProjectTest(unittest.TestCase):
     def setUp(self):
