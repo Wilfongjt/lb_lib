@@ -30,7 +30,7 @@ class LbStatus(LbStep):
         if self.isVerbose():
             pprint(self.getStash())
 
-        # identify the project data
+        # identify the bin data
 
         self.addStep(self.formulate(self.getStash().getProject()))
 

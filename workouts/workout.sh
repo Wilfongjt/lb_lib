@@ -111,7 +111,7 @@ echo "    - project  :   ${HOME}/Development/${WS_ORGANIZATION}/${WS_WORKSPACE}/
 rc=$(clone_project "$WS_ORGANIZATION" "$WS_WORKSPACE" "$GH_PROJECT" "$GH_USER")
 echo "    - clone is $(is_ok $? 'bad')"
 
-# Change dir to project folder
+# Change dir to bin folder
 echo "* Change to project folder"
 cd "${HOME}/Development/${WS_ORGANIZATION}/${WS_WORKSPACE}/${GH_PROJECT}"
 echo "    - folder: $PWD"

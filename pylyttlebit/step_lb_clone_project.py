@@ -75,7 +75,7 @@ class LbCloneProject(LbStep):
             self.addStep('(success)')
 
 
-        # identify the project data
+        # identify the bin data
 
         self.addStep(self.formulate(self.getStash().getProject()))
 

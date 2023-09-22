@@ -14,7 +14,7 @@ class ImputeVariablesTest(unittest.TestCase):
                 LbConstants().GH_BRANCH_KEY: 'TBD',
                 LbConstants().GH_MESSAGE_KEY: 'TBD'
             },
-            'project': {}
+            'bin': {}
         }
         self.actual = ImputeProjectVariables(self.stash).setVerbose(True).setTest(True)
 

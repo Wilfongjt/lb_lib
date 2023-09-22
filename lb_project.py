@@ -1,9 +1,9 @@
 import os
-from lib.git_script import GitScript
+from _lib.git_script import GitScript
 
 def main():
     #### LyttleBit Project
-    ##Generate project folders and starter scripts for a project
+    ##Generate bin folders and starter scripts for a bin
     ##     Script name: lb_project.py
     ##### Features
     from pprint import pprint
@@ -38,7 +38,7 @@ def main():
     actual  .print('* VALIDATE INPUTS') \
         .validate_inputs(prefix=['WS_', 'GH_']).on_fail_exit()
 
-    ##* Create Project Folders when project folder is not found
+    ##* Create Project Folders when bin folder is not found
     actual  .print('* CREATE WORKSPACE') \
         .create_workspace(actual.get_workspace_folder()).on_fail_exit()
 
@@ -98,7 +98,7 @@ def main():
     ##<user>
     ##    + Development
     ##        + <workspace>
-    ##            + <project-name>
+    ##            + <bin-name>
     ##                + scripts
     ##```
     #actual  .write_to(actual.get_project_folder(), "test_file.txt", "hello world\n") \
@@ -110,7 +110,7 @@ def main():
     #print('curr folder', os.getcwd())
 
 def main_document():
-    from lib.lb_doc_comments import LbDocComments
+    from _lib.lb_doc_comments import LbDocComments
     print('lb_project')
     folder = '/'.join(str(__file__).split('/')[0:-1])
     filename = str(__file__).split('/')[-1]

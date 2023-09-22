@@ -29,7 +29,7 @@ class LbBranchScript(LbTextFile):
     def getStartText(self):
         rc = '''
         #!/bin/bash
-        # lib
+        # _lib
         function get_input() {
             if [ $# -ne 2 ]; then
                 echo "Usage: get_input <prompt> <default>"
@@ -175,7 +175,7 @@ class LbBranchScript(LbTextFile):
         # show env
         env
         echo 'A'
-        # goto project folder
+        # goto bin folder
         cd ..
         ls
         
@@ -253,7 +253,7 @@ class LbBranchScript(LbTextFile):
         # show env
         #env
 
-        # goto project folder
+        # goto bin folder
         cd ..
         ls
         
@@ -265,7 +265,7 @@ class LbBranchScript(LbTextFile):
         export WS_ORGANIZATION=$(get_input "ws.organization" "${WS_ORGANIZATION}")
         export WS_WORKSPACE=$(get_input "ws.workspace" "${WS_WORKSPACE}")
         export GH_USER=$(get_input "gh.user" "${GH_USER}")
-        export GH_PROJECT=$(get_input "gh.project" "${GH_PROJECT}")
+        export GH_PROJECT=$(get_input "gh.bin" "${GH_PROJECT}")
         export GH_BRANCH=$(get_input "gh.branch" "${GH_BRANCH}")
         export GH_MESSAGE=$(get_input "gh.message" "${GH_MESSAGE}")
         export PUSH=N
@@ -340,7 +340,7 @@ class LbBranchScript(LbTextFile):
 
 
 def main():
-    # outputs to the local project
+    # outputs to the local bin
     from pprint import pprint
     script_folder = '{}/scripts'.format('/'.join(str(__file__).split('/')[0:-2]))
     print('script_folder', script_folder)

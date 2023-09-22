@@ -8,9 +8,9 @@ from git_script.lb_recorder import LbRecorder
 #from git_script.lb_util import LbUtil
 class Expected():
     def validate_folder(self, folder, dev_pos):
-        # is the given folder a project folder
-        # eg ~/Development/organization/workspace/project
-        # project must have Development at forth position from end
+        # is the given folder a bin folder
+        # eg ~/Development/organization/workspace/bin
+        # bin must have Development at forth position from end
         # workspace must have Development at third position from end
 
         rc = True
@@ -22,8 +22,8 @@ class Expected():
 
         return rc
     def depvalidate_project_folder(self, folder):
-        # is the given folder a project folder
-        # eg ~/Development/organization/workspace/project
+        # is the given folder a bin folder
+        # eg ~/Development/organization/workspace/bin
         # must have Development at forth position from end
         rc = True
         fldr = folder.split('/')
@@ -51,8 +51,8 @@ class Actual(Expected):
     #def __init__(self):
     #    super().__init__()
     def is_project_folder(self):
-        # is the current folder a project folder
-        # eg ~/Development/organization/workspace/project
+        # is the current folder a bin folder
+        # eg ~/Development/organization/workspace/bin
         # must have Development at forth position from end
 
         rc = False
@@ -64,7 +64,7 @@ class Actual(Expected):
         return rc
     def is_workspace_folder(self):
         # is the current folder a workspace folder
-        # eg ~/Development/organization/workspace/project
+        # eg ~/Development/organization/workspace/bin
         # must have Development at forth position from end
 
         rc = False
