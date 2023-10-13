@@ -40,10 +40,19 @@ class ProjectScript(UtilityScript):
                                      , os.environ["WS_WORKSPACE"])
         return fldr
     def get_project_folder(self, subfolder=None):
-        fl=self.PROJECT_FOLDER.format(os.environ['HOME']
-                                      , os.environ["WS_ORGANIZATION"]
-                                      , os.environ["WS_WORKSPACE"]
-                                      , os.environ["GH_PROJECT"])
+
+        if 'WS_ORGANIZATION' not in os.environ:
+            # this is for testing
+            fl = self.PROJECT_FOLDER.format(os.environ['HOME']
+                                            , self["WS_ORGANIZATION"]
+                                            , self["WS_WORKSPACE"]
+                                            , self["GH_PROJECT"])
+        else:
+            fl=self.PROJECT_FOLDER.format(os.environ['HOME']
+                                          , os.environ["WS_ORGANIZATION"]
+                                          , os.environ["WS_WORKSPACE"]
+                                          , os.environ["GH_PROJECT"])
+
         if subfolder:
             fl = '{}/{}'.format(fl,subfolder)
         return fl
@@ -75,7 +84,9 @@ class ProjectScript(UtilityScript):
         #### Load Enviroment Variables on request
         self.addStep('[Load-env]')
         env_file_name = filename or self.get('env_file_name')
-        env_folder_name = folder or self.get('env_folder_name') or os.getcwd()
+        env_folder_name = folder or self.get('env_folder_name') or '/'.join(os.getcwd().split('/')[0:-1])
+        print('env_file_name',env_file_name)
+        print('env_folder_name',env_folder_name)
         line_list=[]
         if self.file_exists(env_folder_name, env_file_name):
             with open('{}/{}'.format(env_folder_name, env_file_name)) as file:

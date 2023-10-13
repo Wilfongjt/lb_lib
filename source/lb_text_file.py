@@ -1,6 +1,6 @@
-from dep.pylyttlebit.lb_recorder import LbRecorder
-from dep.pylyttlebit.lb_exceptions import BadFileNameException, BadFolderNameException, FolderNotFoundException
-from dep.pylyttlebit import LbUtil
+from source.lb_recorder import LbRecorder
+from source.lb_exceptions import BadFileNameException, BadFolderNameException, FolderNotFoundException
+from source.lb_util import LbUtil
 class LbTextFile(list, LbRecorder):
     ## Open, Load and Save text file
     def hello_world(self):
@@ -40,10 +40,12 @@ class LbTextFile(list, LbRecorder):
         ##* returns folder name ... [x] has test
         return self.folder
 
-    def setFolder(self, name):
+    def setFolder(self, name, create=False):
         ## __Set folder name on request__
         self.folder= name
         ##* returns self ... [x] has test
+        if create:
+            LbUtil().create_folder(name)
         return self
 
     def getFilename(self):
@@ -231,6 +233,9 @@ class LbTextFile(list, LbRecorder):
 
         ##* returns bool ... [ ] has test
         return is_empty
+
+    def toString(self):
+        return '\n'.join(self)
 
 
 def main():

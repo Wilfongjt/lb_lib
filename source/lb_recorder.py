@@ -121,6 +121,11 @@ class LbRecorder():
             return '({}({}))'.format(title, ','.join(keys))
 
         return '({})'.format(','.join(keys))
+
+    def showSteps(self):
+        print(self.getSteps())
+        return self
+
 def main():
     # dev
     print('lb_recorder')

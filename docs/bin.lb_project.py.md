@@ -1,3 +1,9 @@
+
+source TemplateKeysAndValues(list)
+
+
+source EnvironmentKeysAndValues(dict)
+
 ## LyttleBit Project
 __Generate__ bin folders and starter scripts for a bin
      Script name lb_project.py
@@ -9,9 +15,7 @@ __Generate__ bin folders and starter scripts for a bin
 * Create Project Folders __When__ bin folder is not found
 * __Clone__ Existing Repository __When__ __Clone__ is not found
 * __Provide__ Custom GIT Scripts in Repository
-* __Setup__ a Working Repository Branch
-    * <gh_user>/<issue-number>/\<description>
-    * wilfongjt/01/init
+* Create HAPI code
 * __Stage__ Branch
 * __Commit__ Branch
 ### Project Folders

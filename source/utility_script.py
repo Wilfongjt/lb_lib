@@ -42,6 +42,7 @@ class UtilityScript(dict, LbRecorder):
         self.addStep('exit')
         sys.exit(2)
         return self
+
     def folder_exists(self, folder):
         #self.addStep('folder_exists')
 
