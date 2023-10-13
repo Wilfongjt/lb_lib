@@ -10,7 +10,7 @@ from source.git_commands import GitCommands
 class GitScript(GitCommands):
     def __init__(self):
         super().__init__()
-        self['env_folder_name']=os.getcwd()
+        self['env_folder_name']='/'.join(os.getcwd().split('/')[0:-1])
         self['env_file_name']='.env'
 
         self.GIT_URL_TEMPLATE = 'https://github.com/{}/{}.git'

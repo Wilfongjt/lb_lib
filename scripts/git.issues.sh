@@ -9,18 +9,21 @@ get_github_issues() {
   local api_url="https://api.github.com/repos/$repo/issues"
 
   # Make the API request using curl with authentication
-  local response=$(curl -v -s -H "Authorization: token $access_token" "$api_url")
+  local response=$(curl -s -H "Authorization: token $access_token" "$api_url")
 
   # Check if the request was successful (HTTP status 200)
   #local status_code=$(echo "$response" | grep -o 'HTTP/1.1 [0-9]*' | awk '{print $2}')
+  #local status_code=$(echo "$response" | grep -o 'HTTP/2 [0-9]*' | awk '{print $2}')
+
   #if [ "$status_code" != "200" ]; then
   #  echo "Error: Failed to retrieve GitHub issues. HTTP status source $status_code"
+  #  echo $response
   #  return 1
   #fi
 
   # Parse and display the list of issues
-  echo "$response"
-  #echo "$response" | jq -r '.[] | "Issue #" + (.number | tostring) + ": " + .title'
+  #echo "$response"
+  echo "$response" | jq -r '.[] | "* " + (.number | tostring) + ": " + .title + "\n"'
   #echo "$response" | jq -r '.[] | "Issue #" + (.number | tostring) + ": " + .title'
 
 }
@@ -43,7 +46,7 @@ write_array_to_file() {
 
     # Iterate through the array and write each element to the file
     for element in "${array[@]}"; do
-        echo "$element" >> "$output_file"
+        echo -e "${element}\n" >> "$output_file"
         echo " "
     done
 }
@@ -52,16 +55,18 @@ write_issues_to_file() {
     local output_file="issues.md"  # The name of the output file
 
     # Iterate through the array and write each element to the file
-    echo "# GitHub Issues" > "$output_file"
+    echo -e "# GitHub Issues\n" > "$output_file"
     for element in "${array[@]}"; do
-        echo "$element" >> "$output_file"
-        echo " "
+        echo -e "${element}" >> "$output_file"
+        #echo "x " >> "$output_file"
+        #break
     done
+    echo "${array[@]}"
 }
 # Example usage:
-output_file="output.txt"
-my_array=("Element 1" "Element 2" "Element 3")
-write_array_to_file "$output_file" "${my_array[@]}"
+#output_file="output.txt"
+#my_array=("Element 1" "Element 2" "Element 3")
+#write_array_to_file "$output_file" "${my_array[@]}"
 
 # change to bin folder
 cd ..
@@ -75,3 +80,16 @@ echo "https://api.github.com/repos/${GH_USER}/${GH_PROJECT}/issues"
 issues=$(get_github_issues "${GH_USER}/${GH_PROJECT}" "${GH_TOKEN}")
 echo ${issues}
 #echo $(write_issues_to_file "${issues[@]}")
+#local array=("$@")    # Get all arguments as an array
+#    local output_file="issues.md"  # The name of the output file
+
+# Iterate through the array and write each element to the file
+output_file="issues.md"
+echo -e "# GitHub Issues\n" > "$output_file"
+for element in "${issues[@]}"; do
+    echo -e "${element}" >> "$output_file"
+done
+#echo "${array[@]}"
+echo "\n" >> "$output_file"
+echo "source: github\n" >> $output_file""
+echo "generator: git.issues.sh\n" >> "$output_file"
