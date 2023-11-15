@@ -1,0 +1,7 @@
+#!/bin/sh
+set -o allexport
+source .env set
+set +o allexport
+#python3 ../../../../_tools/source/git.branch.py
+#python3 ../_tools/git.branch.py
+python3 ../pylyttlebit/git.branch.py

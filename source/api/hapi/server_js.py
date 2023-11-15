@@ -1,5 +1,5 @@
 import os
-from source.template.lb_template import LbTemplate
+from source.lb_template import LbTemplate
 
 class ServerMainJs(LbTemplate):
     def __init__(self):
