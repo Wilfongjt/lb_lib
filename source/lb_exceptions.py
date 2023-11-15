@@ -1,4 +1,5 @@
-
+class UnInitializedContextException(Exception):
+    pass
 class FolderNotFoundException(Exception):
     pass
 class BadFolderNameException(Exception):

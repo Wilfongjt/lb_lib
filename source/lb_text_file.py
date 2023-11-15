@@ -1,5 +1,10 @@
+import os
+
 from source.lb_recorder import LbRecorder
 from source.lb_exceptions import BadFileNameException, BadFolderNameException, FolderNotFoundException
+from source.lb_exceptions import FileNotFoundException,UnInitializedContextException
+from source.lb_folders import LbProjectFolder
+
 from source.lb_util import LbUtil
 class LbTextFile(list, LbRecorder):
     ## Open, Load and Save text file
@@ -200,7 +205,7 @@ class LbTextFile(list, LbRecorder):
         self.addStep('save-as')
         ##* return the new LbTextFile ... [x] has test
         return LbTextFile().setFolder(folder).setFilename(filename).load(self).save()
-
+    '''
     def show(self, terminalMsg=None):
         ##__Show Steps on request__
         if terminalMsg:
@@ -210,6 +215,18 @@ class LbTextFile(list, LbRecorder):
         else:
             print('    {}: {}'.format(self, self.getClassName()))
             print('    ', self.getSteps())
+        return self
+    '''
+
+    def show(self):
+        print(self.getClassName())
+        print('  target-filename  :', self.getFilename())
+        print('  target-foldername:', (str(self.getFolder())))
+        print('  source           :', (LbProjectFolder()))
+        print('  steps            :')
+        print('                   :', (self.getSteps()))
+        print('  actual           :')
+        print('                   :', (str(self)))
         return self
 
     def delete(self):
@@ -239,11 +256,13 @@ class LbTextFile(list, LbRecorder):
 
 
 def main():
-    from lb_doc_comments import LbDocComments
-    print('lb_text_file')
-    folder = '/'.join(str(__file__).split('/')[0:-1])
-    filename = str(__file__).split('/')[-1]
-    LbDocComments().setFolder(folder).setFilename(filename).open().save()
+
+    actual = LbTextFile()
+    actual.setFolder(os.getcwd())
+    actual.setFilename('lb_text_file.py')
+    actual.show()
+    actual.open()
+    actual.validate()
 
 
 def main_document():

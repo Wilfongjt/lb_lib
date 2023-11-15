@@ -205,14 +205,18 @@ class LbScriptsFolder(FolderString):
         return instance
 
 class LbTemplateFolder(FolderString):
-    def __new__(cls,folder_string=None):
+    def __new__(cls,context, folder_string=None):
+        # context eg "bass" or "bash/special"
         if not folder_string:
             folder_string = os.getcwd()
         offset = 4
+        cntxt = context.split('/')
+        #print('context', cntxt)
         f_str = folder_string.split('/')
         f_str = f_str[0:f_str.index('Development') + offset]
         f_str.append('source')
         f_str.append('template')
+        f_str.extend(cntxt)
         f_str = '/'.join(f_str)
         instance = super().__new__(cls, f_str)
         return instance
@@ -315,13 +319,13 @@ def main():
     assert (actual.getName() == 'scripts')
 
     #dd = '{}/source/template'.format(os.environ['HOME'])
-    expected='{}/Development/{}/{}/{}/source/template'.format(os.environ['HOME'],org_name, ws_name, prj_name)
+    expected='{}/Development/{}/{}/{}/source/template/bash'.format(os.environ['HOME'],org_name, ws_name, prj_name)
 
     print('expected', expected)
-    actual = LbTemplateFolder()
+    actual = LbTemplateFolder('bash')
     print('actual',actual)
     assert (actual == expected)
-    assert (actual.getName() == 'template')
+    assert (actual.getName() == 'bash')
 
     #print('dev-folder', actual)
 if __name__ == "__main__":

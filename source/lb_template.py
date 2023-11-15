@@ -2,21 +2,33 @@ import os
 
 from source.lb_text_file import LbTextFile
 from source.lb_util import LbUtil
-from source.lb_folders import LbTemplateFolder
-from source.lb_exceptions import FileNotFoundException
+from source.lb_folders import LbTemplateFolder, LbProjectFolder
+from source.lb_exceptions import FileNotFoundException,UnInitializedContextException
 
 
 class LbTemplate(LbTextFile):
     def __init__(self):
         super().__init__()
-        self.setFilename('{}.txt'.format(self.getClassName()))
-        self.template_str = '''
-        // created: <date-time>
-        // author: <gh-user>
+        #self.setFilename('{}.txt'.format(self.getClassName()))
+        #self.template_str = '''
+        #// created: <date-time>
+        #// author: <gh-user>
 
-        '''
+        #'''
+        self.context=None
 
-    def load_template_string(self, folder=None, filename=None):
+    def assertExists(self):
+        assert (LbUtil().file_exists(self.getFolder(),self.getFilename()))
+        return self
+
+    def set_context(self, context):
+        self.context= context
+        return self
+
+    def get_context(self):
+        return self.context
+
+    def depload_template_string(self, folder=None, filename=None):
         #### Load Template from a File
         ##* Store template files in ./data/
         # template files are stored in /data folder
@@ -35,7 +47,6 @@ class LbTemplate(LbTextFile):
         if overwrite:  # and LbUtil().file_exists(self.getFolder(),self.getFilename()):
             ##* delete file when env file exists and overwrite is True
             self.addStep('delete')
-
             LbUtil().delete_file(self.getFolder(), self.getFilename())
 
         if LbUtil().file_exists(self.getFolder(), self.getFilename()):
@@ -75,6 +86,9 @@ class LbTemplate(LbTextFile):
         super().validate()
         # if not LbUtil().file_exists(self.getFolder(), self.getFilename()):
         #    raise FileNotFoundException('File not found {}'.format(self.getFilename()))
+        if not self.get_context():
+            raise UnInitializedContextException('set the template context')
+
         return self
 
     def get_template_scrape_keys(self, ln):
@@ -109,7 +123,7 @@ class LbTemplate(LbTextFile):
             keys = keys + [k for k in self.get_template_scrape_keys(ln) if k not in keys]
         return keys
 
-    def set_template_string(self, tmpl_str):
+    def depset_template_string(self, tmpl_str):
         self.template_str = tmpl_str
         return self
 
@@ -119,10 +133,14 @@ class LbTemplate(LbTextFile):
         // created: <date-time>
         // author: <gh-user>
         '''
-        tmpl_folder = LbTemplateFolder()
+        tmpl_folder = LbTemplateFolder(self.get_context())
         tmpl_file = '{}.tmpl'.format(self.getFilename())
-        print('templatfile {}/{}'.format(tmpl_folder, tmpl_file))
-        print('exits', LbUtil().file_exists(tmpl_folder, tmpl_file))
+        #print('templatfile {}/{}'.format(tmpl_folder, tmpl_file))
+        #print('exits', LbUtil().file_exists(tmpl_folder, tmpl_file))
+        print('tmpl_folder', tmpl_folder)
+        print('tmpl_file', tmpl_file)
+        print('folder_exist', LbUtil().folder_exists(tmpl_folder))
+        print('file exist', LbUtil().file_exists(tmpl_folder, tmpl_file))
         if LbUtil().file_exists(tmpl_folder, tmpl_file):
             fn = '{}/{}.tmpl'.format(tmpl_folder, tmpl_file)
             with open(fn) as f:
@@ -130,22 +148,36 @@ class LbTemplate(LbTextFile):
         print("line_string", line_string)
         return line_string
 
+    def show(self):
+        super().show()
+        print('  context          :',self.get_context())
+        return self
 
 def main():
+    # get template
+    # inject into
+
     import os
     from source.lb_folders import LbProjectFolder
     target_folder = '{}/Development/temp-org/temp-ws/temp-prj'.format(os.environ['HOME'])
-    target_file = 'Lb'
-    print('folder', LbProjectFolder())
+    target_file = 'git.rebase.sh'
+    template_file ='{}.tmpl'.format(target_file)
+    template_folder = LbTemplateFolder('bash')
+    print('template folder', template_folder)
+    print('file exist', LbUtil().file_exists(template_folder, template_file))
+    print(LbUtil().get_file_list(template_folder, ext='tmpl'))
+    #print('folder', LbProjectFolder())
     actual = LbTemplate()
     assert (actual == [])
     print('  actual', actual)
     actual.setFolder(target_folder, create=True)
-    actual.create()
+    actual.setFilename(target_file)
+    actual.set_context('bash')
+    actual.get_template_string()
+    #actual.create()
     actual.show()
     actual.validate()
     actual.assertExists()
-
 
 if __name__ == "__main__":
     # execute as script
