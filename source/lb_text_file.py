@@ -2,7 +2,7 @@ import os
 
 from source.lb_recorder import LbRecorder
 from source.lb_exceptions import BadFileNameException, BadFolderNameException, FolderNotFoundException
-from source.lb_exceptions import FileNotFoundException,UnInitializedContextException
+from source.lb_exceptions import FileNotFoundException,UninitializedContextException
 from source.lb_folders import LbProjectFolder
 
 from source.lb_util import LbUtil
@@ -176,7 +176,7 @@ class LbTextFile(list, LbRecorder):
     def open(self):
         ## __Open text file on request__
         self.addStep('open')
-        self.validate()
+        #self.validate()
         line_list = self.getLineList()
         ##* load lines from file when available
         self.load(line_list)
@@ -226,7 +226,7 @@ class LbTextFile(list, LbRecorder):
         print('  steps            :')
         print('                   :', (self.getSteps()))
         print('  actual           :')
-        print('                   :', (str(self)))
+        print('                   :', (str('\n'.join(self))))
         return self
 
     def delete(self):
@@ -260,9 +260,9 @@ def main():
     actual = LbTextFile()
     actual.setFolder(os.getcwd())
     actual.setFilename('lb_text_file.py')
-    actual.show()
-    actual.open()
     actual.validate()
+    actual.open()
+    actual.show()
 
 
 def main_document():

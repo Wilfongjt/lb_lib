@@ -3,19 +3,17 @@ import os
 from source.lb_text_file import LbTextFile
 from source.lb_util import LbUtil
 from source.lb_folders import LbTemplateFolder, LbProjectFolder
-from source.lb_exceptions import FileNotFoundException,UnInitializedContextException
-
+from source.lb_exceptions import FileNotFoundException\
+                                 ,UninitializedContextException\
+                                 ,UninitializedDataException\
+                                 ,UnhandledMergeKeysException
 
 class LbTemplate(LbTextFile):
     def __init__(self):
         super().__init__()
-        #self.setFilename('{}.txt'.format(self.getClassName()))
-        #self.template_str = '''
-        #// created: <date-time>
-        #// author: <gh-user>
 
-        #'''
         self.context=None
+        self.data = [] # eg [{'name': '<<sample>>', 'value': 'sample'}]
 
     def assertExists(self):
         assert (LbUtil().file_exists(self.getFolder(),self.getFilename()))
@@ -28,18 +26,12 @@ class LbTemplate(LbTextFile):
     def get_context(self):
         return self.context
 
-    def depload_template_string(self, folder=None, filename=None):
-        #### Load Template from a File
-        ##* Store template files in ./data/
-        # template files are stored in /data folder
-        self.addStep('(file: {})'.format(filename))
-        self.addStep('load_template_string')
-        if folder and filename and LbUtil().file_exists(folder, filename):
-            with open('{}/{}'.format(folder, filename)) as f:
-                lines = ''.join(f.readlines())
-                self.set_template_string(lines)
-                self.addStep('loaded')
+    def set_data(self, nv_list):
+        self.data = nv_list
         return self
+
+    def get_data(self):
+        return self.data
 
     def create(self, overwrite=True):
         ###### Create empty file on request
@@ -61,25 +53,23 @@ class LbTemplate(LbTextFile):
 
         return self
 
-    def merge(self, lst, template_str=None):
+    def open(self):
+        super().open()
+        return self
+
+    def merge(self):
         #### Merge list of name value pairs with template
-        ##* list eg [{name: "<some-name>", value: "abc"}]
-        ##* clear template
+        ##*
         self.addStep('merge')
-        self.clear()
-        ##* get default template string when string not provided
-        if template_str:
-            rc = template_str
-        else:
-            rc = self.get_template_string()
-        # apply merge_list to template
-        for nv in lst:
-            rc = rc.replace(nv['name'], nv['value'])
+        if not self.get_data():
+            raise UninitializedDataException('Set the template data!')
 
-        # load template into template
-        for ln in rc.split('\n'):
-            self.append(ln)
-
+        #self.clear()
+        idx = 0
+        for ln in self:
+            for nv in self.get_data():
+                self[idx] = ln.replace(nv['name'], nv['value'])
+            idx += 1
         return self
 
     def validate(self):
@@ -87,8 +77,11 @@ class LbTemplate(LbTextFile):
         # if not LbUtil().file_exists(self.getFolder(), self.getFilename()):
         #    raise FileNotFoundException('File not found {}'.format(self.getFilename()))
         if not self.get_context():
-            raise UnInitializedContextException('set the template context')
+            raise UninitializedContextException('set the template context')
 
+        #print('get_template_key_list',self.get_template_key_list())
+        if self.has_unmerged_keys():
+            raise UnhandledMergeKeysException('Unmerged keys found {}'.format(self.get_template_key_list()))
         return self
 
     def get_template_scrape_keys(self, ln):
@@ -123,9 +116,19 @@ class LbTemplate(LbTextFile):
             keys = keys + [k for k in self.get_template_scrape_keys(ln) if k not in keys]
         return keys
 
-    def depset_template_string(self, tmpl_str):
-        self.template_str = tmpl_str
-        return self
+    def has_unmerged_keys(self):
+        #### Get list of keys from self
+        rc = False
+        keys = []
+        #if not lines:
+        #    lines = self.get_template_string().split('\n')  # document.split()
+        lines = self
+        for ln in lines:
+            # remove duplicates
+            keys = keys + [k for k in self.get_template_scrape_keys(ln) if k not in keys]
+        if len(keys) > 0:
+            rc = True
+        return rc
 
     def get_template_string(self):
 
@@ -137,15 +140,15 @@ class LbTemplate(LbTextFile):
         tmpl_file = '{}.tmpl'.format(self.getFilename())
         #print('templatfile {}/{}'.format(tmpl_folder, tmpl_file))
         #print('exits', LbUtil().file_exists(tmpl_folder, tmpl_file))
-        print('tmpl_folder', tmpl_folder)
-        print('tmpl_file', tmpl_file)
-        print('folder_exist', LbUtil().folder_exists(tmpl_folder))
-        print('file exist', LbUtil().file_exists(tmpl_folder, tmpl_file))
+        #print('tmpl_folder', tmpl_folder)
+        #print('tmpl_file', tmpl_file)
+        #print('folder_exist', LbUtil().folder_exists(tmpl_folder))
+        #print('file exist', LbUtil().file_exists(tmpl_folder, tmpl_file))
         if LbUtil().file_exists(tmpl_folder, tmpl_file):
-            fn = '{}/{}.tmpl'.format(tmpl_folder, tmpl_file)
+            fn = '{}/{}'.format(tmpl_folder, tmpl_file)
             with open(fn) as f:
                 line_string = f.read()
-        print("line_string", line_string)
+        #print("line_string", line_string)
         return line_string
 
     def show(self):
@@ -158,23 +161,39 @@ def main():
     # inject into
 
     import os
-    from source.lb_folders import LbProjectFolder
-    target_folder = '{}/Development/temp-org/temp-ws/temp-prj'.format(os.environ['HOME'])
+    #from source.lb_folders import LbProjectFolder
+
+    nv_data = [
+        {'name': '<<GH_PROJECT>>', 'value': 'temp-prj'}]
+
+    target_folder = '{}/Development/temp-org/temp-ws/temp-prj/scripts'.format(os.environ['HOME'])
     target_file = 'git.rebase.sh'
     template_file ='{}.tmpl'.format(target_file)
     template_folder = LbTemplateFolder('bash')
-    print('template folder', template_folder)
-    print('file exist', LbUtil().file_exists(template_folder, template_file))
-    print(LbUtil().get_file_list(template_folder, ext='tmpl'))
-    #print('folder', LbProjectFolder())
+
     actual = LbTemplate()
     assert (actual == [])
-    print('  actual', actual)
+    #print('  actual', actual)
     actual.setFolder(target_folder, create=True)
     actual.setFilename(target_file)
     actual.set_context('bash')
-    actual.get_template_string()
-    #actual.create()
+    actual.set_data(nv_data)
+    actual.create()
+    actual.show()
+    actual.validate()
+    actual.assertExists()
+
+    print(' ')
+    target_folder = '{}/Development/temp-org/temp-ws/temp-prj'.format(os.environ['HOME'])
+    target_file = 'README.md'
+    actual = LbTemplate()
+    actual.setFolder(target_folder, create=True)
+    actual.setFilename(target_file)
+    actual.set_context('stub')
+    actual.set_data(nv_data)
+    actual.create()
+    actual.open()
+    actual.merge()
     actual.show()
     actual.validate()
     actual.assertExists()

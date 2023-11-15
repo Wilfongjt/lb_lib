@@ -1,4 +1,10 @@
-class UnInitializedContextException(Exception):
+class UnhandledMergeKeysException(Exception):
+    pass
+
+class UninitializedDataException(Exception):
+    pass
+
+class UninitializedContextException(Exception):
     pass
 class FolderNotFoundException(Exception):
     pass
