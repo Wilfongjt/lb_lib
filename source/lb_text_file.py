@@ -1,15 +1,32 @@
+import os
+import warnings
 from source.lb_recorder import LbRecorder
 from source.lb_exceptions import BadFileNameException, BadFolderNameException, FolderNotFoundException
+from source.lb_exceptions import FileNotFoundException,UninitializedContextException
+from source.lb_folders import LbProjectFolder
 from source.lb_util import LbUtil
+
 class LbTextFile(list, LbRecorder):
     ## Open, Load and Save text file
-    def hello_world(self):
-        print("I am LbTextFile!")
+
     def __init__(self):
         LbRecorder.__init__(self)
-
         self.filename = None
         self.folder = None
+        self.visible=True
+
+    def hello_world(self):
+        print("I am LbTextFile!")
+
+    def is_show(self):
+        return self.visible
+
+    def set_show(self, tf):
+        if tf:
+            self.addStep('show')
+        self.visible = tf
+        return self
+
     def create(self, defaults):
         ###### Create env file on request
 
@@ -159,9 +176,11 @@ class LbTextFile(list, LbRecorder):
             raise BadFolderNameException('Bad folder name {}'.format(self.getFolder()))
 
         ##* throw FolderNotFoundException when folder doesnt exist ... [x] has test
+        #print('LbTextFile validate', self.getFolder())
         if not LbUtil().folder_exists(self.getFolder()):
-            raise FolderNotFoundException('Folder not found {}'.format(self.getFolder()))
-
+            #raise FolderNotFoundException('Folder not found {} {}'.format(self.getClassName(),self.getFolder()))
+            #warnings.warn('Warning Message: 4')
+            print('Warning: !!! Target folder does not exist {}'.format(self.getFolder()))
         ##* throw BadFileNameException when filename is None ... [x] has test
         if self.getFilename() == None:
             raise BadFileNameException('Bad file name {}'.format(self.getFilename()))
@@ -171,7 +190,7 @@ class LbTextFile(list, LbRecorder):
     def open(self):
         ## __Open text file on request__
         self.addStep('open')
-        self.validate()
+        #self.validate()
         line_list = self.getLineList()
         ##* load lines from file when available
         self.load(line_list)
@@ -200,7 +219,7 @@ class LbTextFile(list, LbRecorder):
         self.addStep('save-as')
         ##* return the new LbTextFile ... [x] has test
         return LbTextFile().setFolder(folder).setFilename(filename).load(self).save()
-
+    '''
     def show(self, terminalMsg=None):
         ##__Show Steps on request__
         if terminalMsg:
@@ -210,6 +229,21 @@ class LbTextFile(list, LbRecorder):
         else:
             print('    {}: {}'.format(self, self.getClassName()))
             print('    ', self.getSteps())
+        return self
+    '''
+
+    def show(self):
+        if not self.is_show():
+            return self
+        print(self.getClassName())
+        print('  target-filename  :', self.getFilename())
+        print('  target-foldername:', (str(self.getFolder())))
+        print('  source           :', (LbProjectFolder()))
+        print('  steps            :')
+        print('                   :', (self.getSteps()))
+        print('  actual           :')
+        print('                    ', (str(self)))
+
         return self
 
     def delete(self):
@@ -239,11 +273,13 @@ class LbTextFile(list, LbRecorder):
 
 
 def main():
-    from lb_doc_comments import LbDocComments
-    print('lb_text_file')
-    folder = '/'.join(str(__file__).split('/')[0:-1])
-    filename = str(__file__).split('/')[-1]
-    LbDocComments().setFolder(folder).setFilename(filename).open().save()
+
+    actual = LbTextFile()
+    actual.setFolder(os.getcwd())
+    actual.setFilename('lb_text_file.py')
+    actual.validate()
+    actual.open()
+    actual.show()
 
 
 def main_document():

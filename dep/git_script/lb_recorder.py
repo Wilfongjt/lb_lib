@@ -9,7 +9,7 @@ class LbRecorder():
     def __init__(self) -> None:
         #print('lbRecorder')
         self.step_list = []
-        #self.key = ' '
+        #self.name = ' '
         #self.msgcnt = 1
 
     def hello_world(self):

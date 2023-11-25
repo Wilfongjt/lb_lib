@@ -1,0 +1,78 @@
+version: '3'
+services:
+  #############
+  # POSTGRES
+  # https://hub.docker.com/_/postgres
+  #########
+  db:
+    image: postgres
+    restart: always
+    # use ports when you want to connect with a db client
+    ports: 
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_JWT_SECRET=${POSTGRES_JWT_SECRET}
+      - POSTGRES_API_PASSWORD=${POSTGRES_API_PASSWORD}
+      # - POSTGRES_JWT_CLAIMS=${POSTGRES_JWT_CLAIMS}
+
+    #volumes:
+      # anything in initdb directory is created in the database
+      # - "./aad_db/sql-current:/docker-entrypoint-initdb.d"
+      # Uncomment this if you want to persist the data.
+      # Uncomment if you want to simulate heroku environment
+      # - "~/.data/aad_db/pgdata:/var/lib/postgresql/data"
+
+  #######    
+  #  sh -c "npm install && npm install nodemon && npm run db-deploy && npm run dev"
+  #       sh -c "npm install nodemon && npm run db-deploy && npm run dev"
+  #      sh -c "npm install nodemon && npm run db-deploy && npm run dev"
+  #      sh -c "npm run db-deploy && npm run dev"
+
+  #######
+  db-api:
+    image: citizenlabsgr/adopt-a-drain-hapi-api
+
+    build:
+      context: .
+    #command: npm run dev 
+    #command: >
+    # sh -c "npm install nodemon && npm run db-deploy && npm run dev"
+    command: >
+      sh -c "
+        while ! nc -z db 5432;
+        do
+            echo 'sleep';
+            sleep 1;
+        done;
+        echo 'DB Port open!';
+        npm install nodemon;
+        npm run db-deploy;
+        npm run dev;
+      "
+    # facilitate develpment with volumes
+    volumes:
+      - .:/usr/src/api
+    ports:
+      - 5555:5555
+    environment:
+      - API_DEBUG=true
+      - DOCKER_ENV=development
+      - NODE_ENV=${NODE_ENV}
+      - HOST=${HOST}
+      - PORT=${PORT}
+      - DATABASE_URL=${DATABASE_URL}
+      # - API_TOKEN=${API_TOKEN}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_CLAIMS=${JWT_CLAIMS}
+      - ACCEPTED_ORIGINS=${ACCEPTED_ORIGINS}
+      # In dev, the HEROKU_API_KEY can be set to anything
+      # In GitHub secrets, set HEROKU_API_KEY to actual value from heroku
+      - HEROKU_API_KEY=${HEROKU_API_KEY}
+      # token timeout is measured in second 1800 seconds is 30 minuntes
+      - TOKEN_TIMEOUT=5
+    depends_on:
+      - db  
+ 

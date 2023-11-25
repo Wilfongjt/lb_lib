@@ -140,7 +140,7 @@ class GitScript(ProjectScript):
         #print('get_branch_current', rc)
         return rc
     def get_project_info(self, key=None, project_folder=None):
-        # return all info when key is None
+        # return all info when name is None
         # return single item when
 
         rc = {}
@@ -227,7 +227,7 @@ class GitScript(ProjectScript):
                 line_list = file.readlines()
                 line_list = [ln.replace('\n', '') for ln in line_list]
 
-        ##* find "key=" then replace with "key=value"
+        ##* find "name=" then replace with "name=value"
         i=0
         found=False
         for ln in line_list:
@@ -241,7 +241,7 @@ class GitScript(ProjectScript):
                 break
             i+=1
 
-        ##* key not found then append
+        ##* name not found then append
 
         if not found:
             line_list.append('{}={}'.format(key,value))
@@ -265,7 +265,7 @@ class GitScript(ProjectScript):
         return self
 
     def validate_input(self, key, value):
-        ##* test for Null key
+        ##* test for Null name
         ##* test for Null value
         ##* test for TBD value
         if not key:
@@ -359,10 +359,10 @@ class GitScript(ProjectScript):
 
         # print('get_project_info',self.get_project_info(project_folder=project_folder) )
 
-        #print('get_project_info current_branch',self.get_project_info(key='current_branch',project_folder=project_folder) )
-        #print('get_project_info remote_branches',self.get_project_info(key='remote_branches',project_folder=project_folder) )
+        #print('get_project_info current_branch',self.get_project_info(name='current_branch',project_folder=project_folder) )
+        #print('get_project_info remote_branches',self.get_project_info(name='remote_branches',project_folder=project_folder) )
 
-        #print('get_project_info project_name',self.get_project_info(key='project_name',project_folder=project_folder) )
+        #print('get_project_info project_name',self.get_project_info(name='project_name',project_folder=project_folder) )
 
         #print('curr bin',self.get_project_name(folder=project_folder) )
         #print('stage_branch project_folder',project_folder)

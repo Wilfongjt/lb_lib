@@ -2,7 +2,7 @@ import os
 import subprocess
 from dep.git_script.lb_recorder import LbRecorder
 
-#from git_script.git_script_01 import GitScript
+#from git_script.git_script_01 import LbGitProcess
 #from git_script.lb_util import LbUtil
 class Expected():
     def validate_folder(self, folder, dev_pos):
@@ -111,7 +111,7 @@ def main():
     print('current folder', folder)
     actual = Status()
     print('status getUncommittedChanges', actual.getUncommittedFiles())
-    # Initialize GitScript
+    # Initialize LbGitProcess
 
 if __name__ == "__main__":
     # execute as script

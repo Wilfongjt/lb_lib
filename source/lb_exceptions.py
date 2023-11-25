@@ -1,4 +1,14 @@
+class UnmergedKeyException(Exception):
+    pass
 
+class UnhandledMergeKeysException(Exception):
+    pass
+
+class UninitializedDataException(Exception):
+    pass
+
+class UninitializedContextException(Exception):
+    pass
 class FolderNotFoundException(Exception):
     pass
 class BadFolderNameException(Exception):

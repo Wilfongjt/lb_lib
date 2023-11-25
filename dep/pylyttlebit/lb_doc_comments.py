@@ -49,7 +49,7 @@ class LbDocComments(LbTextFile):
 
     def decorate(self, line):
         #### Decorate line on request
-        ##> Bold the key words
+        ##> Bold the name words
         nline = []
         line = line.replace(',',' ,').replace(':', '')
         line = str(line).split(' ')

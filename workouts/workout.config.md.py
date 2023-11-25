@@ -54,7 +54,7 @@ class ConfigMd(LbRecorder):
         return rc
 
     def getKey(self, line):
-        #### Retrive a suitable key value for a name and value pair on request
+        #### Retrive a suitable name value for a name and value pair on request
         if line:
             line = line.strip()
         if not line:
@@ -285,7 +285,7 @@ class ConfigMd(LbRecorder):
             if ln and ln.startswith('#'):
                 #print('1 # ln    ', ln)
                 #print('2 # level ', self.getLevel(ln))
-                #print('3 # key   ', self.getKey(ln))
+                #print('3 # name   ', self.getKey(ln))
                 #print('4 # value ', self.getValue(ln))
 
                 level = self.getLevel(ln)
@@ -302,7 +302,7 @@ class ConfigMd(LbRecorder):
             elif ln and ln.startswith('1.'):
                 #
                 #print('2 ln   ',ln)
-                #print('3 key  ', self.getKey(ln))
+                #print('3 name  ', self.getKey(ln))
                 #print('4 value', self.getValue(ln))
                 key = self.getKey(ln)
                 value = self.getValue(ln)
@@ -395,7 +395,7 @@ def main():
     assert ('       1. name: id, type:C, size:3-330, validate:R', '1. name : id , type : C , size : 3-330 , validate : R ')
 
     #exit(0)
-    #print('key', actual.getKey(''))
+    #print('name', actual.getKey(''))
     assert (actual.getKey('')==None) # ignore
     assert (actual.getKey(' ')==None) # ignore
     assert (actual.getKey('a') == None) # ignore

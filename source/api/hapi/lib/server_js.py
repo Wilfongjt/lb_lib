@@ -1,5 +1,5 @@
 import os
-from source.template.lb_template import LbTemplate
+from source.lb_template import LbTemplate
 
 class ServerJs(LbTemplate):
     def __init__(self):
@@ -70,7 +70,7 @@ class ServerJs(LbTemplate):
         /* $lab:coverage:off$ */
         // origins is parsed here to make sure it has been configured
         JSON.parse(process.env.ACCEPTED_ORIGINS);
-        let claims = process.env.JWT_CLAIMS || '{"aud":"citizenlabs-api", "iss":"citizenlabs", "sub":"client-api", "user":"guest", "scope":"api_guest", "key":"0"}';
+        let claims = process.env.JWT_CLAIMS || '{"aud":"citizenlabs-api", "iss":"citizenlabs", "sub":"client-api", "user":"guest", "scope":"api_guest", "name":"0"}';
         const jwt_claims = JSON.parse(claims);
         
         const port = process.env.PORT || 5555;
@@ -212,8 +212,8 @@ class ServerJs(LbTemplate):
         
         
         // Declare an authentication strategy using the jwt scheme.
-        // Use keys: with a shared secret key OR json web key set uri.
-        // Use verify: To determine how key contents are verified beyond signature.
+        // Use keys: with a shared secret name OR json web name set uri.
+        // Use verify: To determine how name contents are verified beyond signature.
         // If verify is set to false, the keys option is not required and ignored.
         // The verify: { aud, iss, sub } options are required if verify is not set to false.
         // The verify: { exp, nbf, timeSkewSec, maxAgeSec } paramaters have defaults.
