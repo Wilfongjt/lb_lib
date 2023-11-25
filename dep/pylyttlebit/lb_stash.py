@@ -51,7 +51,7 @@ class LbStash(dict):
 
     def getProject(self, key=None):
         if key:
-            #print('key', key)
+            #print('name', name)
             #print('PROJECT_KEY', LbC().PROJECT_KEY)
             #pprint(self)
             return self[LbC().PROJECT_KEY][key]

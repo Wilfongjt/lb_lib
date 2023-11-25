@@ -15,7 +15,7 @@ class LbValidateInputVariables(LbStep):
 
         ##* Validate PROJECT_KEY
 
-        if LbC().PROJECT_KEY not in self.getStash(): # check for missing key
+        if LbC().PROJECT_KEY not in self.getStash(): # check for missing name
             self.getStash().setInvalid('unknown_key({})'.format(LbC().PROJECT_KEY))
             if self.isVerbose():
                 print('verbose LbStash', self.getClassName())
@@ -23,7 +23,7 @@ class LbValidateInputVariables(LbStep):
 
         ##* Validate PROMPTS_KEY
 
-        if LbC().PROMPTS_KEY not in self.getStash():  # check for missing key
+        if LbC().PROMPTS_KEY not in self.getStash():  # check for missing name
             self.getStash().setInvalid('unknown_key({})'.format(LbC().PROMPTS_KEY))
             if self.isVerbose():
                 print('verbose LbStash', self.getClassName())

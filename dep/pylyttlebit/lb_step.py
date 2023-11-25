@@ -24,7 +24,7 @@ class LbStep(LbRecorder):
 
     def depsetInvalid(self, key, msg):
         #self.addStep('invalid')
-        #print('key', key)
+        #print('name', name)
         #print('msg', msg)
         if 'invalid' not in self.stash:
             self.stash['invalid']={}
@@ -104,7 +104,7 @@ class LbStep(LbRecorder):
         #self.addStep('lb_stash')
         if key != None:
             #pprint(self.lb_stash)
-            #print('key',key)
+            #print('name',name)
             return self.stash[key]
         return self.stash
 
@@ -162,7 +162,7 @@ class LbStep(LbRecorder):
         return self
 
     def process(self):
-        #print('key',self.getKey(),'id',self.getId(), 'prev:',self.getPrev(),'self', self, 'next:',self.getNext())
+        #print('name',self.getKey(),'id',self.getId(), 'prev:',self.getPrev(),'self', self, 'next:',self.getNext())
         #self.addStep('process')
         return self
 

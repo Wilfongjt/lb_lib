@@ -13,6 +13,7 @@ class UtilityScript(dict, LbRecorder):
         self['fail'] = False
         self['fail_msg'] = []
     def ch_dir(self, folder):
+        print('B ch_dir')
         # self.addStep('ch_dir')
         os.chdir(folder)
         return self
@@ -119,7 +120,7 @@ class UtilityScript(dict, LbRecorder):
         print(ln)
         return self
     def set(self, key, value):
-        #self.addStep(key)
+        #self.addStep(name)
         self[key] = value
         return self
     def set_fail(self, tf, msg=None):

@@ -1,20 +1,32 @@
 import os
-
+import warnings
 from source.lb_recorder import LbRecorder
 from source.lb_exceptions import BadFileNameException, BadFolderNameException, FolderNotFoundException
 from source.lb_exceptions import FileNotFoundException,UninitializedContextException
 from source.lb_folders import LbProjectFolder
-
 from source.lb_util import LbUtil
+
 class LbTextFile(list, LbRecorder):
     ## Open, Load and Save text file
-    def hello_world(self):
-        print("I am LbTextFile!")
+
     def __init__(self):
         LbRecorder.__init__(self)
-
         self.filename = None
         self.folder = None
+        self.visible=True
+
+    def hello_world(self):
+        print("I am LbTextFile!")
+
+    def is_show(self):
+        return self.visible
+
+    def set_show(self, tf):
+        if tf:
+            self.addStep('show')
+        self.visible = tf
+        return self
+
     def create(self, defaults):
         ###### Create env file on request
 
@@ -164,9 +176,11 @@ class LbTextFile(list, LbRecorder):
             raise BadFolderNameException('Bad folder name {}'.format(self.getFolder()))
 
         ##* throw FolderNotFoundException when folder doesnt exist ... [x] has test
+        #print('LbTextFile validate', self.getFolder())
         if not LbUtil().folder_exists(self.getFolder()):
-            raise FolderNotFoundException('Folder not found {}'.format(self.getFolder()))
-
+            #raise FolderNotFoundException('Folder not found {} {}'.format(self.getClassName(),self.getFolder()))
+            #warnings.warn('Warning Message: 4')
+            print('Warning: !!! Target folder does not exist {}'.format(self.getFolder()))
         ##* throw BadFileNameException when filename is None ... [x] has test
         if self.getFilename() == None:
             raise BadFileNameException('Bad file name {}'.format(self.getFilename()))
@@ -219,6 +233,8 @@ class LbTextFile(list, LbRecorder):
     '''
 
     def show(self):
+        if not self.is_show():
+            return self
         print(self.getClassName())
         print('  target-filename  :', self.getFilename())
         print('  target-foldername:', (str(self.getFolder())))
@@ -226,7 +242,8 @@ class LbTextFile(list, LbRecorder):
         print('  steps            :')
         print('                   :', (self.getSteps()))
         print('  actual           :')
-        print('                   :', (str('\n'.join(self))))
+        print('                    ', (str(self)))
+
         return self
 
     def delete(self):

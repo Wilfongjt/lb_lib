@@ -1,13 +1,16 @@
 import os
-#import sys
+import sys
 #from pprint import pprint
 import subprocess
+from source.lb_os_commands import LbOsCommands
 #import shutil
 #from lb_util import LbUtil
 #from lb_recorder import LbRecorder
+#from source.project_script import ProjectScript
+#class GitCommands(ProjectScript):
 
-from source.project_script import ProjectScript
-class GitCommands(ProjectScript):
+class LbGitCommands(LbOsCommands):
+
     def __init__(self):
         super().__init__()
         self.GIT_CURR_BRANCH_COMMAND="git symbolic-ref --short HEAD 2>/dev/null"
@@ -17,6 +20,7 @@ class GitCommands(ProjectScript):
         self.GIT_PULL_ORIGIN_TEMPLATE = 'git pull origin {}'
         self.GIT_PUSH_ORIGIN_TEMPLATE = 'git push origin {}'
     def checkout_branch(self, folder, branch_name):
+        print('checkout_branch')
         # change folder and set branch
         # checkout when branch_name != branch_current
         # fail when current branch has uncommitted file(s)
@@ -24,7 +28,6 @@ class GitCommands(ProjectScript):
         last_folder = os.getcwd() # change back when fail
         self.addStep('checkout')
         #self.addStep('(bin:{})'.format(self.get_project_name(folder)))
-
         self.ch_dir(folder) # change to new folder
 
         #self.addStep('checkout-branch')
@@ -38,9 +41,11 @@ class GitCommands(ProjectScript):
             self.ch_dir(last_folder)
         else:
             rc = ret.stdout.decode('ascii').strip()
-            self.addStep('(bin:{}, branch: {})'.format(self.get_project_name(),branch_name))
+            print('checkout_branch folder',folder)
+            self.addStep('(branch: {})'.format(branch_name))
+            #self.addStep('(bin:{}, branch: {})'.format(self.get_project_name(),branch_name))
 
-        #self.ch_dir(last_folder)
+        self.ch_dir(last_folder)
 
         return self
     def create_branch(self, project_folder=None, branch=None):
@@ -86,6 +91,7 @@ class GitCommands(ProjectScript):
             self['project_name']='TBD'
         return self['project_name']
     def get_branch_current(self, folder=None):
+        print('get_branch_current')
         # folder is the project_folder
         rc = None
 
@@ -110,6 +116,7 @@ class GitCommands(ProjectScript):
         #print('get_branch_current', rc)
         return rc
     def get_branches(self,project_folder):
+        print('get_branches')
         if not self.folder_exists(project_folder):
             return []
 
@@ -155,10 +162,11 @@ class GitCommands(ProjectScript):
 
         return rc
     def pull_origin(self,project_folder, branch):
-        self.addStep('pull-origin')
+        print('pull-origin')
+        #self.addStep('pull-origin')
         #self.addStep('(pull-origin: {})'.format(branch))
         if branch != self.get_branch_current(folder=project_folder):
-            self.set_fail(True, 'Unexpected branch')
+            #self.set_fail(True, 'Unexpected branch')
             return self
 
         last_folder = os.getcwd()
@@ -172,10 +180,10 @@ class GitCommands(ProjectScript):
         # print(ret)
         if ret.returncode != 0:
             self.set_fail(True, ret.stderr.decode('ascii'))
-            self.addStep('({})'.format('failed'))
+            #self.addStep('({})'.format('failed'))
         else:
             rc = ret.stdout.decode('ascii').strip()
-            self.addStep('(bin:{},branch:{})'.format(self.get_project_name(),self.get_branch_current(project_folder)))
+            #self.addStep('(bin:{},branch:{})'.format(self.get_project_name(),self.get_branch_current(project_folder)))
             #self.addStep('({})'.format(self.get_branch_current(project_folder)))
 
         self.ch_dir(last_folder)
@@ -183,9 +191,10 @@ class GitCommands(ProjectScript):
 
 def main():
     start_folder = os.getcwd() # script should start and stop in the same folder
-    actual = GitCommands()
+    actual = LbGitCommands()
     assert (actual)
     assert (actual.on_fail_exit()) # should be ok
+    assert (actual.folder_exists(os.getcwd()))
 
 def main_document():
     from dep.pylyttlebit import LbDocComments

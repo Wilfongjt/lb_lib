@@ -1,7 +1,7 @@
 import os
 
 import source.api.hapi.server_js
-from source.git_script import GitScript
+from source.git_script import LbGitProcess
 from source.hapi_script import HAPIScript
 
 class TemplateKeysAndValues(list):
@@ -34,7 +34,7 @@ def main():
     src_script_rebase = '{}/scripts/git.rebase.sh'.format(start_folder)
     src_script_issues = '{}/scripts/git.issues.sh'.format(start_folder)
 
-    # actual = GitScript()
+    # actual = LbGitProcess()
     actual = HAPIScript()
     assert (actual)
     assert (actual.on_fail_exit()) # should be ok

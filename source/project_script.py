@@ -118,7 +118,7 @@ class ProjectScript(UtilityScript):
                 line_list = file.readlines()
                 line_list = [ln.replace('\n', '') for ln in line_list]
 
-        ##* find "key=" then replace with "key=value"
+        ##* find "name=" then replace with "name=value"
         i=0
         found=False
         for ln in line_list:
@@ -133,7 +133,7 @@ class ProjectScript(UtilityScript):
                 break
             i+=1
 
-        ##* key not found then append
+        ##* name not found then append
 
         if not found:
             line_list.append('{}={}'.format(key,value))
@@ -164,7 +164,7 @@ class ProjectScript(UtilityScript):
 
         return rc
     def validate_input(self, key, value):
-        ##* test for Null key
+        ##* test for Null name
         ##* test for Null value
         ##* test for TBD value
         #self.addStep('validate-input')

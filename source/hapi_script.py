@@ -1,8 +1,8 @@
 import os
 import source.api.hapi.server_js
-from source.git_script import GitScript
+from source.git_script import LbGitProcess
 
-class HAPIScript(GitScript):
+class HAPIScript(LbGitProcess):
     def __init__(self):
         super().__init__()
         #self.template_keys_and_values = None

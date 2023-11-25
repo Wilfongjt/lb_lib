@@ -20,7 +20,7 @@ class DDict(dict):
         # values are {}, [], number, alfa
         # stack_key is all keys no values eg
         # replace when stack_key exists
-        # add all elements of stack key when stack_key does not exist
+        # add all elements of stack name when stack_key does not exist
         #print('in ',self)
         p = self.sett(self, stack_key, value)
         #print('out', self)
@@ -43,7 +43,7 @@ class DDict(dict):
                         data[key].append(value)
                     else:
                         #print('          dict B2', self)
-                        data[key]=value  # Found the final key; set its value
+                        data[key]=value  # Found the final name; set its value
                     return self
                 else:
                     #print('          dict C', self)

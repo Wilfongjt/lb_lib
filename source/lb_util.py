@@ -94,7 +94,7 @@ class LbUtil():
 
     def get_env_value(self, KEY_NAME, default='TBD'):
         #### Get an LbEnvironment Value by name
-        ##* use name to find key in os.environ
+        ##* use name to find name in os.environ
 
         rc = default
         if KEY_NAME in os.environ:

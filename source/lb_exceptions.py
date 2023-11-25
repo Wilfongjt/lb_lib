@@ -1,3 +1,6 @@
+class UnmergedKeyException(Exception):
+    pass
+
 class UnhandledMergeKeysException(Exception):
     pass
 
